@@ -1,0 +1,133 @@
+{% extends 'pub/base.html.twig' %}
+{% block title %}{{ app.request.locale == 'en' ? 'About' : 'Sobre' }} | CPA Citros{% endblock %}
+{% block body %}
+<!-- Quem somos: Split Premium Layout -->
+<section class="py-24 bg-white overflow-hidden isolate relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 ring-1 ring-inset ring-slate-200 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-primary"></span>
+                    <span class="text-xs font-semibold tracking-widest uppercase text-slate-600">
+                        {{ app.request.locale == 'en' ? 'Center Foundation' : 'Fundação do Centro' }}
+                    </span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+                    {{ app.request.locale == 'en' ? 'The global epicentre in the fight against HLB' : 'O epicentro global na luta contra o HLB' }}
+                </h2>
+                <div class="space-y-6 text-lg text-slate-600 leading-relaxed font-light">
+                    <p>
+                        {% if app.request.locale == 'en' %}
+                            The mission of <strong class="text-slate-900 font-semibold">CPA Citros</strong> is to develop research, disseminate knowledge, and transfer state-of-the-art technology to the citrus sector, aiming to isolate, contain, and mitigate greening.
+                        {% else %}
+                            A missão do <strong class="text-slate-900 font-semibold">CPA Citros</strong> é desenvolver pesquisa, difundir conhecimento e transferir tecnologia de última ponta para o setor citrícola, visando isolar, conter e mitigar a praga do <i>greening</i>.
+                        {% endif %}
+                    </p>
+                    <p>
+                        {% if app.request.locale == 'en' %}
+                            The center consolidates its operations through international scientific grants and works in a decentralized network. Researchers from different institutions and nationalities execute vital projects under the guidelines of our governance.
+                        {% else %}
+                            O centro consolida-se através de subsídios das principais esferas científicas mundiais e atua em rede descentralizada. Pesquisadores de diferentes instituições e nacionalidades assinam projetos vitais sob as diretrizes estruturais de nossa governança.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="relative w-full h-full min-h-[400px] lg:min-h-[600px] rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group">
+                <div class="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-700"></div>
+                <img src="{{ asset('images/sobre.jpg') }}" alt="Laboratório CPA" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                <div class="absolute inset-0 border-4 border-white/20 rounded-[2.5rem] pointer-events-none z-20"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Parceiros: Bento Cloud Grid -->
+<section class="py-32 bg-slate-50 relative border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="text-center max-w-2xl mx-auto mb-20">
+            <h2 class="text-secondary font-bold tracking-widest uppercase text-sm mb-3">
+                {{ app.request.locale == 'en' ? 'Integration Network' : 'Rede de Integração' }}
+            </h2>
+            <h3 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+                {{ app.request.locale == 'en' ? 'Partner Institutions' : 'Instituições Parceiras' }}
+            </h3>
+            <p class="mt-4 text-slate-500 font-medium text-lg">
+                {{ app.request.locale == 'en' ? 'CPA Citros technological ecosystem' : 'Ecossistema tecnológico do CPA Citros' }}
+            </p>
+        </div>
+        
+        <div class="grid lg:grid-cols-2 gap-16">
+            <!-- Coluna Brasil -->
+            <div class="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 relative overflow-hidden group">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+                <h4 class="text-2xl font-bold text-slate-800 mb-8 relative z-10 flex items-center gap-3">
+                    <span class="w-8 h-1 bg-primary rounded-full"></span>
+                    Brasil
+                </h4>
+                <ul class="space-y-4 relative z-10">
+                    {% for item in institutionsBR %}
+                        <li class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 ring-1 ring-inset ring-slate-100/50 hover:bg-white hover:shadow-md hover:ring-slate-200 transition-all group/item">
+                            <div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-slate-900/5 group-hover/item:text-primary transition-colors">
+                                <i class="fa-solid fa-building-columns text-slate-400 group-hover/item:text-primary transition-colors"></i>
+                            </div>
+                            <span class="text-slate-700 font-medium leading-relaxed group-hover/item:text-slate-900 transition-colors">{{ item }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <!-- Coluna Estrangeira -->
+            <div class="bg-theme-gradient text-white border-0 rounded-[2rem] p-8 md:p-12 shadow-2xl relative overflow-hidden group border border-slate-700">
+                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+                <h4 class="text-2xl font-bold text-white mb-8 relative z-10 flex items-center gap-3">
+                    <span class="w-8 h-1 bg-secondary rounded-full"></span>
+                    {{ app.request.locale == 'en' ? 'Global Partners' : 'Mundo' }}
+                </h4>
+                <ul class="space-y-4 relative z-10">
+                    {% for item in institutionsINT %}
+                        <li class="flex items-start gap-4 p-4 rounded-2xl bg-slate-800/50 ring-1 ring-inset ring-white/5 hover:bg-slate-800 hover:shadow-lg hover:ring-white/10 transition-all group/item backdrop-blur-sm">
+                            <div class="w-8 h-8 rounded-full bg-theme-gradient text-white border-0 shadow-inner flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-white/10">
+                                <i class="fa-solid fa-earth-americas text-slate-400 group-hover/item:text-secondary transition-colors"></i>
+                            </div>
+                            <span class="text-slate-300 font-medium leading-relaxed group-hover/item:text-white transition-colors">{{ item }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Estrutura / FEALQ Premium Callout -->
+<section class="py-0 relative">
+    <div class="relative bg-theme-gradient text-white border-0 overflow-hidden isolate pt-32 pb-48">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-4xl font-extrabold text-white mb-6 tracking-tight">
+                {{ app.request.locale == 'en' ? 'Governance and Structure' : 'Governança e Estrutura' }}
+            </h2>
+            <p class="max-w-2xl mx-auto text-slate-300 text-xl font-light leading-relaxed">
+                {{ app.request.locale == 'en' ? 'Based at Esalq-USP in Piracicaba (SP), CPA expands its horizons as a neural virtual collaboration network.' : 'Centralizado na Esalq-USP em Piracicaba (SP), o CPA expande seus horizontes operando como uma inteligência neural virtual entre laboratórios do mundo todo.' }}
+            </p>
+        </div>
+    </div>
+    
+    <!-- Fealq Floating Premium Card -->
+    <div class="max-w-4xl mx-auto px-6 -mt-32 relative z-20 pb-32">
+        <div class="bg-white/95 backdrop-blur-2xl rounded-[2.5rem] p-10 md:p-16 shadow-2xl ring-1 ring-slate-900/10 text-center flex flex-col items-center group">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 ring-1 ring-inset ring-slate-200 mb-6">
+                <span class="text-xs font-bold tracking-widest uppercase text-slate-500">
+                    {{ app.request.locale == 'en' ? 'Official Financial Management' : 'Gestão Financeira Oficial' }}
+                </span>
+            </div>
+            
+            <h3 class="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter mb-4 grayscale group-hover:grayscale-0 transition-all duration-500">FEALQ</h3>
+            <p class="text-lg font-bold text-primary mb-6">Fundação de Estudos Agrários Luiz de Queiroz</p>
+            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-6"></div>
+            <p class="text-slate-500 text-sm md:text-base max-w-lg leading-relaxed">
+                {{ app.request.locale == 'en' ? 'Financial processing for funding, researcher grants, and lab acquisitions are fully handled by FEALQ, isolating bureaucratic processes from active scientific study.' : 'A estruturação e injeções financeiras para custeio, salários de pesquisadores e compras de laboratório ficam inteiramente a cargo da interveniente FEALQ, isolando a administração burocrática dos estudos científicos.' }}
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

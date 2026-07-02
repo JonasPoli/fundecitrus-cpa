@@ -1,0 +1,100 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-user-tie admin-page-title-icon" aria-hidden="true"></i>
+            Pesquisadores
+        </h1>
+        <p class="page-subtitle">Gerencie o corpo de pesquisadores científicos do CPA Citros.</p>
+    </div>
+    <div>
+        <a href="{{ path('app_admin_researcher_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Área de Atuação (PT)</th>
+                <th>Área de Atuação (EN)</th>
+                <th>Currículo Lattes</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="researcher-sortable">
+            {% for researcher in researchers %}
+                <tr class="sortable-row" data-id="{{ researcher.id }}">
+                    <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td>
+                        {% if researcher.foto and researcher.foto.imageName %}
+                            <img src="{{ asset('uploads/' ~ researcher.foto.imageName) }}" alt="{{ researcher.nome }}" class="h-10 w-10 rounded-full object-cover shadow-sm border border-slate-200">
+                        {% else %}
+                            <span class="text-slate-400 text-xs">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="font-semibold">{{ researcher.nome }}</td>
+                    <td>{{ researcher.areaPt }}</td>
+                    <td>{{ researcher.areaEn }}</td>
+                    <td>
+                        {% if researcher.lattes %}
+                            <a href="{{ researcher.lattes }}" target="_blank" class="text-primary hover:underline text-xs inline-flex items-center gap-1">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Lattes
+                            </a>
+                        {% else %}
+                            <span class="text-slate-400 text-xs">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_admin_researcher_edit', {'id': researcher.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">Nenhum pesquisador cadastrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            {% if researchers is not empty %}
+                $('.admin-table').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/pt-BR.json',
+                    },
+                    ordering: false,
+                    pageLength: 10,
+                    lengthMenu: [[5, 10, 25, -1], [5, 10, 25, 'Todos']],
+                });
+            {% endif %}
+        });
+    </script>
+    {{ include('admin/_sortable_script.html.twig', {
+        tbody_id: 'researcher-sortable',
+        reorder_url: path('app_admin_reorder', { entityName: 'Researcher' })
+    }) }}
+{% endblock %}

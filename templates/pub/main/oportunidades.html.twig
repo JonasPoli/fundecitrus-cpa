@@ -1,0 +1,87 @@
+{% extends 'pub/base.html.twig' %}
+{% block title %}{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }} | CPA Citros{% endblock %}
+{% block body %}
+<section class="bg-theme-gradient text-white border-0 text-white pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
+    <img src="{{ asset('images/vagas_banner.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary rounded-full blur-[128px] opacity-20 pointer-events-none z-0"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
+                    {{ app.request.locale == 'en' ? 'Selection Processes' : 'Processos Seletivos' }}
+                </span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                {{ app.request.locale == 'en' ? 'Opportunities & Fellowships' : 'Oportunidades & Bolsas' }}
+            </h1>
+            <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
+                {{ app.request.locale == 'en' ? 'CPA constantly attracts researchers, analysts, and technicians for fellowship and lab positions. Check the open board.' : 'O CPA atrai pesquisadores, analistas e técnicos para vagas de bolsas e laboratório constantemente. Se você quer atuar com inovações voltadas aos citros, veja o mural aberto.' }}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Mural de Vagas Cards Enriquecidos -->
+<section class="py-24 bg-slate-50 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 -mt-32">
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for vaga in vagas %}
+                {% set status = app.request.locale == 'en' ? vaga.statusEn : vaga.statusPt %}
+                {% set estaAberta = vaga.statusPt|lower == 'aberto' or vaga.statusPt|lower == 'aberta' or vaga.statusEn|lower == 'open' %}
+                {% set title = app.request.locale == 'en' ? vaga.titleEn : vaga.titlePt %}
+                {% set summary = app.request.locale == 'en' ? vaga.summaryEn : vaga.summaryPt %}
+                {% set slug = app.request.locale == 'en' ? vaga.slugEn : vaga.slugPt %}
+                
+                <div class="bg-white rounded-[2rem] overflow-hidden shadow-xl border {% if estaAberta %}border-slate-200 hover:-translate-y-2 hover:shadow-2xl shadow-slate-200/50{% else %}border-slate-200 opacity-60 grayscale hover:grayscale-0{% endif %} flex flex-col group transition-all duration-500 ring-1 ring-slate-900/5">
+                    
+                    <div class="h-48 w-full bg-slate-100 relative overflow-hidden">
+                        {% if vaga.image and vaga.image.imageName %}
+                            <img src="{{ asset('uploads/' ~ vaga.image.imageName) }}" alt="" class="w-full h-full object-cover mix-blend-multiply opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out {% if not estaAberta %}blur-sm{% endif %}">
+                        {% else %}
+                            <img src="{{ asset('images/vagas_banner.png') }}" alt="" class="w-full h-full object-cover mix-blend-multiply opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out {% if not estaAberta %}blur-sm{% endif %}">
+                        {% endif %}
+                        
+                        <!-- Status Badge Moderno -->
+                        <div class="absolute top-6 right-6 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase shadow-sm backdrop-blur-md ring-1 ring-inset {% if estaAberta %}bg-white/90 text-primary ring-slate-900/10{% else %}bg-theme-gradient border-0 text-white/80 text-white ring-white/20{% endif %}">
+                            {% if estaAberta %}<span class="w-1.5 h-1.5 rounded-full bg-primary relative"><span class="absolute inset-0 bg-primary/50 animate-ping rounded-full"></span></span>{% endif %}
+                            {{ status }}
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 flex flex-col flex-1 relative bg-white">
+                        <!-- Divider Line -->
+                        <div class="absolute -top-px left-8 right-8 h-px {% if estaAberta %}bg-gradient-to-r from-primary via-secondary to-primary{% else %}bg-slate-200{% endif %}"></div>
+                        
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4 tracking-tight {% if estaAberta %}group-hover:text-primary{% endif %} transition-colors">{{ title }}</h3>
+                        <p class="text-sm text-slate-600 flex-1 leading-relaxed mb-8">{{ summary }}</p>
+                        
+                        <div>
+                            <a href="{{ path('app_oportunidade_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="block w-full text-center {% if estaAberta %}bg-primary text-white hover:bg-primary-dark shadow-md shadow-primary/20 hover:shadow-lg{% else %}bg-slate-100 text-slate-400 hover:bg-slate-200{% endif %} font-bold tracking-wide px-6 py-3.5 rounded-xl transition-all ring-1 ring-inset ring-slate-900/5">
+                                {{ estaAberta ? (app.request.locale == 'en' ? 'Access Notice' : 'Acessar Edital') : (app.request.locale == 'en' ? 'View Archived Notice' : 'Visualizar Edital Antigo') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                    <div class="bg-white rounded-[2rem] p-16 text-center border-2 border-dashed border-slate-200 shadow-sm relative overflow-hidden">
+                        <div class="absolute inset-0 bg-slate-50 opacity-50 mix-blend-multiply pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <span class="text-4xl">📂</span>
+                            <h3 class="text-2xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">
+                                {{ app.request.locale == 'en' ? 'No Active Notices' : 'Sem Editais Ativos' }}
+                            </h3>
+                            <p class="text-slate-500 max-w-sm mx-auto">
+                                {{ app.request.locale == 'en' ? 'We will post new positions for labs as soon as the technical board approves.' : 'Voltaremos a postar novas vagas para laboratórios assim que a comissão técnica autorizar.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+</section>
+{% endblock %}

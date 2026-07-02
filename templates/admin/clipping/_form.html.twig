@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    <div class="admin-card space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.veiculo) }}
+            {{ form_row(form.link) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.titlePt) }}
+            {{ form_row(form.titleEn) }}
+        </div>
+    </div>
+    
+    <div class="w-full text-right mt-6">
+        <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            Salvar
+        </button>
+    </div>
+{{ form_end(form) }}

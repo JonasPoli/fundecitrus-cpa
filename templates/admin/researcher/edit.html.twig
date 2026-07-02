@@ -1,0 +1,27 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-user-tie admin-page-title-icon" aria-hidden="true"></i>
+                Editar Pesquisador
+            </h1>
+            <p class="page-subtitle">Modifique as informações do pesquisador científico.</p>
+        </div>
+        <a href="{{ path('app_admin_researcher_index') }}" class="btn-secondary">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Voltar
+        </a>
+    </div>
+        
+    {{ include('admin/researcher/_form.html.twig') }}
+    
+    <form method="post" action="{{ path('app_admin_researcher_delete', {'id': researcher.id}) }}" onsubmit="return confirm('Tem certeza de que quer excluir este registro?');" class="text-right mt-6">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ researcher.id) }}">
+        <button type="submit" class="btn-danger">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            Excluir
+        </button>
+    </form>
+{% endblock %}

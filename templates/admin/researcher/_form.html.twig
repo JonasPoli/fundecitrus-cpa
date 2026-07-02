@@ -1,0 +1,30 @@
+{{ form_start(form) }}
+    <div class="admin-card space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.nome) }}
+            {{ form_row(form.lattes) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.areaPt) }}
+            {{ form_row(form.areaEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                {{ form_row(form.foto) }}
+                {% if researcher is defined and researcher.foto and researcher.foto.imageName %}
+                    <div class="mt-2">
+                        <span class="text-xs text-slate-500 block mb-1">Visualização da foto atual:</span>
+                        <img src="{{ asset('uploads/' ~ researcher.foto.imageName) }}" alt="Preview" class="w-32 h-32 object-cover rounded-full shadow border border-slate-200">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="w-full text-right mt-6">
+        <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            Salvar
+        </button>
+    </div>
+{{ form_end(form) }}

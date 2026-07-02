@@ -1,0 +1,52 @@
+{#
+  Include reutilizável para SortableJS em tabelas admin.
+
+  Parâmetros:
+    tbody_id    — id do elemento <tbody>
+    reorder_url — URL para o endpoint POST de reordenação
+#}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var tbody = document.getElementById('{{ tbody_id }}');
+    var REORDER_URL = '{{ reorder_url }}';
+
+    if (!tbody || typeof Sortable === 'undefined') {
+        console.warn('[sortable] tbody #{{ tbody_id }} not found or SortableJS not loaded');
+        return;
+    }
+
+    Sortable.create(tbody, {
+        handle: 'td:first-child, td:first-child *',
+        animation: 150,
+        ghostClass: 'opacity-40',
+        onEnd: saveOrder
+    });
+
+    function saveOrder() {
+        var rows = tbody.querySelectorAll('tr.sortable-row');
+        var ids = Array.from(rows).map(function(r) { return parseInt(r.dataset.id, 10); });
+
+        fetch(REORDER_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ ids: ids })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function() {
+            var flash = document.createElement('div');
+            flash.textContent = '✓ Ordem salva';
+            flash.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;background:#22c55e;color:#fff;padding:.5rem 1rem;border-radius:.5rem;font-size:.85rem;font-weight:600;z-index:9999;transition:opacity .5s;';
+            document.body.appendChild(flash);
+            setTimeout(function() {
+                flash.style.opacity = '0';
+                setTimeout(function() { flash.remove(); }, 500);
+            }, 1500);
+        })
+        .catch(function(err) { console.error('[sortable] reorder failed', err); });
+    }
+});
+</script>

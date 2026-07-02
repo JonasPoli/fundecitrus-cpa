@@ -1,0 +1,90 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-briefcase admin-page-title-icon" aria-hidden="true"></i>
+            Oportunidades de Vaga
+        </h1>
+        <p class="page-subtitle">Gerencie as vagas abertas para pesquisadores, bolsistas e pós-doutores.</p>
+    </div>
+    <div>
+        <a href="{{ path('app_admin_job_opportunity_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Imagem</th>
+                <th>Título (PT)</th>
+                <th>Status (PT)</th>
+                <th>Resumo (PT)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in job_opportunities %}
+                <tr>
+                    <td>
+                        {% if job.image and job.image.imageName %}
+                            <img src="{{ asset('uploads/' ~ job.image.imageName) }}" alt="{{ job.titlePt }}" class="h-10 w-auto rounded object-cover shadow-sm">
+                        {% else %}
+                            <span class="text-slate-400 text-xs">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="font-semibold">{{ job.titlePt }}</td>
+                    <td>
+                        {% if job.statusPt == 'Aberto' or job.statusPt == 'Aberta' or job.statusEn == 'Open' %}
+                            <span class="badge badge-success">{{ job.statusPt }}</span>
+                        {% else %}
+                            <span class="badge badge-neutral">{{ job.statusPt }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ job.summaryPt }}</td>
+                    <td>
+                        <a href="{{ path('app_admin_job_opportunity_edit', {'id': job.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Nenhuma vaga cadastrada.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            {% if job_opportunities is not empty %}
+                $('.admin-table').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/pt-BR.json',
+                    },
+                    order: [[1, 'asc']],
+                    pageLength: 10,
+                    lengthMenu: [[5, 10, 25, -1], [5, 10, 25, 'Todos']],
+                });
+            {% endif %}
+        });
+    </script>
+{% endblock %}

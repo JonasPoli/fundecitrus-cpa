@@ -1,0 +1,86 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-file-lines admin-page-title-icon" aria-hidden="true"></i>
+            Páginas Institucionais
+        </h1>
+        <p class="page-subtitle">Gerencie o conteúdo estático/institucional das abas do rodapé.</p>
+    </div>
+    <div>
+        <a href="{{ path('app_admin_page_content_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Título (PT)</th>
+                <th>Título (EN)</th>
+                <th>Slug (PT)</th>
+                <th>Slug (EN)</th>
+                <th>Ativa?</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for page in page_contents %}
+                <tr>
+                    <td class="font-semibold">{{ page.titlePt }}</td>
+                    <td>{{ page.titleEn }}</td>
+                    <td><code>{{ page.slugPt }}</code></td>
+                    <td><code>{{ page.slugEn }}</code></td>
+                    <td>
+                        {% if page.isActive %}
+                            <span class="badge badge-success">Sim</span>
+                        {% else %}
+                            <span class="badge badge-neutral">Não</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_admin_page_content_edit', {'id': page.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">Nenhuma página cadastrada.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            {% if page_contents is not empty %}
+                $('.admin-table').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/pt-BR.json',
+                    },
+                    order: [[0, 'asc']],
+                    pageLength: 10,
+                    lengthMenu: [[5, 10, 25, -1], [5, 10, 25, 'Todos']],
+                });
+            {% endif %}
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block body %}
+
+{# ── Page Header ───────────────────────────────────────────────────────────── #}
+<div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="text-sm text-slate-500 dark:text-slate-400">
+        Bem-vindo, <strong>{{ app.user.userIdentifier }}</strong> · {{ 'now'|date('d/m/Y') }}
+    </p>
+</div>
+
+{# ── Stat Cards ────────────────────────────────────────────────────────────── #}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+
+    {# Total de Usuários #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light"
+             aria-hidden="true">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">{{ stats.users_total }}</p>
+            <p class="stat-card-label">Usuários cadastrados</p>
+        </div>
+    </div>
+
+    {# Administradores #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400"
+             aria-hidden="true">
+            <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">{{ stats.users_admin }}</p>
+            <p class="stat-card-label">Administradores</p>
+        </div>
+    </div>
+
+    {# Slot para card customizado #}
+    <div class="stat-card opacity-40">
+        <div class="stat-card-icon bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
+             aria-hidden="true">
+            <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">—</p>
+            <p class="stat-card-label">Personalize aqui</p>
+        </div>
+    </div>
+
+    {# Slot para card customizado #}
+    <div class="stat-card opacity-40">
+        <div class="stat-card-icon bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400"
+             aria-hidden="true">
+            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">—</p>
+            <p class="stat-card-label">Personalize aqui</p>
+        </div>
+    </div>
+
+</div>
+
+{# ── Quick Actions ─────────────────────────────────────────────────────────── #}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    {# Ações Rápidas #}
+    <div class="admin-card lg:col-span-1">
+        <h2 class="admin-card-title">
+            <i class="fa-solid fa-bolt" aria-hidden="true" class="mr-1"></i>
+            Ações rápidas
+        </h2>
+        <nav aria-label="Ações rápidas" class="space-y-2">
+            <a href="{{ path('app_admin_user_new') }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-slate-900/5 dark:hover:bg-white/5 transition-colors">
+                <i class="fa-solid fa-user-plus" aria-hidden="true" class="text-primary dark:text-primary-light w-4"></i>
+                Novo usuário
+            </a>
+            <a href="{{ path('app_admin_user_index') }}"
+               class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-slate-900/5 dark:hover:bg-white/5 transition-colors">
+                <i class="fa-solid fa-users" aria-hidden="true" class="text-primary dark:text-primary-light w-4"></i>
+                Ver todos os usuários
+            </a>
+        </nav>
+    </div>
+
+    {# Área de conteúdo principal #}
+    <div class="admin-card lg:col-span-2">
+        <h2 class="admin-card-title">
+            <i class="fa-solid fa-layer-group" aria-hidden="true" class="mr-1"></i>
+            Starter Kit WAB
+        </h2>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
+            Este é o painel de administração base da WAB Ninjas. Personalize os cards de estatísticas e as ações rápidas de acordo com o projeto.
+        </p>
+        <ul class="text-sm text-slate-500 dark:text-slate-400 space-y-1 list-none">
+            <li class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
+                <span>Symfony 7.4 + PHP 8.2</span>
+            </li>
+            <li class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
+                <span>Autenticação com hash de senha seguro</span>
+            </li>
+            <li class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
+                <span>Dark / Light mode com preferência do sistema</span>
+            </li>
+            <li class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
+                <span>Ícones acessíveis (aria-hidden + sr-only)</span>
+            </li>
+            <li class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
+                <span>Stimulus + Turbo (Hotwire)</span>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

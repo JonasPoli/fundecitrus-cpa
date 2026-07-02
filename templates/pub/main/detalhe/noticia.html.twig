@@ -1,0 +1,236 @@
+{% extends 'pub/base.html.twig' %}
+
+{% set title = app.request.locale == 'en' ? item.titleEn : item.titlePt %}
+{% set summary = app.request.locale == 'en' ? item.summaryEn : item.summaryPt %}
+{% set content = app.request.locale == 'en' ? item.contentEn : item.contentPt %}
+{% set slug = app.request.locale == 'en' ? item.slugEn : item.slugPt %}
+{% set date = app.request.locale == 'en' ? item.date|date('M d, Y') : item.date|date('d/m/Y') %}
+{% set newsUrl = absolute_url(path('app_noticia_detalhe', {'slug': slug, '_locale': app.request.locale})) %}
+{% set seoTitle = item.seoTitle ?: title %}
+{% set seoDesc = item.seoDescription ?: summary %}
+
+{% block title %}{{ seoTitle }} | CPA Citros{% endblock %}
+
+{% block stylesheets %}
+    {% if item.canonicalUrl %}
+        <link rel="canonical" href="{{ item.canonicalUrl }}">
+    {% else %}
+        <link rel="canonical" href="{{ newsUrl }}">
+    {% endif %}
+
+    {% if item.isIsNoIndex %}
+        <meta name="robots" content="noindex, nofollow">
+    {% else %}
+        <meta name="robots" content="index, follow, max-image-preview:large">
+    {% endif %}
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ seoTitle }}">
+    <meta property="og:description" content="{{ seoDesc }}">
+    <meta property="og:url" content="{{ newsUrl }}">
+    {% if item.image and item.image.imageName %}
+        <meta property="og:image" content="{{ absolute_url(asset('uploads/' ~ item.image.imageName)) }}">
+    {% endif %}
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seoTitle }}">
+    <meta name="twitter:description" content="{{ seoDesc }}">
+    {% if item.image and item.image.imageName %}
+        <meta name="twitter:image" content="{{ absolute_url(asset('uploads/' ~ item.image.imageName)) }}">
+    {% endif %}
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "{{ title|e('js') }}",
+      "datePublished": "{{ item.date|date('c') }}",
+      "description": "{{ summary|e('js') }}",
+      "author": {
+        "@type": "Organization",
+        "name": "CPA Citros"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "CPA Citros",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ absolute_url(asset('images/logo.png')) }}"
+        }
+      }
+    }
+    </script>
+{% endblock %}
+
+{% block body %}
+<div class="bg-slate-50 py-12">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        
+        <!-- Breadcrumbs microdata -->
+        <nav class="mb-10 text-xs text-slate-500 font-medium" aria-label="Breadcrumb">
+            <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a itemprop="item" href="{{ path('app_home', {_locale: app.request.locale}) }}" class="hover:text-primary">
+                        <span itemprop="name">Home</span>
+                    </a>
+                    <meta itemprop="position" content="1">
+                </li>
+                <li class="text-slate-300">/</li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a itemprop="item" href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="hover:text-primary">
+                        <span itemprop="name">{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }}</span>
+                    </a>
+                    <meta itemprop="position" content="2">
+                </li>
+                <li class="text-slate-300">/</li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <span itemprop="name" class="text-slate-400 truncate max-w-xs block">{{ title }}</span>
+                    <meta itemprop="position" content="3">
+                </li>
+            </ol>
+        </nav>
+
+        <div class="grid lg:grid-cols-3 gap-12 items-start">
+            
+            <!-- Main Content Column -->
+            <article class="lg:col-span-2 bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-slate-100" itemprop="articleBody">
+                <header class="mb-8">
+                    <div class="flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+                        <span class="inline-flex items-center rounded-md bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                            {{ app.request.locale == 'en' ? 'Press' : 'Imprensa' }}
+                        </span>
+                        <time datetime="{{ item.date|date('c') }}">{{ date }}</time>
+                    </div>
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 leading-tight">
+                        {{ title }}
+                    </h1>
+                    <p class="text-lg text-slate-500 font-light leading-relaxed">
+                        {{ summary }}
+                    </p>
+                </header>
+
+                <!-- Social Share Header -->
+                <div class="flex flex-wrap items-center gap-3 border-t border-b border-slate-100 py-4 mb-8">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">
+                        {{ app.request.locale == 'en' ? 'Share' : 'Compartilhar' }}
+                    </span>
+                    <a href="mailto:?subject={{ title|url_encode }}&body={{ newsUrl|url_encode }}" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-solid fa-envelope text-xs"></i>
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ newsUrl|url_encode }}" target="_blank" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-brands fa-facebook-f text-xs"></i>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?text={{ title|url_encode }}&url={{ newsUrl|url_encode }}" target="_blank" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-brands fa-x-twitter text-xs"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ newsUrl|url_encode }}&title={{ title|url_encode }}" target="_blank" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-brands fa-linkedin-in text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Video / Image Media -->
+                {% if item.youtubeVideoCode %}
+                    <div class="aspect-video w-full rounded-2xl overflow-hidden mb-12 ring-1 ring-slate-900/10 shadow-md">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/{{ item.youtubeVideoCode }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                {% elseif item.image and item.image.imageName %}
+                    <div class="aspect-video w-full rounded-2xl overflow-hidden mb-12 ring-1 ring-slate-900/10">
+                        <img src="{{ asset('uploads/' ~ item.image.imageName) }}" alt="{{ item.imageAlt ?: title }}" class="w-full h-full object-cover">
+                    </div>
+                {% endif %}
+
+                <!-- Content Body -->
+                <div class="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary hover:prose-a:text-primary-dark">
+                    {{ content|raw }}
+                </div>
+
+                <!-- Bottom share -->
+                <div class="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-8 mt-12">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">
+                        {{ app.request.locale == 'en' ? 'Share this article' : 'Compartilhar notícia' }}
+                    </span>
+                    <a href="mailto:?subject={{ title|url_encode }}&body={{ newsUrl|url_encode }}" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-solid fa-envelope text-xs"></i>
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ newsUrl|url_encode }}" target="_blank" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-brands fa-facebook-f text-xs"></i>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?text={{ title|url_encode }}&url={{ newsUrl|url_encode }}" target="_blank" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-brands fa-x-twitter text-xs"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ newsUrl|url_encode }}&title={{ title|url_encode }}" target="_blank" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-primary hover:text-white flex items-center justify-center text-slate-600 transition-colors border border-slate-200">
+                        <i class="fa-brands fa-linkedin-in text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Post Navigation -->
+                {% if previousNews or nextNews %}
+                    <div class="grid grid-cols-2 gap-4 border-t border-slate-100 mt-12 pt-8 text-sm">
+                        <div>
+                            {% if previousNews %}
+                                {% set prevTitle = app.request.locale == 'en' ? previousNews.titleEn : previousNews.titlePt %}
+                                {% set prevSlug = app.request.locale == 'en' ? previousNews.slugEn : previousNews.slugPt %}
+                                <a href="{{ path('app_noticia_detalhe', {slug: prevSlug, _locale: app.request.locale}) }}" class="group block text-slate-500 hover:text-primary">
+                                    <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">&larr; {{ app.request.locale == 'en' ? 'Previous' : 'Anterior' }}</span>
+                                    <span class="font-bold group-hover:underline line-clamp-1">{{ prevTitle }}</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="text-right">
+                            {% if nextNews %}
+                                {% set nextTitle = app.request.locale == 'en' ? nextNews.titleEn : nextNews.titlePt %}
+                                {% set nextSlug = app.request.locale == 'en' ? nextNews.slugEn : nextNews.slugPt %}
+                                <a href="{{ path('app_noticia_detalhe', {slug: nextSlug, _locale: app.request.locale}) }}" class="group block text-slate-500 hover:text-primary">
+                                    <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{{ app.request.locale == 'en' ? 'Next' : 'Próxima' }} &rarr;</span>
+                                    <span class="font-bold group-hover:underline line-clamp-1">{{ nextTitle }}</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+            </article>
+
+            <!-- Sidebar Widgets Column -->
+            <aside class="space-y-8" aria-label="Sidebar">
+                
+                <!-- Search Widget -->
+                <section class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">
+                        {{ app.request.locale == 'en' ? 'Search' : 'Buscar' }}
+                    </h3>
+                    <form method="get" action="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="flex gap-2">
+                        <input type="text" name="search" placeholder="{{ app.request.locale == 'en' ? 'Search terms...' : 'Palavra-chave...' }}" class="flex-1 px-4 py-2 border border-slate-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                        <button type="submit" class="bg-primary hover:bg-primary-dark px-4 py-2 rounded-xl text-white font-semibold transition-colors text-sm">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Recent Posts Widget -->
+                {% if recentNews is not empty %}
+                    <section class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">
+                            {{ app.request.locale == 'en' ? 'Recent Posts' : 'Mais Recentes' }}
+                        </h3>
+                        <ul class="space-y-4">
+                            {% for item in recentNews %}
+                                {% set rTitle = app.request.locale == 'en' ? item.titleEn : item.titlePt %}
+                                {% set rSlug = app.request.locale == 'en' ? item.slugEn : item.slugPt %}
+                                <li class="group">
+                                    <a href="{{ path('app_noticia_detalhe', {slug: rSlug, _locale: app.request.locale}) }}" class="block">
+                                        <h4 class="text-sm font-bold text-slate-800 group-hover:text-primary transition-colors line-clamp-2 leading-snug">{{ rTitle }}</h4>
+                                        <time class="text-xs text-slate-400 font-medium block mt-1" datetime="{{ item.date|date('c') }}">{{ item.date|date('d/m/Y') }}</time>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endif %}
+
+            </aside>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

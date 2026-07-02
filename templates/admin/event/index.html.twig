@@ -1,0 +1,84 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-calendar admin-page-title-icon" aria-hidden="true"></i>
+            Eventos
+        </h1>
+        <p class="page-subtitle">Gerencie os eventos futuros e realizados do CPA Citros.</p>
+    </div>
+    <div>
+        <a href="{{ path('app_admin_event_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Imagem</th>
+                <th>Título (PT)</th>
+                <th>Título (EN)</th>
+                <th>Data / Período (PT)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>
+                        {% if event.image and event.image.imageName %}
+                            <img src="{{ asset('uploads/' ~ event.image.imageName) }}" alt="{{ event.titlePt }}" class="h-10 w-auto rounded object-cover shadow-sm">
+                        {% else %}
+                            <span class="text-slate-400 text-xs">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="font-semibold">{{ event.titlePt }}</td>
+                    <td>{{ event.titleEn }}</td>
+                    <td>{{ event.datePt }}</td>
+                    <td>
+                        <a href="{{ path('app_admin_event_edit', {'id': event.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Nenhum evento cadastrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            {% if events is not empty %}
+                $('.admin-table').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/pt-BR.json',
+                    },
+                    order: [[1, 'asc']],
+                    pageLength: 10,
+                    lengthMenu: [[5, 10, 25, -1], [5, 10, 25, 'Todos']],
+                });
+            {% endif %}
+        });
+    </script>
+{% endblock %}

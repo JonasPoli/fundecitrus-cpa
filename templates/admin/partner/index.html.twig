@@ -1,0 +1,86 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-handshake admin-page-title-icon" aria-hidden="true"></i>
+            Parceiros e Apoiadores
+        </h1>
+        <p class="page-subtitle">Gerencie as logomarcas dos parceiros nacionais e internacionais.</p>
+    </div>
+    <div>
+        <a href="{{ path('app_admin_partner_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Logo</th>
+                <th>Nome</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="partner-sortable">
+            {% for partner in partners %}
+                <tr class="sortable-row" data-id="{{ partner.id }}">
+                    <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td>
+                        {% if partner.logo and partner.logo.imageName %}
+                            <img src="{{ asset('uploads/' ~ partner.logo.imageName) }}" alt="{{ partner.name }}" class="h-10 w-auto rounded object-cover shadow-sm bg-white border border-slate-200 p-1">
+                        {% else %}
+                            <span class="text-slate-400 text-xs">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="font-semibold">{{ partner.name }}</td>
+                    <td>
+                        <a href="{{ path('app_admin_partner_edit', {'id': partner.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">Nenhum parceiro cadastrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            {% if partners is not empty %}
+                $('.admin-table').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/pt-BR.json',
+                    },
+                    ordering: false,
+                    pageLength: 10,
+                    lengthMenu: [[5, 10, 25, -1], [5, 10, 25, 'Todos']],
+                });
+            {% endif %}
+        });
+    </script>
+    {{ include('admin/_sortable_script.html.twig', {
+        tbody_id: 'partner-sortable',
+        reorder_url: path('app_admin_reorder', { entityName: 'Partner' })
+    }) }}
+{% endblock %}

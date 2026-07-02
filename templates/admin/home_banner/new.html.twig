@@ -1,0 +1,19 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-images admin-page-title-icon" aria-hidden="true"></i>
+                Adicionar Banner
+            </h1>
+            <p class="page-subtitle">Cadastre um novo banner para a página inicial.</p>
+        </div>
+        <a href="{{ path('app_admin_home_banner_index') }}" class="btn-secondary">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Voltar
+        </a>
+    </div>
+        
+    {{ include('admin/home_banner/_form.html.twig') }}
+{% endblock %}

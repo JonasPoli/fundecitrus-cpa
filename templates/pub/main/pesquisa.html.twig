@@ -1,0 +1,183 @@
+{% extends 'pub/base.html.twig' %}
+{% block title %}{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }} | CPA Citros{% endblock %}
+{% block body %}
+<section class="bg-theme-gradient text-white border-0 pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
+    <img src="{{ asset('images/hlb.jpg') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary rounded-full blur-[128px] opacity-20 pointer-events-none z-0"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
+                    {{ app.request.locale == 'en' ? 'Advanced Scientific Research' : 'Pesquisa Científica Avançada' }}
+                </span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                {{ app.request.locale == 'en' ? 'Frontal Combat Against HLB' : 'Combate Frontal ao HLB' }}
+            </h1>
+            <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light mb-12">
+                {{ app.request.locale == 'en' ? 'Greening destabilized continents. Our research fields operate by dissecting the problem into molecular, biological and defensive tactics.' : 'O Greening desestabilizou continentes. Nossas linhas de pesquisa atuam fatiando o problema em táticas moleculares, biológicas e defensivas.' }}
+            </p>
+            
+            <!-- Cards de Pilares (Glass) -->
+            <div class="grid sm:grid-cols-3 gap-6">
+                <!-- Pilar 1 -->
+                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-white mb-4 ring-1 ring-white/20 font-bold">1</div>
+                    <h4 class="font-bold text-white text-lg mb-2">
+                        {{ app.request.locale == 'en' ? 'Management' : 'Manejo' }}
+                    </h4>
+                    <p class="text-sm text-slate-400 leading-relaxed text-balance">
+                        {{ app.request.locale == 'en' ? 'Bacterial containment and psyllid vector control.' : 'Contenção da bactéria e neutralização do psilídeo.' }}
+                    </p>
+                </div>
+                <!-- Pilar 2 -->
+                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white mb-4 ring-1 ring-white/20 font-bold">2</div>
+                    <h4 class="font-bold text-white text-lg mb-2">
+                        {{ app.request.locale == 'en' ? 'Genomic Interaction' : 'Interação Genômica' }}
+                    </h4>
+                    <p class="text-sm text-slate-400 leading-relaxed text-balance">
+                        {{ app.request.locale == 'en' ? 'Molecular study of the vector-citrus relationship.' : 'Estudo molecular da relação vetor-árvore.' }}
+                    </p>
+                </div>
+                <!-- Pilar 3 -->
+                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-slate-900 mb-4 ring-1 ring-white/20 font-bold">3</div>
+                    <h4 class="font-bold text-white text-lg mb-2">
+                        {{ app.request.locale == 'en' ? 'Mitigation' : 'Mitigação' }}
+                    </h4>
+                    <p class="text-sm text-slate-400 leading-relaxed text-balance">
+                        {{ app.request.locale == 'en' ? 'Methods to maintain high yield in diseased trees.' : 'Tratamentos para manter alta produção no pomar doente.' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projetos Table Layout Premium -->
+<section class="py-32 bg-slate-50 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="sm:flex sm:items-center sm:justify-between mb-12">
+            <div>
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+                    {{ app.request.locale == 'en' ? 'Active Research Projects' : 'Projetos Ativos em Execução' }}
+                </h2>
+                <p class="mt-2 text-slate-600">
+                    {{ app.request.locale == 'en' ? 'Catalogue of scientific research subfields led by coordinators.' : 'Catálogo das sublinhas de pesquisa lideradas pelos docentes.' }}
+                </p>
+            </div>
+            
+            <!-- Barra de Busca -->
+            <div class="mt-4 sm:mt-0">
+                <form method="get" action="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="flex gap-2">
+                    <input type="text" name="search" value="{{ search }}" placeholder="{{ app.request.locale == 'en' ? 'Search projects...' : 'Buscar projetos...' }}" class="px-4 py-2 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm w-64 bg-white">
+                    <button type="submit" class="bg-primary hover:bg-primary-dark px-4 py-2 rounded-xl text-white text-sm font-semibold transition-colors">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    {% if search %}
+                        <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded-xl text-slate-700 text-sm font-semibold transition-colors flex items-center">
+                            <i class="fa-solid fa-xmark"></i>
+                        </a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        
+        <div class="-mx-4 flex justify-center mt-8 overflow-hidden rounded-2xl shadow ring-1 ring-slate-900/5 sm:-mx-6 md:mx-0 bg-white">
+            <table class="min-w-full divide-y divide-slate-300">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th scope="col" class="py-4 pl-4 pr-3 text-left text-xs font-bold uppercase tracking-widest text-slate-500 sm:pl-6">
+                            {{ app.request.locale == 'en' ? 'Module / Pillar' : 'Módulo / Pilar' }}
+                        </th>
+                        <th scope="col" class="px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
+                            {{ app.request.locale == 'en' ? 'Project Name and Goal' : 'Nome do Projeto e Objetivo' }}
+                        </th>
+                        <th scope="col" class="px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
+                            {{ app.request.locale == 'en' ? 'Coordinating' : 'Coordenação' }}
+                        </th>
+                        <th scope="col" class="relative py-4 pl-3 pr-4 sm:pr-6">
+                            <span class="sr-only">Ações</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                    {% for projeto in projetos %}
+                    {% set nome = app.request.locale == 'en' ? projeto.nomeEn : projeto.nomePt %}
+                    {% set objetivo = app.request.locale == 'en' ? projeto.objetivoEn : projeto.objetivoPt %}
+                    {% set modulo = app.request.locale == 'en' ? projeto.moduloEn : projeto.moduloPt %}
+                    {% set slug = app.request.locale == 'en' ? projeto.slugEn : projeto.slugPt %}
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-6">
+                            <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">{{ modulo }}</span>
+                        </td>
+                        <td class="px-3 py-5 text-sm">
+                            <div class="font-bold text-slate-900">{{ nome }}</div>
+                            <div class="text-slate-500 mt-1 max-w-sm">{{ objetivo }}</div>
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-5 text-sm">
+                            <div class="flex items-center gap-3">
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary">
+                                    <span class="text-xs font-medium leading-none text-white">{{ projeto.pesquisador ? projeto.pesquisador.nome|slice(3, 1) : 'C' }}</span>
+                                </span>
+                                <span class="font-medium text-slate-900">{{ projeto.pesquisador ? projeto.pesquisador.nome : 'CPA' }}</span>
+                            </div>
+                        </td>
+                        <td class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                            <a href="{{ path('app_projeto_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="text-primary hover:text-primary-dark font-semibold">
+                                {{ app.request.locale == 'en' ? 'Details' : 'Detalhes' }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-slate-500 py-12">
+                            {{ app.request.locale == 'en' ? 'No projects found.' : 'Nenhum projeto científico encontrado.' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Equipe de Pesquisadores Avatar Grid -->
+<section class="py-32 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-20">
+            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+                {{ app.request.locale == 'en' ? 'Research Faculty' : 'Equipe de Pesquisadores' }}
+            </h2>
+            <p class="mt-4 text-slate-600">
+                {{ app.request.locale == 'en' ? 'The scientific minds guiding greening containment and agricultural sustainability globally.' : 'A mente científica guiando a sustentabilidade e contenção da patologia nos arredores de São Paulo e no mundo.' }}
+            </p>
+        </div>
+        
+        <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {% for pessoa in pesquisadores %}
+                {% set area = app.request.locale == 'en' ? pessoa.areaEn : pessoa.areaPt %}
+                <li class="group">
+                    <div class="aspect-square w-full rounded-3xl overflow-hidden bg-slate-100 ring-1 ring-slate-900/5 mb-6 relative">
+                        {% if pessoa.foto and pessoa.foto.imageName %}
+                            <img src="{{ asset('uploads/' ~ pessoa.foto.imageName) }}" alt="{{ pessoa.nome }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-105">
+                        {% else %}
+                            <img src="{{ asset('images/foto_pesquisador.png') }}" alt="{{ pessoa.nome }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-105">
+                        {% endif %}
+                        <div class="absolute inset-0 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] rounded-3xl pointer-events-none"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold leading-7 text-slate-900 tracking-tight">{{ pessoa.nome }}</h3>
+                        <p class="text-sm font-semibold leading-6 text-primary">{{ area }}</p>
+                        {% if pessoa.lattes %}
+                            <a href="{{ pessoa.lattes }}" target="_blank" class="mt-2 text-xs font-bold text-slate-400 hover:text-secondary uppercase tracking-widest transition-colors inline-block">ID Lattes &rarr;</a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endblock %}

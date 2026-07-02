@@ -1,0 +1,44 @@
+{{ form_start(form) }}
+    <div class="admin-card space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.titlePt) }}
+            {{ form_row(form.titleEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.statusPt) }}
+            {{ form_row(form.statusEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.summaryPt) }}
+            {{ form_row(form.summaryEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.contentPt) }}
+            {{ form_row(form.contentEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.slugPt) }}
+            {{ form_row(form.slugEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                {{ form_row(form.image) }}
+                {% if job_opportunity is defined and job_opportunity.image and job_opportunity.image.imageName %}
+                    <div class="mt-2">
+                        <span class="text-xs text-slate-500 block mb-1">Visualização do banner atual:</span>
+                        <img src="{{ asset('uploads/' ~ job_opportunity.image.imageName) }}" alt="Preview" class="w-32 h-20 object-cover rounded shadow border border-slate-200">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="w-full text-right mt-6">
+        <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            Salvar
+        </button>
+    </div>
+{{ form_end(form) }}
+
+{{ include('admin/_quill_script.html.twig') }}
