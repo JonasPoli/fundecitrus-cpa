@@ -1,23 +1,44 @@
 {% extends 'pub/base.html.twig' %}
 {% block title %}{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ app.request.locale == 'en' ? 'Official news feed, press releases, video and podcast gallery of CPA Citros.' : 'Feed de notícias, comunicados à imprensa e acervo de vídeos e podcasts do CPA Citros.' }}{% endblock %}
 {% block body %}
 <section class="bg-theme-gradient text-white border-0 text-white pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
     <img src="{{ asset('images/comunicacao_studio.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary rounded-full blur-[128px] opacity-20 pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
-                    {{ app.request.locale == 'en' ? 'Official Media' : 'Mídia Oficial' }}
-                </span>
-            </div>
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
-                {{ app.request.locale == 'en' ? 'Communication and Media' : 'Comunicação e Mídia' }}
-            </h1>
-            <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
-                {{ app.request.locale == 'en' ? 'Stay informed about laboratory developments, global conference attendance and official press releases.' : 'Mantenha-se informado sobre os avanços do laboratório, presença em simpósios mundiais e notas oficiais lançadas à imprensa.' }}
-            </p>
+            {% if search is not empty %}
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 backdrop-blur-md mb-8">
+                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                    <span class="text-xs font-bold tracking-widest text-secondary uppercase">
+                        {{ app.request.locale == 'en' ? 'Search Filter Active' : 'Filtro de Busca Ativo' }}
+                    </span>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                    {{ app.request.locale == 'en' ? 'Search Results' : 'Resultados da Busca' }}
+                </h1>
+                <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light mb-8">
+                    {{ app.request.locale == 'en' ? 'Showing news articles containing: ' : 'Mostrando notícias contendo o termo: ' }}
+                    <span class="text-white font-bold">"{{ search }}"</span>.
+                </p>
+                <a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-white/15 hover:bg-white/25 text-white text-sm font-bold rounded-xl transition-all border border-white/10">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    {{ app.request.locale == 'en' ? 'Clear filter and view all' : 'Limpar filtro e ver todas' }}
+                </a>
+            {% else %}
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                    <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
+                        {{ app.request.locale == 'en' ? 'Official Media' : 'Mídia Oficial' }}
+                    </span>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                    {{ app.request.locale == 'en' ? 'Communication and Media' : 'Comunicação e Mídia' }}
+                </h1>
+                <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
+                    {{ app.request.locale == 'en' ? 'Stay informed about laboratory developments, global conference attendance and official press releases.' : 'Mantenha-se informado sobre os avanços do laboratório, presença em simpósios mundiais e notas oficiais lançadas à imprensa.' }}
+                </p>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -48,7 +69,7 @@
                 {% set title = app.request.locale == 'en' ? item.titleEn : item.titlePt %}
                 {% set summary = app.request.locale == 'en' ? item.summaryEn : item.summaryPt %}
                 {% set slug = app.request.locale == 'en' ? item.slugEn : item.slugPt %}
-                <article class="flex flex-col items-start justify-between bg-white rounded-3xl p-6 ring-1 ring-slate-900/5 shadow-sm hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500 group overflow-hidden relative">
+                <a href="{{ path('app_noticia_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="flex flex-col items-start justify-between bg-white rounded-3xl p-6 ring-1 ring-slate-900/5 shadow-sm hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500 group overflow-hidden relative">
                     <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-slate-100 ring-1 ring-inset ring-slate-900/10">
                         {% if item.image and item.image.imageName %}
                             <img src="{{ asset('uploads/' ~ item.image.imageName) }}" alt="{{ title }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out">
@@ -58,16 +79,13 @@
                     </div>
                     <div class="flex items-center gap-x-4 text-xs mb-4">
                         <time datetime="{{ item.date|date('Y-m-d') }}" class="text-slate-500 font-medium">{{ item.date|date('d/m/Y') }}</time>
-                        <span class="relative z-10 rounded-full bg-slate-100 px-3 py-1 font-semibold text-slate-600 hover:bg-slate-200">
+                        <span class="rounded-full bg-slate-100 px-3 py-1 font-semibold text-slate-600 hover:bg-slate-200">
                             {{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }}
                         </span>
                     </div>
-                    <div class="group relative flex-1">
+                    <div class="flex-1">
                         <h3 class="mt-3 text-xl font-bold leading-7 text-slate-900 group-hover:text-primary transition-colors">
-                            <a href="{{ path('app_noticia_detalhe', {slug: slug, _locale: app.request.locale}) }}">
-                                <span class="absolute inset-0"></span>
-                                {{ title }}
-                            </a>
+                            {{ title }}
                         </h3>
                         <p class="mt-4 text-sm leading-relaxed text-slate-600">{{ summary }}</p>
                     </div>
@@ -76,7 +94,7 @@
                             {{ app.request.locale == 'en' ? 'Read full article' : 'Ler artigo completo' }} &rarr;
                         </div>
                     </div>
-                </article>
+                </a>
             {% else %}
                 <div class="col-span-3 text-center text-slate-500 py-12">
                     {{ app.request.locale == 'en' ? 'No news found.' : 'Nenhuma notícia cadastrada.' }}
@@ -99,6 +117,7 @@
                 <div class="divide-y divide-slate-100 border-t border-slate-100">
                     {% for item in midia %}
                         {% set title = app.request.locale == 'en' ? item.titleEn : item.titlePt %}
+                        {% set summary = app.request.locale == 'en' ? item.summaryEn : item.summaryPt %}
                         <a href="{{ item.link }}" target="_blank" class="py-8 group flex items-start gap-6 cursor-pointer">
                             <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:bg-primary/10 transition-all space-x-2 ring-1 ring-slate-200 group-hover:ring-primary/20 text-slate-600">
                                 <i class="fa-solid fa-newspaper text-lg"></i>
@@ -106,6 +125,9 @@
                             <div>
                                 <h4 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-2">{{ item.veiculo }}</h4>
                                 <h3 class="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors leading-tight">{{ title }}</h3>
+                                {% if summary is not empty %}
+                                    <p class="mt-2 text-sm text-slate-600 leading-relaxed">{{ summary }}</p>
+                                {% endif %}
                                 <p class="mt-4 text-sm font-bold text-secondary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                                     {{ app.request.locale == 'en' ? 'Access Article' : 'Acessar Matéria' }}
                                     <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
@@ -125,25 +147,54 @@
                 <h2 class="text-3xl font-bold text-slate-900 mb-10 tracking-tight">
                     {{ app.request.locale == 'en' ? 'Podcasts & Multimedia' : 'Podcasts & Multimídia' }}
                 </h2>
-                <div class="relative bg-theme-gradient text-white border-0 rounded-[2.5rem] p-12 text-center text-white aspect-[4/3] flex flex-col items-center justify-center shadow-2xl ring-1 ring-slate-900/10 overflow-hidden group">
-                    <img src="{{ asset('images/comunicacao_studio.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
-                    
-                    <div class="relative z-10">
-                        <button class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all transform group-hover:scale-110 mb-8 border border-white/20 shadow-xl group-hover:bg-primary hover:border-primary-light">
-                            <i class="fa-solid fa-play text-2xl ml-1"></i>
-                        </button>
-                        <h3 class="text-2xl font-bold mb-3">
-                            {{ app.request.locale == 'en' ? 'Interview Gallery' : 'Galeria de Entrevistas' }}
-                        </h3>
-                        <p class="text-slate-300">
-                            {{ app.request.locale == 'en' ? 'Connecting the center to society.' : 'Conectando o centro à sociedade.' }}
-                        </p>
-                        <div class="mt-8 inline-flex px-4 py-1.5 rounded-full bg-white/10 text-xs font-bold uppercase tracking-widest border border-white/5">
-                            {{ app.request.locale == 'en' ? 'Coming Soon' : 'Em Breve' }}
+                {% if medias is empty %}
+                    <div class="relative bg-theme-gradient text-white border-0 rounded-[2.5rem] p-12 text-center text-white aspect-[4/3] flex flex-col items-center justify-center shadow-2xl ring-1 ring-slate-900/10 overflow-hidden group">
+                        <img src="{{ asset('images/comunicacao_studio.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                        
+                        <div class="relative z-10">
+                            <button class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all transform group-hover:scale-110 mb-8 border border-white/20 shadow-xl group-hover:bg-primary hover:border-primary-light">
+                                <i class="fa-solid fa-play text-2xl ml-1"></i>
+                            </button>
+                            <h3 class="text-2xl font-bold mb-3">
+                                {{ app.request.locale == 'en' ? 'Interview Gallery' : 'Galeria de Entrevistas' }}
+                            </h3>
+                            <p class="text-slate-300">
+                                {{ app.request.locale == 'en' ? 'Connecting the center to society.' : 'Conectando o centro à sociedade.' }}
+                            </p>
+                            <div class="mt-8 inline-flex px-4 py-1.5 rounded-full bg-white/10 text-xs font-bold uppercase tracking-widest border border-white/5">
+                                {{ app.request.locale == 'en' ? 'Coming Soon' : 'Em Breve' }}
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="space-y-8">
+                        {% for item in medias %}
+                            <div class="bg-slate-50 border border-slate-200/60 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all">
+                                <div class="relative w-full aspect-video rounded-2xl overflow-hidden mb-4 shadow-inner">
+                                    <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/{{ item.youtubeId }}" title="{{ item.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                </div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    {% if item.type == 'video' %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                                            <i class="fa-solid fa-video"></i>
+                                            Vídeo
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
+                                            <i class="fa-solid fa-microphone"></i>
+                                            Podcast
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-900 mb-1 leading-snug">{{ item.title }}</h3>
+                                {% if item.description is not empty %}
+                                    <p class="text-sm text-slate-600 leading-relaxed">{{ item.description }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             
         </div>

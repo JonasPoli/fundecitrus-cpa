@@ -1,0 +1,19 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-share-nodes admin-page-title-icon" aria-hidden="true"></i>
+                Adicionar Rede Social
+            </h1>
+            <p class="page-subtitle">Cadastre uma nova rede social para exibir no rodapé.</p>
+        </div>
+        <a href="{{ path('app_admin_social_network_index') }}" class="btn-secondary">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Voltar
+        </a>
+    </div>
+
+    {{ include('admin/social_network/_form.html.twig') }}
+{% endblock %}

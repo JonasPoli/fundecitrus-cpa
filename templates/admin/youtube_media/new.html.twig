@@ -1,0 +1,17 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-play admin-page-title-icon" aria-hidden="true"></i>
+            Cadastrar Nova Mídia
+        </h1>
+        <p class="page-subtitle">Adicione um novo vídeo ou podcast do YouTube.</p>
+    </div>
+</div>
+
+{{ include('admin/youtube_media/_form.html.twig') }}
+
+{% endblock %}

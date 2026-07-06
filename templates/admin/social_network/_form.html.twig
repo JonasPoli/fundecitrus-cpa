@@ -1,0 +1,40 @@
+{{ form_start(form) }}
+<div class="admin-card space-y-6">
+    <div class="grid md:grid-cols-2 gap-6">
+        {{ form_row(form.name) }}
+        <div class="relative">
+            {{ form_label(form.iconClass) }}
+            <div class="flex items-center gap-3 mt-1">
+                <div id="icon-preview-display" class="w-12 h-12 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 text-xl flex-shrink-0">
+                    <i class="{{ social_network.iconClass ?: 'fa-solid fa-link' }}"></i>
+                </div>
+                <div class="flex-grow">
+                    {{ form_widget(form.iconClass, { 'id': 'icon-input-field' }) }}
+                </div>
+                <button type="button" onclick="openIconPicker('icon-input-field', 'icon-preview-display')" class="btn-secondary h-[42px] flex items-center gap-2 text-sm px-4">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Escolher
+                </button>
+            </div>
+            {{ form_errors(form.iconClass) }}
+        </div>
+    </div>
+
+    {{ form_row(form.url) }}
+
+    <div>
+        {{ form_row(form.isActive) }}
+    </div>
+</div>
+
+<div class="flex items-center justify-end gap-3 mt-6">
+    <a href="{{ path('app_admin_social_network_index') }}" class="btn-secondary">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Voltar
+    </a>
+    <button class="btn-primary" type="submit">
+        <i class="fa-solid fa-check" aria-hidden="true"></i>
+        Salvar
+    </button>
+</div>
+{{ form_end(form) }}

@@ -2,27 +2,32 @@
 
 namespace App\Twig;
 
+use App\Repository\SocialNetworkRepository;
+use App\Repository\PageContentRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
-/**
- * Application-wide Twig helpers for admin and public templates.
- */
 class AppExtension extends AbstractExtension
 {
     private RequestStack $requestStack;
+    private SocialNetworkRepository $socialNetworkRepo;
+    private PageContentRepository $pageContentRepository;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, SocialNetworkRepository $socialNetworkRepo, PageContentRepository $pageContentRepository)
     {
         $this->requestStack = $requestStack;
+        $this->socialNetworkRepo = $socialNetworkRepo;
+        $this->pageContentRepository = $pageContentRepository;
     }
 
     public function getFunctions(): array
     {
         return [
             new TwigFunction('nav_item_class', [$this, 'navItemClass'], ['is_safe' => ['html']]),
+            new TwigFunction('get_social_networks', [$this, 'getSocialNetworks']),
+            new TwigFunction('get_public_pages', [$this, 'getPublicPages']),
         ];
     }
 
@@ -54,5 +59,15 @@ class AppExtension extends AbstractExtension
             'ROLE_USER'  => 'Usuário',
             default      => ucfirst(strtolower(str_replace(['ROLE_', '_'], ['', ' '], $role))),
         };
+    }
+
+    public function getSocialNetworks(): array
+    {
+        return $this->socialNetworkRepo->findBy(['isActive' => true], ['position' => 'ASC']);
+    }
+
+    public function getPublicPages(): array
+    {
+        return $this->pageContentRepository->findBy(['isActive' => true]);
     }
 }

@@ -1,5 +1,6 @@
 {% extends 'pub/base.html.twig' %}
 {% block title %}{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ app.request.locale == 'en' ? 'Fellowship opportunities, selection processes and academic vacancies at CPA Citros.' : 'Oportunidades de bolsas, processos seletivos e vagas acadêmicas abertas no CPA Citros.' }}{% endblock %}
 {% block body %}
 <section class="bg-theme-gradient text-white border-0 text-white pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
     <img src="{{ asset('images/vagas_banner.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
@@ -34,7 +35,7 @@
                 {% set summary = app.request.locale == 'en' ? vaga.summaryEn : vaga.summaryPt %}
                 {% set slug = app.request.locale == 'en' ? vaga.slugEn : vaga.slugPt %}
                 
-                <div class="bg-white rounded-[2rem] overflow-hidden shadow-xl border {% if estaAberta %}border-slate-200 hover:-translate-y-2 hover:shadow-2xl shadow-slate-200/50{% else %}border-slate-200 opacity-60 grayscale hover:grayscale-0{% endif %} flex flex-col group transition-all duration-500 ring-1 ring-slate-900/5">
+                <a href="{{ path('app_oportunidade_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="bg-white rounded-[2rem] overflow-hidden shadow-xl border {% if estaAberta %}border-slate-200 hover:-translate-y-2 hover:shadow-2xl shadow-slate-200/50{% else %}border-slate-200 opacity-60 grayscale hover:grayscale-0{% endif %} flex flex-col group transition-all duration-500 ring-1 ring-slate-900/5">
                     
                     <div class="h-48 w-full bg-slate-100 relative overflow-hidden">
                         {% if vaga.image and vaga.image.imageName %}
@@ -58,12 +59,12 @@
                         <p class="text-sm text-slate-600 flex-1 leading-relaxed mb-8">{{ summary }}</p>
                         
                         <div>
-                            <a href="{{ path('app_oportunidade_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="block w-full text-center {% if estaAberta %}bg-primary text-white hover:bg-primary-dark shadow-md shadow-primary/20 hover:shadow-lg{% else %}bg-slate-100 text-slate-400 hover:bg-slate-200{% endif %} font-bold tracking-wide px-6 py-3.5 rounded-xl transition-all ring-1 ring-inset ring-slate-900/5">
+                            <div class="block w-full text-center {% if estaAberta %}bg-primary text-white hover:bg-primary-dark shadow-md shadow-primary/20 hover:shadow-lg{% else %}bg-slate-100 text-slate-400 hover:bg-slate-200{% endif %} font-bold tracking-wide px-6 py-3.5 rounded-xl transition-all ring-1 ring-inset ring-slate-900/5">
                                 {{ estaAberta ? (app.request.locale == 'en' ? 'Access Notice' : 'Acessar Edital') : (app.request.locale == 'en' ? 'View Archived Notice' : 'Visualizar Edital Antigo') }}
-                            </a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             {% else %}
                 <div class="col-span-1 md:col-span-2 lg:col-span-3">
                     <div class="bg-white rounded-[2rem] p-16 text-center border-2 border-dashed border-slate-200 shadow-sm relative overflow-hidden">

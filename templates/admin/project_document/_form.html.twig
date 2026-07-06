@@ -1,0 +1,40 @@
+{{ form_start(form) }}
+<div class="admin-card space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {{ form_row(form.project) }}
+        {{ form_row(form.title) }}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {{ form_row(form.type) }}
+        {{ form_row(form.year) }}
+        {{ form_row(form.researcher) }}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {{ form_row(form.doi) }}
+        <div>
+            {{ form_row(form.fileFile) }}
+            {% if document is defined and document.fileName %}
+                <div class="mt-2 text-xs">
+                    <span class="text-slate-500">Arquivo atual:</span>
+                    <a href="{{ asset('uploads/documents/' ~ document.fileName) }}" target="_blank" class="text-primary font-semibold hover:underline">
+                        {{ document.fileName }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="flex items-center justify-end gap-3 mt-6">
+    <a href="{{ path('admin_project_document_index') }}" class="btn-secondary">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Voltar
+    </a>
+    <button class="btn-primary" type="submit">
+        <i class="fa-solid fa-check" aria-hidden="true"></i>
+        Salvar
+    </button>
+</div>
+{{ form_end(form) }}

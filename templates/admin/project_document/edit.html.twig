@@ -1,0 +1,17 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-file-pdf admin-page-title-icon" aria-hidden="true"></i>
+            Editar Documento Científico
+        </h1>
+        <p class="page-subtitle">Modifique as informações do documento.</p>
+    </div>
+</div>
+
+{{ include('admin/project_document/_form.html.twig') }}
+
+{% endblock %}

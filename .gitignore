@@ -42,3 +42,6 @@ composer.phar
 public/fundecitrus-cpa
 public/fundecitrus-cpa/*
 .DS_Store
+
+public/uploads/
+public/uploads/*

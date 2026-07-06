@@ -1,9 +1,14 @@
 {% extends 'pub/base.html.twig' %}
+
 {% block title %}{{ app.request.locale == 'en' ? 'Contact Us' : 'Fale Conosco' }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ app.request.locale == 'en' ? 'Contact details, suggestions channels and address location of CPA Citros.' : 'Informações de contato, canais de atendimento e endereço físico do CPA Citros.' }}{% endblock %}
+
 {% block body %}
-<section class="bg-theme-gradient text-white border-0 text-white pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
+<section class="relative bg-theme-gradient text-white border-0 pt-32 pb-48 overflow-hidden isolate border-b border-white/10">
+    <div class="absolute top-0 -left-40 w-96 h-96 bg-primary rounded-full mix-blend-screen filter blur-[128px] opacity-20 animate-pulse" style="animation-duration: 8s;"></div>
+    <div class="absolute bottom-0 -right-40 w-96 h-96 bg-secondary rounded-full mix-blend-screen filter blur-[128px] opacity-20"></div>
     <img src="{{ asset('images/banner2.jpg') }}" class="absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-overlay pointer-events-none z-0">
-    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary rounded-full blur-[128px] opacity-20 pointer-events-none z-0"></div>
+
     <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
@@ -12,10 +17,10 @@
                     {{ app.request.locale == 'en' ? 'Support Desk' : 'Atendimento' }}
                 </span>
             </div>
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
                 {{ app.request.locale == 'en' ? 'Contact Us' : 'Fale Conosco' }}
             </h1>
-            <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
+            <p class="text-lg lg:text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
                 {{ app.request.locale == 'en' ? 'Our administrative team is always open. Get in touch for institutional questions, partnerships, media or suggestions.' : 'Nossa equipe administrativa está de portas abertas. Entre em contato para assuntos institucionais, parcerias, imprensa ou sugestões.' }}
             </p>
         </div>
@@ -25,71 +30,137 @@
 <!-- Form UI Modern Tailwind Plus -->
 <section class="py-24 bg-slate-50 relative">
     <div class="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-slate-900 to-transparent opacity-5 pointer-events-none"></div>
-    <div class="max-w-3xl mx-auto px-6 relative z-10 -mt-16">
-        <div class="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden backdrop-blur-xl">
+    
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-3 gap-12 relative z-10 -mt-28">
             
-            <div class="p-8 md:p-12">
-                <div class="mb-10 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-start gap-5">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-primary ring-1 ring-slate-900/5 flex-shrink-0">
-                        <i class="fa-solid fa-envelope text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold tracking-widest text-slate-400 uppercase mb-1">
-                            {{ app.request.locale == 'en' ? 'Official E-mail Inbox' : 'Caixa de Entrada Oficial' }}
-                        </h3>
-                        <a href="mailto:contato@cpacitros.com.br" class="text-lg font-extrabold text-slate-900 hover:text-primary transition-colors">contato@cpacitros.com.br</a>
-                    </div>
-                </div>
+            <!-- Left Form Column -->
+            <div class="lg:col-span-2 bg-white rounded-[2.5rem] shadow-2xl border border-slate-100/80 p-8 md:p-12">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">
+                    {{ app.request.locale == 'en' ? 'Send a Message' : 'Enviar Mensagem' }}
+                </h2>
+                <p class="text-slate-500 text-sm mb-10 leading-relaxed font-light">
+                    {{ app.request.locale == 'en' ? 'Please fill in the form fields below and we will contact you as soon as possible.' : 'Por favor preencha os campos abaixo e entraremos em contato com você o mais breve possível.' }}
+                </p>
 
                 <form action="{{ path('app_contact_post', {_locale: app.request.locale}) }}" method="POST" class="space-y-8">
                     
-                    <div>
-                        <label for="name" class="block text-sm font-bold leading-6 text-slate-900 mb-2">
+                    <div class="relative">
+                        <label for="name" class="block text-sm font-bold text-slate-900 mb-2">
                             {{ app.request.locale == 'en' ? 'Full Name' : 'Nome Completo' }} <span class="text-rose-500">*</span>
                         </label>
-                        <div class="relative mt-2 rounded-xl shadow-sm">
-                            <input type="text" name="name" id="name" required class="block w-full rounded-xl border-0 py-3.5 pl-4 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-shadow bg-white hover:bg-slate-50" placeholder="{{ app.request.locale == 'en' ? 'e.g. John Doe' : 'ex. João da Silva' }}">
+                        <div class="relative rounded-xl shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <input type="text" name="name" id="name" required class="block w-full rounded-xl border-0 py-3.5 pl-11 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all bg-white hover:bg-slate-50/50" placeholder="{{ app.request.locale == 'en' ? 'e.g. John Doe' : 'ex. João da Silva' }}">
                         </div>
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-8">
                         <div>
-                            <label for="email" class="block text-sm font-bold leading-6 text-slate-900 mb-2">
+                            <label for="email" class="block text-sm font-bold text-slate-900 mb-2">
                                 {{ app.request.locale == 'en' ? 'E-mail Address' : 'Endereço de E-mail' }} <span class="text-rose-500">*</span>
                             </label>
-                            <div class="relative mt-2 rounded-xl shadow-sm">
-                                <input type="email" name="email" id="email" required class="block w-full rounded-xl border-0 py-3.5 pl-4 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-shadow bg-white hover:bg-slate-50" placeholder="seu@email.com">
+                            <div class="relative rounded-xl shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <input type="email" name="email" id="email" required class="block w-full rounded-xl border-0 py-3.5 pl-11 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all bg-white hover:bg-slate-50/50" placeholder="seu@email.com">
                             </div>
                         </div>
                         <div>
-                            <label for="phone" class="block text-sm font-bold leading-6 text-slate-900 mb-2">
+                            <label for="phone" class="block text-sm font-bold text-slate-900 mb-2">
                                 {{ app.request.locale == 'en' ? 'Phone Number' : 'Telefone' }}
                             </label>
-                            <div class="relative mt-2 rounded-xl shadow-sm">
-                                <input type="tel" name="phone" id="phone" class="block w-full rounded-xl border-0 py-3.5 pl-4 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-shadow bg-white hover:bg-slate-50" placeholder="(11) 99999-9999">
+                            <div class="relative rounded-xl shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <input type="tel" name="phone" id="phone" class="block w-full rounded-xl border-0 py-3.5 pl-11 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all bg-white hover:bg-slate-50/50" placeholder="(11) 99999-9999">
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <label for="message" class="block text-sm font-bold leading-6 text-slate-900 mb-2">
+                        <label for="message" class="block text-sm font-bold text-slate-900 mb-2">
                             {{ app.request.locale == 'en' ? 'Message' : 'Mensagem' }} <span class="text-rose-500">*</span>
                         </label>
-                        <div class="relative mt-2 rounded-xl shadow-sm">
-                            <textarea name="message" id="message" rows="5" required class="block w-full rounded-xl border-0 py-3.5 pl-4 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-shadow bg-white hover:bg-slate-50" placeholder="{{ app.request.locale == 'en' ? 'Describe your query or suggestion here...' : 'Escreva detalhadamente sua demanda...' }}"></textarea>
+                        <div class="relative rounded-xl shadow-sm">
+                            <textarea name="message" id="message" rows="6" required class="block w-full rounded-xl border-0 py-3.5 pl-4 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-all bg-white hover:bg-slate-50/50" placeholder="{{ app.request.locale == 'en' ? 'Describe your query or suggestion here...' : 'Escreva detalhadamente sua demanda...' }}"></textarea>
                         </div>
                     </div>
                     
-                    <div class="pt-6 border-t border-slate-100 flex items-center justify-between">
-                        <p class="text-xs text-slate-500 max-w-xs">
+                    <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                        <p class="text-xs text-slate-500 max-w-sm text-center sm:text-left leading-relaxed">
                             {{ app.request.locale == 'en' ? 'Your data is safe and processed strictly under LGPD guidelines.' : 'Seus dados estão seguros e são tratados estritamente conforme as diretrizes da LGPD.' }}
                         </p>
-                        <button type="submit" class="bg-theme-gradient text-white border-0 hover:bg-primary text-white font-bold p-4 lg:px-10 lg:py-4 rounded-xl shadow-lg ring-1 ring-slate-900/5 transition-all outline-none">
+                        <button type="submit" class="w-full sm:w-auto bg-theme-gradient text-white border-0 hover:scale-[1.02] active:scale-95 text-white font-bold px-10 py-4 rounded-xl shadow-lg shadow-primary/20 transition-all cursor-pointer">
                             {{ app.request.locale == 'en' ? 'Send Message' : 'Enviar Mensagem' }}
                         </button>
                     </div>
                 </form>
             </div>
+
+            <!-- Right Sidebar Column -->
+            <div class="space-y-8">
+                
+                <!-- Contact info card -->
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100/80 p-8 md:p-10 space-y-8">
+                    <h3 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
+                        {{ app.request.locale == 'en' ? 'Contact Details' : 'Informações de Contato' }}
+                    </h3>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-0.5">E-mail</p>
+                            <a href="mailto:contato@cpacitros.com.br" class="text-sm font-bold text-slate-800 hover:text-primary transition-colors">contato@cpacitros.com.br</a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-0.5">{{ app.request.locale == 'en' ? 'Phone' : 'Telefone' }}</p>
+                            <a href="tel:+551633327798" class="text-sm font-bold text-slate-800 hover:text-primary transition-colors">+55 (16) 3332-7798</a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-0.5">{{ app.request.locale == 'en' ? 'Working Hours' : 'Horário de Funcionamento' }}</p>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                {{ app.request.locale == 'en' ? 'Mon - Fri, 8:00 AM - 5:00 PM.' : 'Segunda a Sexta, das 8h às 17h.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FEALQ support card -->
+                <div class="bg-theme-gradient text-white border-0 rounded-[2.5rem] shadow-xl border border-slate-700/80 p-8 md:p-10 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl"></div>
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                        FEALQ
+                    </h3>
+                    <p class="text-sm leading-relaxed text-slate-200 font-light">
+                        <span class="font-bold text-white block mb-1">
+                            {{ app.request.locale == 'en' ? 'Official Financial Agent' : 'Interveniente Financeiro Oficial' }}
+                        </span>
+                        {{ app.request.locale == 'en' ? 'Luiz de Queiroz Foundation for Agrarian Studies. Ensures financial management compliance and support.' : 'Fundação de Estudos Agrários Luiz de Queiroz. Garante a conformidade e o suporte na gestão financeira das pesquisas.' }}
+                    </p>
+                </div>
+
+            </div>
+            
         </div>
     </div>
 </section>

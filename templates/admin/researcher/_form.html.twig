@@ -2,11 +2,15 @@
     <div class="admin-card space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.nome) }}
-            {{ form_row(form.lattes) }}
+            {{ form_row(form.email) }}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.areaPt) }}
             {{ form_row(form.areaEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.lattes) }}
+            {{ form_row(form.linkedin) }}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -19,6 +23,10 @@
                 {% endif %}
             </div>
         </div>
+        <div class="space-y-6">
+            {{ form_row(form.curriculoPt) }}
+            {{ form_row(form.curriculoEn) }}
+        </div>
     </div>
     
     <div class="w-full text-right mt-6">
@@ -28,3 +36,5 @@
         </button>
     </div>
 {{ form_end(form) }}
+
+{{ include('admin/_quill_script.html.twig') }}

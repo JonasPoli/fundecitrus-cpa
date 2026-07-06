@@ -6,17 +6,18 @@
 {% set estaAberta = item.statusPt|lower == 'aberto' or item.statusPt|lower == 'aberta' or item.statusEn|lower == 'open' %}
 
 {% block title %}{{ title }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ summary }}{% endblock %}
 {% block body %}
 <div class="bg-slate-50 py-24 pb-48">
     <div class="max-w-4xl mx-auto px-6 lg:px-8">
         
-        <div class="mb-8 inline-flex items-center gap-3">
-            <a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="text-slate-400 hover:text-primary transition-colors">
+        <div class="mb-8">
+            <a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="text-slate-400 hover:text-primary transition-colors inline-flex items-center gap-3">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
+                <span class="text-sm font-bold text-slate-400 uppercase tracking-widest hover:text-primary transition-colors">
+                    {{ app.request.locale == 'en' ? 'Vacancy Notice / Selection Process' : 'Edital / Processo Seletivo' }}
+                </span>
             </a>
-            <span class="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                {{ app.request.locale == 'en' ? 'Vacancy Notice / Selection Process' : 'Edital / Processo Seletivo' }}
-            </span>
         </div>
         
         <article class="bg-white rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 overflow-hidden {% if not estaAberta %}opacity-90{% endif %}">
@@ -45,14 +46,29 @@
                 <div class="mt-16 bg-theme-gradient text-white border-0 p-8 md:p-12 rounded-3xl text-center relative overflow-hidden shadow-inset">
                     {% if estaAberta %}
                         <h3 class="text-2xl font-bold text-white mb-3 relative z-10">
-                            {{ app.request.locale == 'en' ? 'Applications Open' : 'Inscrições Abertas' }}
+                            {% if item.pdfName %}
+                                {{ app.request.locale == 'en' ? 'Vacancy Notice Available' : 'Edital Disponível' }}
+                            {% else %}
+                                {{ app.request.locale == 'en' ? 'Applications Open' : 'Inscrições Abertas' }}
+                            {% endif %}
                         </h3>
                         <p class="text-slate-300 mb-8 max-w-md mx-auto relative z-10">
-                            {{ app.request.locale == 'en' ? 'Required documents and curriculum details should be sent to the official desk.' : 'Os documentos comprobatórios devem ser enviados via e-mail para a secretaria do CPA.' }}
+                            {% if item.pdfName %}
+                                {{ app.request.locale == 'en' ? 'Access the official PDF notice to verify all details, deadlines and requirements.' : 'Acesse o edital oficial em formato PDF para verificar todas as informações, requisitos e prazos.' }}
+                            {% else %}
+                                {{ app.request.locale == 'en' ? 'Required documents and curriculum details should be sent to the official desk.' : 'Os documentos comprobatórios devem ser enviados via e-mail para a secretaria do CPA.' }}
+                            {% endif %}
                         </p>
-                        <a href="mailto:vagas@cpacitros.com.br?subject=Inscricao: {{ title }}" class="relative z-10 inline-block px-10 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl ring-1 ring-inset ring-primary-light shadow-[0_0_20px_rgba(0,154,61,0.4)] transition-all hover:scale-105">
-                            {{ app.request.locale == 'en' ? 'Apply Now via E-mail' : 'Candidatar-se por E-mail' }}
-                        </a>
+                        {% if item.pdfName %}
+                            <a href="{{ asset('uploads/documents/' ~ item.pdfName) }}" target="_blank" rel="noopener noreferrer" class="relative z-10 inline-block px-10 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl ring-1 ring-inset ring-primary-light shadow-[0_0_20px_rgba(0,154,61,0.4)] transition-all hover:scale-105">
+                                <i class="fa-solid fa-file-pdf mr-2"></i>
+                                {{ app.request.locale == 'en' ? 'Access Edital (PDF)' : 'Acessar Edital (PDF)' }}
+                            </a>
+                        {% else %}
+                            <a href="mailto:vagas@cpacitros.com.br?subject=Inscricao: {{ title }}" class="relative z-10 inline-block px-10 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl ring-1 ring-inset ring-primary-light shadow-[0_0_20px_rgba(0,154,61,0.4)] transition-all hover:scale-105">
+                                {{ app.request.locale == 'en' ? 'Apply Now via E-mail' : 'Candidatar-se por E-mail' }}
+                            </a>
+                        {% endif %}
                     {% else %}
                         <h3 class="text-2xl font-bold text-white mb-3">
                             {{ app.request.locale == 'en' ? 'Notice Closed' : 'Edital Encerrado' }}

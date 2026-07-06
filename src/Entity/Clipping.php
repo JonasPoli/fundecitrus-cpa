@@ -63,6 +63,12 @@ class Clipping
         return $this;
     }
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $summaryPt = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $summaryEn = null;
+
     public function getLink(): ?string
     {
         return $this->link;
@@ -71,6 +77,28 @@ class Clipping
     public function setLink(string $link): static
     {
         $this->link = $link;
+        return $this;
+    }
+
+    public function getSummaryPt(): ?string
+    {
+        return $this->summaryPt;
+    }
+
+    public function setSummaryPt(?string $summaryPt): static
+    {
+        $this->summaryPt = $summaryPt;
+        return $this;
+    }
+
+    public function getSummaryEn(): ?string
+    {
+        return $this->summaryEn;
+    }
+
+    public function setSummaryEn(?string $summaryEn): static
+    {
+        $this->summaryEn = $summaryEn;
         return $this;
     }
 }

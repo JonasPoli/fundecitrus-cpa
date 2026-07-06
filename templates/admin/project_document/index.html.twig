@@ -1,0 +1,88 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-file-pdf admin-page-title-icon" aria-hidden="true"></i>
+            Documentos Científicos dos Projetos
+        </h1>
+        <p class="page-subtitle">Gerencie artigos, abstracts e dissertações associados aos projetos de pesquisa.</p>
+    </div>
+    <div>
+        <a href="{{ path('admin_project_document_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar Documento
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Documento</th>
+                <th>Projeto Relacionado</th>
+                <th>Ano</th>
+                <th>Pesquisador</th>
+                <th>Arquivo / DOI</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in documents %}
+                <tr>
+                    <td>
+                        <div class="font-semibold">{{ item.title }}</div>
+                        <div class="text-xs text-slate-500 uppercase font-medium tracking-wider mt-0.5">
+                            {% if item.type == 'artigo' %}
+                                <span class="text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Artigo</span>
+                            {% elseif item.type == 'abstract' %}
+                                <span class="text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">Abstract</span>
+                            {% else %}
+                                <span class="text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Dissertação</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>{{ item.project.nomePt }}</td>
+                    <td class="font-mono text-sm">{{ item.year }}</td>
+                    <td class="text-sm text-slate-600">{{ item.researcher }}</td>
+                    <td>
+                        {% if item.fileName %}
+                            <a href="{{ asset('uploads/documents/' ~ item.fileName) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2 py-1 rounded transition-colors">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                PDF
+                            </a>
+                        {% endif %}
+                        {% if item.doi %}
+                            <a href="{{ item.doi }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded transition-colors ml-1">
+                                <i class="fa-solid fa-globe"></i>
+                                DOI
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ path('admin_project_document_edit', {id: item.id}) }}" class="btn-icon btn-icon-edit" title="Editar">
+                                <i class="fa-solid fa-pencil" aria-hidden="true"></i>
+                            </a>
+                            <form method="post" action="{{ path('admin_project_document_delete', {id: item.id}) }}" onsubmit="return confirm('Deseja realmente excluir este documento?');" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                                <button class="btn-icon btn-icon-delete" title="Excluir">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-slate-500 py-8">Nenhum documento cadastrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

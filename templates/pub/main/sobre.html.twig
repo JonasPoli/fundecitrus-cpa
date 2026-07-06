@@ -1,5 +1,6 @@
 {% extends 'pub/base.html.twig' %}
 {% block title %}{{ app.request.locale == 'en' ? 'About' : 'Sobre' }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ app.request.locale == 'en' ? 'Learn about CPA Citros, our mission, research structure, team and international partners.' : 'Conheça o CPA Citros, nossa missão, estrutura de pesquisa, docentes e parceiros internacionais.' }}{% endblock %}
 {% block body %}
 <!-- Quem somos: Split Premium Layout -->
 <section class="py-24 bg-white overflow-hidden isolate relative">
@@ -66,12 +67,27 @@
                     Brasil
                 </h4>
                 <ul class="space-y-4 relative z-10">
-                    {% for item in institutionsBR %}
-                        <li class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 ring-1 ring-inset ring-slate-100/50 hover:bg-white hover:shadow-md hover:ring-slate-200 transition-all group/item">
-                            <div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-slate-900/5 group-hover/item:text-primary transition-colors">
-                                <i class="fa-solid fa-building-columns text-slate-400 group-hover/item:text-primary transition-colors"></i>
-                            </div>
-                            <span class="text-slate-700 font-medium leading-relaxed group-hover/item:text-slate-900 transition-colors">{{ item }}</span>
+                    {% for p in partnersBR %}
+                        {% set url = p.url %}
+                        {% if url is not empty and not (url starts with 'http://' or url starts with 'https://') %}
+                            {% set url = 'https://' ~ url %}
+                        {% endif %}
+                        {% set hasLink = url is not empty %}
+                        <li class="p-0 rounded-2xl overflow-hidden hover:shadow-md transition-all">
+                            {% if hasLink %}
+                                <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-4 p-4 bg-slate-50 ring-1 ring-inset ring-slate-100/50 hover:bg-white hover:ring-slate-200 transition-all group/item">
+                            {% else %}
+                                <div class="flex items-start gap-4 p-4 bg-slate-50 ring-1 ring-inset ring-slate-100/50 hover:bg-white hover:ring-slate-200 transition-all group/item">
+                            {% endif %}
+                                <div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-slate-900/5 group-hover/item:text-primary transition-colors">
+                                    <i class="{{ p.iconClass ?: 'fa-solid fa-building-columns' }} text-slate-400 group-hover/item:text-primary transition-colors"></i>
+                                </div>
+                                <span class="text-slate-700 font-medium leading-relaxed group-hover/item:text-slate-900 transition-colors">{{ p.name }}</span>
+                            {% if hasLink %}
+                                </a>
+                            {% else %}
+                                </div>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
@@ -85,12 +101,27 @@
                     {{ app.request.locale == 'en' ? 'Global Partners' : 'Mundo' }}
                 </h4>
                 <ul class="space-y-4 relative z-10">
-                    {% for item in institutionsINT %}
-                        <li class="flex items-start gap-4 p-4 rounded-2xl bg-slate-800/50 ring-1 ring-inset ring-white/5 hover:bg-slate-800 hover:shadow-lg hover:ring-white/10 transition-all group/item backdrop-blur-sm">
-                            <div class="w-8 h-8 rounded-full bg-theme-gradient text-white border-0 shadow-inner flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-white/10">
-                                <i class="fa-solid fa-earth-americas text-slate-400 group-hover/item:text-secondary transition-colors"></i>
-                            </div>
-                            <span class="text-slate-300 font-medium leading-relaxed group-hover/item:text-white transition-colors">{{ item }}</span>
+                    {% for p in partnersINT %}
+                        {% set url = p.url %}
+                        {% if url is not empty and not (url starts with 'http://' or url starts with 'https://') %}
+                            {% set url = 'https://' ~ url %}
+                        {% endif %}
+                        {% set hasLink = url is not empty %}
+                        <li class="p-0 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+                            {% if hasLink %}
+                                <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-4 p-4 bg-slate-800/50 ring-1 ring-inset ring-white/5 hover:bg-slate-800 hover:ring-white/10 transition-all group/item backdrop-blur-sm">
+                            {% else %}
+                                <div class="flex items-start gap-4 p-4 bg-slate-800/50 ring-1 ring-inset ring-white/5 hover:bg-slate-800 hover:ring-white/10 transition-all group/item backdrop-blur-sm">
+                            {% endif %}
+                                <div class="w-8 h-8 rounded-full bg-theme-gradient text-white border-0 shadow-inner flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-white/10">
+                                    <i class="{{ p.iconClass ?: 'fa-solid fa-earth-americas' }} text-slate-400 group-hover/item:text-secondary transition-colors"></i>
+                                </div>
+                                <span class="text-slate-300 group-hover:text-white font-medium leading-relaxed group-hover/item:text-white transition-colors">{{ p.name }}</span>
+                            {% if hasLink %}
+                                </a>
+                            {% else %}
+                                </div>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>

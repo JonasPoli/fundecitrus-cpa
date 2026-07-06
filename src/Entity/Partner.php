@@ -23,6 +23,18 @@ class Partner
     #[ORM\Column(options: ['default' => 0])]
     private ?int $position = 0;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url = null;
+
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $newTab = true;
+
+    #[ORM\Column(length: 255, nullable: true, options: ['default' => 'fa-solid fa-building-columns'])]
+    private ?string $iconClass = 'fa-solid fa-building-columns';
+
+    #[ORM\Column(length: 10, options: ['default' => 'BR'])]
+    private ?string $region = 'BR';
+
     public function getId(): ?int
     {
         return $this->id;
@@ -58,6 +70,50 @@ class Partner
     public function setPosition(int $position): static
     {
         $this->position = $position;
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): static
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    public function isNewTab(): ?bool
+    {
+        return $this->newTab;
+    }
+
+    public function setNewTab(bool $newTab): static
+    {
+        $this->newTab = $newTab;
+        return $this;
+    }
+
+    public function getIconClass(): ?string
+    {
+        return $this->iconClass;
+    }
+
+    public function setIconClass(?string $iconClass): static
+    {
+        $this->iconClass = $iconClass;
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(string $region): static
+    {
+        $this->region = $region;
         return $this;
     }
 }

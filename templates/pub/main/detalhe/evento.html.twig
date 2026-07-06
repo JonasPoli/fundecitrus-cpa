@@ -4,27 +4,28 @@
 {% set date = app.request.locale == 'en' ? item.dateEn : item.datePt %}
 
 {% block title %}{{ title }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ content|striptags|slice(0, 160) }}...{% endblock %}
 {% block body %}
 <div class="bg-slate-50 py-24 pb-48">
     <div class="max-w-4xl mx-auto px-6 lg:px-8">
         
-        <div class="mb-8 inline-flex items-center gap-3">
-            <a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="text-slate-400 hover:text-primary transition-colors">
+        <div class="mb-8">
+            <a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="text-slate-400 hover:text-primary transition-colors inline-flex items-center gap-3">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
+                <span class="text-sm font-bold text-slate-400 uppercase tracking-widest hover:text-primary transition-colors">
+                    {{ app.request.locale == 'en' ? 'Event Information' : 'Informações do Evento' }}
+                </span>
             </a>
-            <span class="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                {{ app.request.locale == 'en' ? 'Event Information' : 'Informações do Evento' }}
-            </span>
         </div>
         
         <article class="bg-white rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 border border-slate-100 overflow-hidden">
-            <div class="aspect-[21/9] w-full bg-theme-gradient text-white border-0 relative">
+            <div class="min-h-[280px] md:min-h-[380px] aspect-[21/9] w-full bg-theme-gradient text-white border-0 relative">
                 {% if item.image and item.image.imageName %}
                     <img src="{{ asset('uploads/' ~ item.image.imageName) }}" alt="" class="w-full h-full object-cover mix-blend-luminosity opacity-40">
                 {% else %}
                     <img src="{{ asset('images/workshop_biologico_banner.png') }}" alt="" class="w-full h-full object-cover mix-blend-luminosity opacity-40">
                 {% endif %}
-                <div class="absolute inset-x-0 bottom-0 p-10 bg-gradient-to-t from-slate-900 to-transparent flex items-end">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent flex items-end p-8 md:p-12">
                     <div>
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-secondary text-slate-900 font-bold text-xs uppercase mb-3">
                             <i class="fa-solid fa-calendar-days"></i> {{ date }}
@@ -45,12 +46,22 @@
                             {{ app.request.locale == 'en' ? 'Registration / Tickets' : 'Inscrições / Participação' }}
                         </h4>
                         <p class="text-slate-500 text-sm">
-                            {{ app.request.locale == 'en' ? 'Contact our academic coordinate board or check university portals for open seat opportunities.' : 'Verifique com a rede de sua universidade afiliada a disponibilidade de assentos neste evento.' }}
+                            {% if item.registrationLink is not empty %}
+                                {{ app.request.locale == 'en' ? 'Click the button to access the external registration form.' : 'Clique no botão ao lado para acessar o formulário externo de inscrição.' }}
+                            {% else %}
+                                {{ app.request.locale == 'en' ? 'Contact our academic coordinate board or check university portals for open seat opportunities.' : 'Verifique com a rede de sua universidade afiliada a disponibilidade de assentos neste evento.' }}
+                            {% endif %}
                         </p>
                     </div>
-                    <a href="mailto:eventos@cpacitros.com.br?subject=Interesse: {{ title }}" class="w-full md:w-auto text-center px-8 py-3 bg-primary text-white font-bold rounded-xl shadow-sm hover:bg-primary-dark transition-colors ring-1 ring-inset ring-primary">
-                        {{ app.request.locale == 'en' ? 'I Want to Participate' : 'Quero Participar' }}
-                    </a>
+                    {% if item.registrationLink is not empty %}
+                        <a href="{{ item.registrationLink }}" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto text-center px-8 py-3 bg-primary text-white font-bold rounded-xl shadow-sm hover:bg-primary-dark transition-colors ring-1 ring-inset ring-primary">
+                            {{ app.request.locale == 'en' ? 'Register Now' : 'Inscreva-se Já' }}
+                        </a>
+                    {% else %}
+                        <a href="mailto:eventos@cpacitros.com.br?subject=Interesse: {{ title }}" class="w-full md:w-auto text-center px-8 py-3 bg-primary text-white font-bold rounded-xl shadow-sm hover:bg-primary-dark transition-colors ring-1 ring-inset ring-primary">
+                            {{ app.request.locale == 'en' ? 'I Want to Participate' : 'Quero Participar' }}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </article>

@@ -4,6 +4,8 @@ namespace App\Command;
 
 use App\Entity\Clipping;
 use App\Entity\Document;
+use App\Entity\ProjectDocument;
+use App\Entity\YoutubeMedia;
 use App\Entity\Event;
 use App\Entity\HomeBanner;
 use App\Entity\Image;
@@ -13,6 +15,7 @@ use App\Entity\PageContent;
 use App\Entity\Partner;
 use App\Entity\Project;
 use App\Entity\Researcher;
+use App\Entity\SocialNetwork;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -51,7 +54,8 @@ class SeedDataCommand extends Command
         $tables = [
             'clipping', 'document', 'event', 'home_banner', 'image',
             'job_opportunity', 'news', 'page_content', 'partner',
-            'project', 'researcher', 'user'
+            'project', 'researcher', 'user', 'project_document', 'youtube_media',
+            'social_network'
         ];
 
         foreach ($tables as $table) {
@@ -95,11 +99,11 @@ class SeedDataCommand extends Command
             return $image;
         };
 
-        // Helper para upload de documentos restritos
         $uploadDocumentFile = function (string $filename) use ($docsDestinationDir): string {
-            $destFilename = md5(uniqid() . $filename) . '.txt';
+            $ext = pathinfo($filename, PATHINFO_EXTENSION) ?: 'txt';
+            $destFilename = md5(uniqid() . $filename) . '.' . $ext;
             $destPath = $docsDestinationDir . '/' . $destFilename;
-            file_put_contents($destPath, "Conteúdo científico restrito simulado para o arquivo: " . $filename);
+            file_put_contents($destPath, "Conteúdo científico simulado para o arquivo: " . $filename);
             return $destFilename;
         };
 
@@ -111,7 +115,7 @@ class SeedDataCommand extends Command
         $admin->setEmail('admin@fundecitrus.com.br');
         $admin->setName('Administrador CPA');
         $admin->setRoles(['ROLE_ADMIN']);
-        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'admin123'));
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'a'));
         $this->entityManager->persist($admin);
 
         $pesquisadorUser = new User();
@@ -321,6 +325,7 @@ class SeedDataCommand extends Command
         $job1->setSlugEn('post-doc-plant-genomics');
         $imj1 = $uploadImage('vagas_banner.png', 'job');
         if ($imj1) $job1->setImage($imj1);
+        $job1->setPdfName($uploadDocumentFile('edital-pos-doc.pdf'));
         $this->entityManager->persist($job1);
 
         $job2 = new JobOpportunity();
@@ -361,6 +366,9 @@ class SeedDataCommand extends Command
         $part1 = new Partner();
         $part1->setName('Fundecitrus');
         $part1->setPosition(1);
+        $part1->setUrl('https://www.fundecitrus.com.br');
+        $part1->setNewTab(true);
+        $part1->setRegion('BR');
         $lg1 = $uploadImage('logo.png', 'partner');
         if ($lg1) $part1->setLogo($lg1);
         $this->entityManager->persist($part1);
@@ -368,16 +376,65 @@ class SeedDataCommand extends Command
         $part2 = new Partner();
         $part2->setName('FEALQ');
         $part2->setPosition(2);
-        $lg2 = $uploadImage('logo-branco.png', 'partner');
+        $part2->setUrl('https://fealq.org.br');
+        $part2->setNewTab(true);
+        $part2->setRegion('BR');
+        $lg2 = $uploadImage('logo.png', 'partner');
         if ($lg2) $part2->setLogo($lg2);
         $this->entityManager->persist($part2);
 
         $part3 = new Partner();
         $part3->setName('USP');
         $part3->setPosition(3);
+        $part3->setUrl('https://www.usp.br');
+        $part3->setNewTab(true);
+        $part3->setRegion('BR');
         $lg3 = $uploadImage('logo.png', 'partner');
         if ($lg3) $part3->setLogo($lg3);
         $this->entityManager->persist($part3);
+
+        $brInst = [
+            'Centro de Energia Nuclear na Agricultura - Cena - USP',
+            'Faculdade de Zootecnia e Engenharia de Alimentos - FZEA - USP',
+            'Universidade Federal de São Carlos - UFSCar',
+            'Universidade Estadual de Campinas - Unicamp',
+            'Instituto Biológico de São Paulo',
+            'Universidade Estadual Paulista - Unesp',
+            'Instituto Agronômico de Campinas - IAC',
+            'Empresa Brasileira de Pesquisa Agropecuária - Embrapa'
+        ];
+        $pos = 4;
+        foreach ($brInst as $name) {
+            $p = new Partner();
+            $p->setName($name);
+            $p->setPosition($pos++);
+            $p->setRegion('BR');
+            $p->setIconClass('fa-solid fa-building-columns');
+            $p->setUrl('https://google.com');
+            $this->entityManager->persist($p);
+        }
+
+        $intInst = [
+            'Centro de Cooperação Internacional - Cirad | França',
+            'Conselho Superior de Pesquisas Científicas - CSIC | Espanha',
+            'Instituto Andaluz - Ifapa | Espanha',
+            'Universidade da Flórida | EUA',
+            'Universidade da Califórnia | EUA',
+            'Departamento de Queensland | Austrália',
+            'Universidade de Durham | Inglaterra',
+            'Universidade de Cambridge | Inglaterra',
+            'Universidade de Warwick | Inglaterra',
+            'Universidade do Algarve | Portugal'
+        ];
+        foreach ($intInst as $name) {
+            $p = new Partner();
+            $p->setName($name);
+            $p->setPosition($pos++);
+            $p->setRegion('INT');
+            $p->setIconClass('fa-solid fa-earth-americas');
+            $p->setUrl('https://google.com');
+            $this->entityManager->persist($p);
+        }
 
         // 12. Injeção de Páginas Institucionais (Quill)
         $io->section('Seeding PageContent...');
@@ -420,6 +477,106 @@ class SeedDataCommand extends Command
         $doc2->setFolderEn('Primary Data');
         $doc2->setFileName($uploadDocumentFile('dados-captura.txt'));
         $this->entityManager->persist($doc2);
+
+        $doc3 = new Document();
+        $doc3->setTitlePt('Anais do I Simpósio Internacional de Greening');
+        $doc3->setTitleEn('Proceedings of the I International Greening Symposium');
+        $doc3->setFolderPt('Anais de Eventos');
+        $doc3->setFolderEn('Event Proceedings');
+        $doc3->setFileName($uploadDocumentFile('anais-simposio-1.pdf'));
+        $this->entityManager->persist($doc3);
+
+        $doc4 = new Document();
+        $doc4->setTitlePt('Anais do II Simpósio Internacional de Greening');
+        $doc4->setTitleEn('Proceedings of the II International Greening Symposium');
+        $doc4->setFolderPt('Anais de Eventos');
+        $doc4->setFolderEn('Event Proceedings');
+        $doc4->setFileName($uploadDocumentFile('anais-simposio-2.pdf'));
+        $this->entityManager->persist($doc4);
+
+        // 14. Injeção de Redes Sociais
+        $io->section('Seeding Social Networks...');
+        
+        $sn1 = new SocialNetwork();
+        $sn1->setName('Instagram');
+        $sn1->setUrl('https://instagram.com');
+        $sn1->setIconClass('fa-brands fa-instagram');
+        $sn1->setIsActive(true);
+        $sn1->setPosition(1);
+        $this->entityManager->persist($sn1);
+
+        $sn2 = new SocialNetwork();
+        $sn2->setName('Facebook');
+        $sn2->setUrl('https://facebook.com');
+        $sn2->setIconClass('fa-brands fa-facebook-f');
+        $sn2->setIsActive(true);
+        $sn2->setPosition(2);
+        $this->entityManager->persist($sn2);
+
+        $sn3 = new SocialNetwork();
+        $sn3->setName('LinkedIn');
+        $sn3->setUrl('https://linkedin.com');
+        $sn3->setIconClass('fa-brands fa-linkedin-in');
+        $sn3->setIsActive(true);
+        $sn3->setPosition(3);
+        $this->entityManager->persist($sn3);
+
+        $sn4 = new SocialNetwork();
+        $sn4->setName('YouTube');
+        $sn4->setUrl('https://youtube.com');
+        $sn4->setIconClass('fa-brands fa-youtube');
+        $sn4->setIsActive(true);
+        $sn4->setPosition(4);
+        $this->entityManager->persist($sn4);
+
+        // 15. Injeção de Documentos de Projetos
+        $io->section('Seeding Project Documents...');
+        
+        $pdoc1 = new ProjectDocument();
+        $pdoc1->setProject($proj1);
+        $pdoc1->setTitle('Mapeamento epidemiológico do Greening no Estado de São Paulo');
+        $pdoc1->setType('artigo');
+        $pdoc1->setYear(2025);
+        $pdoc1->setResearcher('Dr. Marcos Antônio');
+        $pdoc1->setDoi('https://doi.org/10.1016/j.jip.2025.108251');
+        $this->entityManager->persist($pdoc1);
+
+        $pdoc2 = new ProjectDocument();
+        $pdoc2->setProject($proj2);
+        $pdoc2->setTitle('Genomic signatures of Diaphorina citri feeding on citrus plants');
+        $pdoc2->setType('abstract');
+        $pdoc2->setYear(2026);
+        $pdoc2->setResearcher('Dra. Aline Souza');
+        $pdoc2->setDoi('https://doi.org/10.1016/j.plantsci.2026.111812');
+        $this->entityManager->persist($pdoc2);
+
+        $pdoc3 = new ProjectDocument();
+        $pdoc3->setProject($proj3);
+        $pdoc3->setTitle('Estudo econômico comparativo de estratégias de manejo de Greening');
+        $pdoc3->setType('dissertação');
+        $pdoc3->setYear(2024);
+        $pdoc3->setResearcher('Rodrigo Silva');
+        $pdoc3->setFileName($uploadDocumentFile('artigo-2024.pdf'));
+        $this->entityManager->persist($pdoc3);
+
+        // 16. Injeção de YoutubeMedia
+        $io->section('Seeding Youtube Media (Videos & Podcasts)...');
+
+        $ym1 = new YoutubeMedia();
+        $ym1->setType('video');
+        $ym1->setTitle('Manejo Integrado de Greening');
+        $ym1->setDescription('Palestra sobre novas estratégias de combate e controle do vetor do Greening.');
+        $ym1->setYoutubeId('dQw4w9WgXcQ');
+        $ym1->setPosition(1);
+        $this->entityManager->persist($ym1);
+
+        $ym2 = new YoutubeMedia();
+        $ym2->setType('podcast');
+        $ym2->setTitle('Ciência e Agricultura no Combate ao HLB');
+        $ym2->setDescription('Entrevista exclusiva com coordenadores do CPA sobre as pesquisas genômicas.');
+        $ym2->setYoutubeId('dQw4w9WgXcQ');
+        $ym2->setPosition(2);
+        $this->entityManager->persist($ym2);
 
         // Flush
         $this->entityManager->flush();

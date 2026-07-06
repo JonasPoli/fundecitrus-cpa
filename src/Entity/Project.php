@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,6 +15,14 @@ class Project
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\OneToMany(targetEntity: ProjectDocument::class, mappedBy: 'project', orphanRemoval: true)]
+    private Collection $documents;
+
+    public function __construct()
+    {
+        $this->documents = new ArrayCollection();
+    }
 
     #[ORM\Column(length: 255)]
     private ?string $nomePt = null;
@@ -171,6 +181,35 @@ class Project
     public function setPesquisador(?Researcher $pesquisador): static
     {
         $this->pesquisador = $pesquisador;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectDocument>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(ProjectDocument $document): static
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(ProjectDocument $document): static
+    {
+        if ($this->documents->removeElement($document)) {
+            if ($document->getProject() === $this) {
+                $document->setProject(null);
+            }
+        }
+
         return $this;
     }
 }

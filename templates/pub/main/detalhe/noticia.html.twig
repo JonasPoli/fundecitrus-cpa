@@ -10,6 +10,7 @@
 {% set seoDesc = item.seoDescription ?: summary %}
 
 {% block title %}{{ seoTitle }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ seoDesc }}{% endblock %}
 
 {% block stylesheets %}
     {% if item.canonicalUrl %}

@@ -135,6 +135,9 @@ class Event
         return $this;
     }
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $registrationLink = null;
+
     public function getImage(): ?Image
     {
         return $this->image;
@@ -143,6 +146,17 @@ class Event
     public function setImage(?Image $image): static
     {
         $this->image = $image;
+        return $this;
+    }
+
+    public function getRegistrationLink(): ?string
+    {
+        return $this->registrationLink;
+    }
+
+    public function setRegistrationLink(?string $registrationLink): static
+    {
+        $this->registrationLink = $registrationLink;
         return $this;
     }
 }

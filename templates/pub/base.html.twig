@@ -3,6 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="{% block meta_description %}CPA Citros - Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura. Inovações e tecnologias científicas voltadas aos citros.{% endblock %}">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<title>
 			{% block title %}CPA Citros | Centro de Pesquisa Aplicada{% endblock %}
 		</title>
@@ -24,6 +27,9 @@
 			.bg-theme-gradient .text-slate-600,
 			.bg-theme-gradient .text-slate-700 {
 				color: rgba(255, 255, 255, 0.85) !important;
+			}
+			.footer-card-gradient {
+				background-image: linear-gradient(135deg, #629D42 0%, #4c7f31 100%) !important;
 			}
 		</style>
 		<script>
@@ -70,9 +76,9 @@
 						{{ app.request.locale == 'en' ? 'Restricted access for CPA Citros researchers' : 'Acesso restrito para pesquisadores CPA Citros' }}
 					</span>
 				</div>
-				<div class="flex items-center gap-4">
+				<div class="flex flex-wrap items-center justify-center md:justify-end gap-3 md:gap-4">
 					{% if app.user %}
-						<div class="flex items-center gap-2 text-white">
+						<div class="flex flex-wrap items-center justify-center gap-2 text-white">
 							<span>{{ app.request.locale == 'en' ? 'Hello' : 'Olá' }}, <strong>{{ app.user.displayName }}</strong></span>
 							<span class="text-white/40">|</span>
 							<a href="{{ path('app_area_restrita', {_locale: app.request.locale}) }}" class="underline hover:text-white/80 font-bold">
@@ -86,19 +92,21 @@
 							<a href="{{ path('app_logout') }}" class="hover:text-white/80 transition-colors font-bold"><i class="fa-solid fa-right-from-bracket"></i> {{ app.request.locale == 'en' ? 'Exit' : 'Sair' }}</a>
 						</div>
 					{% else %}
-						<form method="post" action="{{ path('app_login') }}" class="flex items-center gap-2">
-							<input type="email" name="_username" placeholder="E-mail" required class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-md outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50 focus:bg-white/20 transition-all text-xs w-32 placeholder-white/60">
-							<input type="password" name="_password" placeholder="Senha" required class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-md outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50 focus:bg-white/20 transition-all text-xs w-32 placeholder-white/60">
+						<form method="post" action="{{ path('app_login') }}" class="flex flex-wrap items-center justify-center gap-2">
+							<input type="email" name="_username" placeholder="E-mail" aria-label="E-mail" required class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-md outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50 focus:bg-white/20 transition-all text-xs w-32 placeholder-white/60">
+							<input type="password" name="_password" placeholder="Senha" aria-label="Senha" required class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-md outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50 focus:bg-white/20 transition-all text-xs w-32 placeholder-white/60">
 							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 							<button type="submit" class="bg-primary hover:bg-primary-dark transition-colors px-4 py-1 rounded-md font-bold text-white shadow-sm ring-1 ring-inset ring-primary/50">
 								{{ app.request.locale == 'en' ? 'Enter' : 'Entrar' }}
 							</button>
 						</form>
 					{% endif %}
-					<div class="h-4 w-px bg-white/20 mx-2"></div>
-					<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'pt'})) }}" class="hover:text-white/80 {% if app.request.locale == 'pt' %}font-bold text-white{% else %}text-white/60{% endif %} transition-colors">PT</a>
-					<span class="text-white/40">|</span>
-					<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'en'})) }}" class="hover:text-white/80 {% if app.request.locale == 'en' %}font-bold text-white{% else %}text-white/60{% endif %} transition-colors">EN</a>
+					<div class="h-4 w-px bg-white/20 mx-1 md:mx-2"></div>
+					<div class="flex items-center gap-1.5">
+						<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'pt'})) }}" class="hover:text-white/80 {% if app.request.locale == 'pt' %}font-bold text-white{% else %}text-white/60{% endif %} transition-colors" aria-label="Alterar idioma para Português">PT</a>
+						<span class="text-white/40">|</span>
+						<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'en'})) }}" class="hover:text-white/80 {% if app.request.locale == 'en' %}font-bold text-white{% else %}text-white/60{% endif %} transition-colors" aria-label="Change language to English">EN</a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -111,12 +119,12 @@
 				</a>
 
 				<nav class="hidden lg:flex items-center gap-1">
-					<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_home' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">Home</a>
-					<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_sobre' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'About' : 'Sobre' }}</a>
-					<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_pesquisa' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }}</a>
-					<a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_comunicacao' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }}</a>
-					<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_eventos' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">Eventos</a>
-					<a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_oportunidades' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }}</a>
+					<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_home' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Home</a>
+					<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_sobre' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'About' : 'Sobre' }}</a>
+					<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_pesquisa' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }}</a>
+					<a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_comunicacao' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }}</a>
+					<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_eventos' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Eventos</a>
+					<a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_oportunidades' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }}</a>
 					<a href="{{ path('app_fale_conosco', {_locale: app.request.locale}) }}" class="ml-2 bg-theme-gradient text-white border-0 px-5 py-2 rounded-full text-sm font-semibold hover:bg-primary transition-all shadow-md hover:shadow-primary/30 ring-1 ring-slate-900/10">{{ app.request.locale == 'en' ? 'Contact Us' : 'Fale Conosco' }}</a>
 				</nav>
 
@@ -128,12 +136,12 @@
 			<!-- Mobile Menu Dropdown -->
 			<div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-200 shadow-lg">
 				<div class="px-6 py-6 flex flex-col gap-2">
-					<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_home' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">Home</a>
-					<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_sobre' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'About' : 'Sobre' }}</a>
-					<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_pesquisa' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }}</a>
-					<a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_comunicacao' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }}</a>
-					<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_eventos' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">Eventos</a>
-					<a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_oportunidades' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }}</a>
+					<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_home' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Home</a>
+					<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_sobre' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'About' : 'Sobre' }}</a>
+					<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_pesquisa' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }}</a>
+					<a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_comunicacao' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }}</a>
+					<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_eventos' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Eventos</a>
+					<a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_oportunidades' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }}</a>
 					<a href="{{ path('app_fale_conosco', {_locale: app.request.locale}) }}" class="bg-theme-gradient text-white border-0 px-5 py-3 rounded-xl text-center text-sm font-semibold hover:bg-primary transition-all shadow-md">{{ app.request.locale == 'en' ? 'Contact Us' : 'Fale Conosco' }}</a>
 				</div>
 			</div>
@@ -163,39 +171,54 @@
 		<!-- Footer Master -->
 		<footer class="bg-theme-gradient text-white border-0 text-slate-300 mt-auto border-t border-slate-800">
 			<div class="max-w-7xl mx-auto px-6 py-16">
-				<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-12 border-b border-slate-800 pb-12 mb-12">
+				<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-12 border-b border-white/50 pb-12 mb-12">
 					<div class="flex flex-col items-start">
 						<img src="{{ asset('images/logo.png') }}" alt="CPA Citros Logo" class="h-14 w-auto object-contain brightness-0 invert opacity-90 transition-opacity hover:opacity-100 mb-4"/>
 						<p class="text-sm text-slate-400 leading-relaxed font-medium">
 							{{ app.request.locale == 'en' ? 'Scientific center dedicated to innovation and sustainability in citriculture.' : 'Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura.' }}
 						</p>
+						<div class="flex gap-3 mt-4">
+							{% for sn in get_social_networks() %}
+								<a href="{{ sn.url }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full footer-card-gradient hover:scale-110 text-white/90 hover:text-white flex items-center justify-center transition-all duration-300 text-sm border border-white/10 shadow-sm" title="{{ sn.name }}" aria-label="{{ sn.name }}">
+									<i class="{{ sn.iconClass ?: 'fa-solid fa-link' }}" aria-hidden="true"></i>
+									<span class="sr-only">{{ sn.name }}</span>
+								</a>
+							{% endfor %}
+						</div>
 					</div>
 					<div>
 						<h3 class="text-white font-bold text-lg mb-6">CPA Citros</h3>
 						<ul class="space-y-3 text-sm">
 							<li>
-								<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="hover:text-secondary transition-colors">{{ app.request.locale == 'en' ? 'Who We Are' : 'Quem Somos' }}</a>
+								<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Who We Are' : 'Quem Somos' }}</a>
 							</li>
 							<li>
-								<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="hover:text-secondary transition-colors">{{ app.request.locale == 'en' ? 'Research Fields' : 'Linhas de Pesquisa' }}</a>
+								<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Research Fields' : 'Linhas de Pesquisa' }}</a>
 							</li>
 							<li>
-								<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="hover:text-secondary transition-colors">{{ app.request.locale == 'en' ? 'Events' : 'Eventos' }}</a>
+								<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Events' : 'Eventos' }}</a>
 							</li>
 							<li>
-								<a href="{{ path('app_fale_conosco', {_locale: app.request.locale}) }}" class="hover:text-secondary transition-colors">{{ app.request.locale == 'en' ? 'Contact' : 'Fale Conosco' }}</a>
+								<a href="{{ path('app_fale_conosco', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Contact' : 'Fale Conosco' }}</a>
 							</li>
+							{% for page in get_public_pages() %}
+								<li>
+									<a href="{{ path('app_pagina_detalhe', {slug: (app.request.locale == 'en' ? page.slugEn : page.slugPt), _locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">
+										{{ app.request.locale == 'en' ? page.titleEn : page.titlePt }}
+									</a>
+								</li>
+							{% endfor %}
 						</ul>
 					</div>
 					<div>
 						<h3 class="text-white font-bold text-lg mb-6">
 							{{ app.request.locale == 'en' ? 'Support Desk' : 'Central de Atendimento' }}
 						</h3>
-						<div class="inline-flex items-center gap-3 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 w-full mb-4">
+						<div class="inline-flex items-center gap-3 footer-card-gradient p-4 rounded-xl border border-white/10 w-full mb-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
 							<span class="text-2xl">✉️</span>
 							<div>
-								<p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">E-mail</p>
-								<a href="mailto:contato@cpacitros.com.br" class="text-secondary font-bold hover:text-white transition-colors">contato@cpacitros.com.br</a>
+								<p class="text-xs font-semibold text-white/70 uppercase tracking-widest">E-mail</p>
+								<a href="mailto:contato@cpacitros.com.br" class="text-white font-bold hover:text-white/80 transition-colors">contato@cpacitros.com.br</a>
 							</div>
 						</div>
 						<p class="text-sm text-slate-400 leading-relaxed">
@@ -206,9 +229,9 @@
 						<h3 class="text-white font-bold text-lg mb-6">
 							{{ app.request.locale == 'en' ? 'Financial Support' : 'Apoio Financeiro' }}
 						</h3>
-						<div class="p-6 rounded-xl bg-gradient-to-tr from-slate-800 to-slate-800/50 border border-white/5 ring-1 ring-inset ring-white/10 relative overflow-hidden">
-							<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl"></div>
-							<p class="text-sm leading-relaxed relative z-10 text-slate-300">
+						<div class="p-6 rounded-xl footer-card-gradient border border-white/10 ring-1 ring-inset ring-white/10 relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+							<div class="absolute -right-4 -top-4 w-24 h-24 bg-white/15 rounded-full blur-2xl"></div>
+							<p class="text-sm leading-relaxed relative z-10 text-white/90">
 								<span class="font-bold text-white block mb-1">FEALQ</span>
 								{{ app.request.locale == 'en' ? 'Luiz de Queiroz Foundation for Agrarian Studies. Official financial agent.' : 'Fundação de Estudos Agrários Luiz de Queiroz. Instituição interveniente financeira oficial.' }}
 							</p>
@@ -216,18 +239,15 @@
 					</div>
 				</div>
 
-				<div class="flex flex-wrap gap-8 items-center justify-center opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
-					{% if partners is defined and partners is not empty %}
-						{% for p in partners %}
-							{% if p.logo and p.logo.imageName %}
-								<img src="{{ asset('uploads/' ~ p.logo.imageName) }}" alt="{{ p.name }}" class="h-10 mix-blend-screen opacity-70 hover:opacity-100 transition-opacity">
-							{% endif %}
-						{% endfor %}
-					{% endif %}
-				</div>
 
-				<div class="text-center text-xs text-slate-500 font-medium mt-16 tracking-widest uppercase">
-					&copy; {{ "now"|date("Y") }} CPA Citros.
+
+				<div class="text-center text-xs text-slate-500 font-medium mt-16 tracking-widest uppercase flex flex-col md:flex-row items-center justify-center gap-2">
+					<span>&copy; {{ "now"|date("Y") }} CPA Citros.</span>
+					<span class="text-slate-600 hidden md:inline">|</span>
+					<span class="text-[10px] text-slate-600 normal-case tracking-normal">
+						{{ app.request.locale == 'en' ? 'Developed by' : 'Desenvolvido por' }}
+						<a href="https://wab.com.br" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors font-semibold">WAB</a>
+					</span>
 				</div>
 			</div>
 		</footer>

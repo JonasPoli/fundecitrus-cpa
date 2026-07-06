@@ -1,5 +1,6 @@
 {% extends 'pub/base.html.twig' %}
 {% block title %}{{ app.request.locale == 'en' ? 'Events' : 'Eventos' }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ app.request.locale == 'en' ? 'Agenda of scientific events, workshops and academic library of CPA Citros.' : 'Calendário de eventos científicos, workshops e acervo acadêmico do CPA Citros.' }}{% endblock %}
 {% block body %}
 <section class="bg-theme-gradient text-white border-0 text-white pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
     <img src="{{ asset('images/workshop_biologico_banner.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
@@ -35,7 +36,7 @@
                 {% set title = app.request.locale == 'en' ? evento.titleEn : evento.titlePt %}
                 {% set date = app.request.locale == 'en' ? evento.dateEn : evento.datePt %}
                 {% set slug = app.request.locale == 'en' ? evento.slugEn : evento.slugPt %}
-                <article class="relative flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 border border-slate-100 group hover:-translate-y-1 transition-all duration-500 hover:border-slate-300 hover:shadow-2xl">
+                <a href="{{ path('app_evento_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="relative flex flex-col md:flex-row bg-white rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 border border-slate-100 group hover:-translate-y-1 transition-all duration-500 hover:border-slate-300 hover:shadow-2xl">
                     <div class="md:w-2/5 aspect-square md:aspect-auto bg-slate-100 relative overflow-hidden">
                         {% if evento.image and evento.image.imageName %}
                             <img src="{{ asset('uploads/' ~ evento.image.imageName) }}" alt="Poster do Evento" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-in-out mix-blend-multiply opacity-90">
@@ -52,13 +53,13 @@
                             <h3 class="text-2xl font-bold text-slate-900 mb-4 leading-tight group-hover:text-primary transition-colors">{{ title }}</h3>
                         </div>
                         <div class="mt-8 pt-6 border-t border-slate-100">
-                            <a href="{{ path('app_evento_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="flex items-center justify-between w-full text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">
+                            <div class="flex items-center justify-between w-full text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">
                                 {{ app.request.locale == 'en' ? 'More Information' : 'Mais Informações' }}
                                 <span class="bg-slate-100 p-2 rounded-full group-hover:bg-primary/50 transition-colors">&rarr;</span>
-                            </a>
+                            </div>
                         </div>
                     </div>
-                </article>
+                </a>
             {% else %}
                 <div class="col-span-2 text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300 shadow-sm">
                     <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl ring-1 ring-slate-100">📅</div>
@@ -89,20 +90,53 @@
             {{ app.request.locale == 'en' ? 'Knowledge does not stop. Review presentations, download PDFs presented on stage, or check report compilations.' : 'O conhecimento não para. Revise palestras, faça download dos PDFs apresentados no palco ou de relatórios fechados de eventos antigos.' }}
         </p>
         
-        <div class="max-w-4xl mx-auto bg-slate-50 p-12 md:p-20 rounded-[2.5rem] border border-slate-200 flex flex-col items-center justify-center shadow-inner relative group isolate">
-            <div class="w-20 h-20 bg-white rounded-2xl shadow-md rotate-3 mb-8 flex items-center justify-center text-4xl ring-1 ring-slate-900/5 group-hover:-rotate-3 transition-transform duration-500 text-slate-600">
-                <i class="fa-solid fa-book-open-reader"></i>
+        {% if app.user %}
+            {% if pastDocuments is not empty %}
+                <div class="max-w-4xl mx-auto grid gap-6 sm:grid-cols-2">
+                    {% for doc in pastDocuments %}
+                        {% set title = app.request.locale == 'en' ? doc.titleEn : doc.titlePt %}
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex items-center justify-between gap-4 hover:bg-slate-100/50 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-xl flex-shrink-0">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="font-bold text-slate-900 text-sm leading-snug">
+                                        {{ title }}
+                                    </h4>
+                                    <p class="text-xs text-slate-500">
+                                        {{ app.request.locale == 'en' ? 'Restricted Document' : 'Documento Restrito' }}
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="{{ asset('uploads/documents/' ~ doc.fileName) }}" target="_blank" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-lg shadow transition-all">
+                                {{ app.request.locale == 'en' ? 'Download' : 'Baixar' }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-slate-500 py-12 text-center">
+                    {{ app.request.locale == 'en' ? 'No proceedings found.' : 'Nenhum documento encontrado.' }}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="max-w-4xl mx-auto bg-slate-50 p-12 md:p-20 rounded-[2.5rem] border border-slate-200 flex flex-col items-center justify-center shadow-inner relative group isolate">
+                <div class="w-20 h-20 bg-white rounded-2xl shadow-md rotate-3 mb-8 flex items-center justify-center text-4xl ring-1 ring-slate-900/5 group-hover:-rotate-3 transition-transform duration-500 text-slate-600">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                </div>
+                <h4 class="text-2xl font-bold text-slate-900 mb-4">
+                    {{ app.request.locale == 'en' ? 'Restricted Repository' : 'Acervo Restrito' }}
+                </h4>
+                <p class="text-slate-500 max-w-md mb-8">
+                    {{ app.request.locale == 'en' ? 'To access full proceedings and related heavy media files, log into the Researchers Area.' : 'Para acessar os Anais de Eventos e demais mídias pesadas, efetue login na Área Restrita dos Pesquisadores.' }}
+                </p>
+                <a href="{{ path('app_login') }}" class="px-8 py-3 bg-primary text-white font-bold rounded-xl shadow-sm hover:bg-primary-dark transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    {{ app.request.locale == 'en' ? 'Login to Access' : 'Acessar Área Restrita' }}
+                </a>
             </div>
-            <h4 class="text-2xl font-bold text-slate-900 mb-4">
-                {{ app.request.locale == 'en' ? 'Restricted Repository' : 'Acervo Restrito' }}
-            </h4>
-            <p class="text-slate-500 max-w-md">
-                {{ app.request.locale == 'en' ? 'To access full proceedings and related heavy media files, log into the Researchers Area.' : 'Para acessar os Anais de Eventos e demais mídias pesadas, efetue login na Área Restrita dos Pesquisadores.' }}
-            </p>
-            <div class="mt-8 px-6 py-2 rounded-full border border-slate-300 text-slate-600 font-bold text-sm tracking-widest uppercase bg-white shadow-sm">
-                {{ app.request.locale == 'en' ? 'In Processing' : 'Em Processamento' }}
-            </div>
-        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

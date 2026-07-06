@@ -1,0 +1,85 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-play admin-page-title-icon" aria-hidden="true"></i>
+            Vídeos e Podcasts
+        </h1>
+        <p class="page-subtitle">Gerencie os vídeos do YouTube e Podcasts (entrevistas) exibidos no site.</p>
+    </div>
+    <div>
+        <a href="{{ path('admin_youtube_media_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar Mídia
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Tipo</th>
+                <th>Miniatura</th>
+                <th>Título</th>
+                <th>ID YouTube</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="media-sortable">
+            {% for item in medias %}
+                <tr class="sortable-row" data-id="{{ item.id }}">
+                    <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td>
+                        {% if item.type == 'video' %}
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                                <i class="fa-solid fa-video"></i>
+                                Vídeo
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">
+                                <i class="fa-solid fa-microphone"></i>
+                                Podcast
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.youtubeId %}
+                            <img src="https://img.youtube.com/vi/{{ item.youtubeId }}/mqdefault.jpg" alt="Preview" class="h-10 w-auto rounded border border-slate-200">
+                        {% endif %}
+                    </td>
+                    <td class="font-semibold">{{ item.title }}</td>
+                    <td class="text-xs text-slate-500 font-mono">{{ item.youtubeId }}</td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ path('admin_youtube_media_edit', {id: item.id}) }}" class="btn-icon btn-icon-edit" title="Editar">
+                                <i class="fa-solid fa-pencil" aria-hidden="true"></i>
+                            </a>
+                            <form method="post" action="{{ path('admin_youtube_media_delete', {id: item.id}) }}" onsubmit="return confirm('Deseja realmente excluir esta mídia?');" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                                <button class="btn-icon btn-icon-delete" title="Excluir">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-slate-500 py-8">Nenhuma mídia cadastrada.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{{ include('admin/_sortable_script.html.twig', {
+    tbody_id: 'media-sortable',
+    reorder_url: path('app_admin_reorder', {entityName: 'YoutubeMedia'})
+}) }}
+
+{% endblock %}

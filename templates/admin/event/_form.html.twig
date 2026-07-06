@@ -17,6 +17,7 @@
             {{ form_row(form.slugEn) }}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.registrationLink) }}
             <div>
                 {{ form_row(form.image) }}
                 {% if event is defined and event.image and event.image.imageName %}

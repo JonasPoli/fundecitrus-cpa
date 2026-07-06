@@ -5,8 +5,11 @@ namespace App\Entity;
 use App\Repository\JobOpportunityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: JobOpportunityRepository::class)]
+#[Vich\Uploadable]
 class JobOpportunity
 {
     #[ORM\Id]
@@ -163,6 +166,15 @@ class JobOpportunity
         return $this;
     }
 
+    #[Vich\UploadableField(mapping: 'documents', fileNameProperty: 'pdfName')]
+    private ?File $pdfFile = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $pdfName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function getImage(): ?Image
     {
         return $this->image;
@@ -171,6 +183,41 @@ class JobOpportunity
     public function setImage(?Image $image): static
     {
         $this->image = $image;
+        return $this;
+    }
+
+    public function setPdfFile(?File $pdfFile = null): void
+    {
+        $this->pdfFile = $pdfFile;
+
+        if (null !== $pdfFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getPdfFile(): ?File
+    {
+        return $this->pdfFile;
+    }
+
+    public function setPdfName(?string $pdfName): void
+    {
+        $this->pdfName = $pdfName;
+    }
+
+    public function getPdfName(): ?string
+    {
+        return $this->pdfName;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }

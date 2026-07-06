@@ -1,0 +1,22 @@
+{{ form_start(form) }}
+<div class="admin-card space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {{ form_row(form.type) }}
+        {{ form_row(form.youtubeId) }}
+    </div>
+
+    {{ form_row(form.title) }}
+    {{ form_row(form.description) }}
+</div>
+
+<div class="flex items-center justify-end gap-3 mt-6">
+    <a href="{{ path('admin_youtube_media_index') }}" class="btn-secondary">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Voltar
+    </a>
+    <button class="btn-primary" type="submit">
+        <i class="fa-solid fa-check" aria-hidden="true"></i>
+        Salvar
+    </button>
+</div>
+{{ form_end(form) }}

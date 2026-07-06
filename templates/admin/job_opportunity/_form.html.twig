@@ -30,6 +30,17 @@
                     </div>
                 {% endif %}
             </div>
+            <div>
+                {{ form_row(form.pdfFile) }}
+                {% if job_opportunity is defined and job_opportunity.pdfName %}
+                    <div class="mt-2 text-xs">
+                        <span class="text-slate-500">Arquivo PDF atual:</span>
+                        <a href="{{ asset('uploads/documents/' ~ job_opportunity.pdfName) }}" target="_blank" class="text-primary font-semibold hover:underline">
+                            {{ job_opportunity.pdfName }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
     

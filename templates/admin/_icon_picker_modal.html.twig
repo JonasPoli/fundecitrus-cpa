@@ -1,0 +1,338 @@
+<div id="icon-modal-overlay">
+    <div id="icon-modal" class="bg-[var(--bm-card-bg)] text-[var(--bm-text)] border border-[var(--bm-border)] shadow-2xl">
+        <div class="flex items-center justify-between border-b border-[var(--bm-border)] pb-3">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-star text-[var(--bm-accent)] text-lg"></i>
+                <span class="font-extrabold text-lg tracking-tight">Escolher Ícone Font Awesome</span>
+            </div>
+            <button type="button" onclick="closeIconPicker()" class="bg-none border-none cursor-pointer text-[var(--bm-text-muted)] hover:text-[var(--bm-danger)] text-xl flex items-center transition-colors">✕</button>
+        </div>
+        <div class="icon-search-wrap my-4 relative flex items-center">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 text-[var(--bm-text-muted)]"></i>
+            <input type="text" id="icon-search" class="w-full rounded-xl border border-[var(--bm-input-border)] bg-[var(--bm-input-bg)] text-[var(--bm-text)] py-3 pl-12 pr-4 focus:ring-2 focus:ring-[var(--bm-accent)] focus:border-[var(--bm-accent)] outline-none text-sm transition-all" placeholder="Pesquisar ícones... ex: facebook, instagram, building, link" oninput="filterIcons(this.value)">
+        </div>
+        <div class="icon-tabs flex gap-2 overflow-x-auto pb-2 border-b border-[var(--bm-border)]" id="icon-tabs-container">
+            <button type="button" class="icon-tab active" onclick="switchIconTab('all', this)">Todos</button>
+            <button type="button" class="icon-tab" onclick="switchIconTab('brands', this)">Marcas & Redes</button>
+            <button type="button" class="icon-tab" onclick="switchIconTab('edu', this)">Institucional & Cursos</button>
+            <button type="button" class="icon-tab" onclick="switchIconTab('biz', this)">Negócios & Web</button>
+            <button type="button" class="icon-tab" onclick="switchIconTab('media', this)">Interface & Mídia</button>
+            <button type="button" class="icon-tab" onclick="switchIconTab('health', this)">Saúde & Ciências</button>
+            <button type="button" class="icon-tab" onclick="switchIconTab('arrows', this)">Setas & Navegação</button>
+        </div>
+        <div class="icon-grid grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2 overflow-y-auto max-h-[300px] py-4 pr-1" id="icon-grid-container"></div>
+        
+        <!-- Live Preview Pane -->
+        <div id="icon-preview-pane" class="flex items-center gap-4 p-4 bg-[var(--bm-bg)] border border-[var(--bm-border)] rounded-2xl mt-2 min-h-[68px]">
+            <div id="icon-preview-pane-icon" class="text-2xl w-12 h-12 bg-[var(--bm-accent)]/10 border border-[var(--bm-accent)]/20 rounded-xl flex items-center justify-center text-[var(--bm-accent)] transition-all">
+                <i class="fa-solid fa-face-smile"></i>
+            </div>
+            <div class="flex flex-col gap-0.5">
+                <span id="icon-preview-pane-name" class="text-sm font-bold font-mono text-[var(--bm-text)]">fa-solid fa-face-smile</span>
+                <span id="icon-preview-pane-desc" class="text-xs text-[var(--bm-text-muted)]">Passe o mouse sobre qualquer ícone da lista para ver os detalhes em tempo real</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #icon-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 17, 23, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+    #icon-modal-overlay.open {
+        display: flex;
+    }
+    #icon-modal {
+        border-radius: 20px;
+        padding: 1.75rem;
+        width: min(720px, 95vw);
+        max-height: 88vh;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        animation: modalScale .25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalScale {
+        from { transform: scale(.95); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .icon-tab {
+        padding: .4rem 1rem;
+        border-radius: 20px;
+        font-size: .75rem;
+        font-weight: 600;
+        background: transparent;
+        color: var(--bm-text-muted);
+        border: 1px solid var(--bm-border);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all .2s;
+    }
+    .icon-tab:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--bm-text);
+    }
+    html.dark .icon-tab:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    .icon-tab.active {
+        background: var(--bm-accent);
+        color: #ffffff;
+        border-color: var(--bm-accent);
+    }
+    .icon-grid::-webkit-scrollbar {
+        width: 6px;
+    }
+    .icon-grid::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .icon-grid::-webkit-scrollbar-thumb {
+        background: var(--bm-border);
+        border-radius: 10px;
+    }
+    .icon-grid button {
+        aspect-ratio: 1;
+        background: var(--bm-bg);
+        border: 1px solid var(--bm-border);
+        border-radius: 12px;
+        cursor: pointer;
+        color: var(--bm-text);
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .15s;
+    }
+    .icon-grid button:hover {
+        background: var(--bm-accent);
+        border-color: var(--bm-accent);
+        color: #ffffff;
+        transform: scale(1.1);
+    }
+</style>
+
+<script>
+let FA_ICONS = [];
+let _pickerTarget = null;
+let _pickerPreview = null;
+let _currentTab = 'all';
+let _currentList = [];
+let _renderLimit = 180;
+let _renderedCount = 0;
+
+const CURATED_ICONS = {
+    'brands': [
+        'instagram', 'facebook', 'facebook-f', 'youtube', 'linkedin', 'linkedin-in', 'whatsapp', 'twitter', 'x-twitter', 'tiktok', 'github', 'telegram', 'discord'
+    ],
+    'edu': [
+        'graduation-cap', 'school', 'chalkboard', 'chalkboard-user', 'pencil', 'pen', 'pen-to-square', 'pen-clip', 'eraser', 'ruler', 'ruler-combined', 'calculator', 'atom', 'dna', 'microscope', 'flask', 'globe', 'earth-americas', 'map', 'building-columns', 'landmark', 'backpack', 'certificate', 'award', 'medal', 'trophy'
+    ],
+    'biz': [
+        'briefcase', 'building', 'store', 'shop', 'shopping-cart', 'credit-card', 'wallet', 'piggy-bank', 'landmark', 'server', 'database', 'cloud', 'wifi', 'shield', 'key', 'lock', 'envelope', 'phone', 'bell', 'dollar-sign', 'euro-sign', 'coins', 'receipt', 'file-invoice-dollar'
+    ],
+    'media': [
+        'image', 'images', 'camera', 'video', 'film', 'gear', 'wrench', 'hammer', 'trash', 'pen', 'check', 'info', 'question', 'exclamation', 'magnifying-glass', 'filter', 'list', 'bars', 'ellipsis', 'clock', 'calendar-days'
+    ],
+    'health': [
+        'heart', 'stethoscope', 'hospital', 'user-doctor', 'user-nurse', 'kit-medical', 'syringe', 'pills', 'wheelchair', 'virus', 'dna', 'microscope', 'flask', 'brain'
+    ],
+    'arrows': [
+        'arrow-up', 'arrow-down', 'arrow-left', 'arrow-right', 'chevron-up', 'chevron-down', 'chevron-left', 'chevron-right', 'rotate', 'repeat', 'arrows-rotate', 'compass', 'location-dot', 'map-pin', 'route', 'road', 'plane', 'paper-plane'
+    ]
+};
+
+function initIconPickerData() {
+    if (FA_ICONS.length > 0) return;
+    let allSet = new Set();
+    Object.entries(CURATED_ICONS).forEach(([cat, names]) => {
+        names.forEach(name => {
+            const prefix = cat === 'brands' ? 'fa-brands' : 'fa-solid';
+            allSet.add(`${prefix} fa-${name}`);
+        });
+    });
+    FA_ICONS = Array.from(allSet).sort();
+}
+
+function openIconPicker(inputId, previewId) {
+    _pickerTarget = document.getElementById(inputId);
+    _pickerPreview = document.getElementById(previewId);
+    
+    initIconPickerData();
+    
+    document.getElementById('icon-search').value = '';
+    
+    const tabs = document.querySelectorAll('.icon-tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    if (tabs[0]) tabs[0].classList.add('active');
+    _currentTab = 'all';
+    
+    renderIcons(FA_ICONS, true);
+    document.getElementById('icon-modal-overlay').classList.add('open');
+    document.getElementById('icon-search').focus();
+    
+    if (_pickerTarget && _pickerTarget.value) {
+        previewIcon(_pickerTarget.value);
+    } else {
+        resetPanePreview();
+    }
+}
+
+function closeIconPicker() {
+    document.getElementById('icon-modal-overlay').classList.remove('open');
+}
+
+function switchIconTab(category, btn) {
+    const tabs = document.querySelectorAll('.icon-tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    
+    _currentTab = category;
+    document.getElementById('icon-search').value = '';
+    
+    const list = getCategorizedIcons(category);
+    renderIcons(list, true);
+}
+
+function getCategorizedIcons(category) {
+    if (category === 'all') return FA_ICONS;
+    
+    return FA_ICONS.filter(ic => {
+        const parts = ic.split(' ');
+        const prefix = parts[0];
+        const name = parts[1].replace('fa-', '');
+        
+        if (category === 'brands') {
+            return prefix === 'fa-brands';
+        }
+        return CURATED_ICONS[category] && CURATED_ICONS[category].includes(name);
+    });
+}
+
+function filterIcons(q) {
+    const term = q.toLowerCase().trim().replace(/^fa-(solid|brands|regular)\s+fa-/, '').replace(/fa-/,'');
+    const baseList = getCategorizedIcons(_currentTab);
+    
+    if (!term) {
+        renderIcons(baseList, true);
+        return;
+    }
+    
+    const filtered = baseList.filter(ic => ic.toLowerCase().includes(term));
+    renderIcons(filtered, true);
+}
+
+function renderIcons(list, resetScroll = true) {
+    _currentList = list;
+    const grid = document.getElementById('icon-grid-container');
+    if (!grid) return;
+    
+    if (resetScroll) {
+        grid.scrollTop = 0;
+        _renderedCount = 0;
+        grid.innerHTML = '';
+    }
+    
+    if (list.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-[var(--bm-text-muted)] text-sm">Nenhum ícone encontrado.</div>';
+        return;
+    }
+    
+    appendMoreIcons();
+}
+
+function appendMoreIcons() {
+    const grid = document.getElementById('icon-grid-container');
+    if (!grid) return;
+    
+    const start = _renderedCount;
+    const end = Math.min(start + _renderLimit, _currentList.length);
+    if (start >= _currentList.length) return;
+    
+    const nextBatch = _currentList.slice(start, end);
+    const html = nextBatch.map(ic =>
+        `<button type="button" onclick="selectIcon('${ic}')" onmouseenter="previewIcon('${ic}')" title="${ic}"><i class="${ic}"></i></button>`
+    ).join('');
+    
+    const indicator = document.getElementById('scroll-load-indicator');
+    if (indicator) indicator.remove();
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    while (tempDiv.firstChild) {
+        grid.appendChild(tempDiv.firstChild);
+    }
+    
+    _renderedCount = end;
+    
+    if (_renderedCount < _currentList.length) {
+        const sentinel = document.createElement('div');
+        sentinel.id = 'scroll-load-indicator';
+        sentinel.className = 'col-span-full text-center py-4 text-xs text-[var(--bm-text-muted)] cursor-pointer';
+        sentinel.innerText = `Carregar mais... (${_renderedCount} de ${_currentList.length})`;
+        sentinel.onclick = appendMoreIcons;
+        grid.appendChild(sentinel);
+    }
+}
+
+function selectIcon(cls) {
+    if (_pickerTarget) {
+        _pickerTarget.value = cls;
+        _pickerTarget.dispatchEvent(new Event('change'));
+    }
+    if (_pickerPreview) {
+        _pickerPreview.innerHTML = `<i class="${cls}"></i>`;
+    }
+    closeIconPicker();
+}
+
+function previewIcon(cls) {
+    const paneIcon = document.getElementById('icon-preview-pane-icon');
+    const paneName = document.getElementById('icon-preview-pane-name');
+    const paneDesc = document.getElementById('icon-preview-pane-desc');
+    if (!paneIcon || !paneName || !paneDesc) return;
+    
+    paneIcon.innerHTML = `<i class="${cls}"></i>`;
+    paneName.innerText = cls;
+    
+    const parts = cls.split(' ');
+    const type = parts[0] === 'fa-brands' ? 'Marca / Logotipo' : 'Estilo Sólido';
+    const name = parts[1].replace('fa-', '');
+    paneDesc.innerText = `Ícone "${name}" • Tipo: ${type}`;
+}
+
+function resetPanePreview() {
+    const paneIcon = document.getElementById('icon-preview-pane-icon');
+    const paneName = document.getElementById('icon-preview-pane-name');
+    const paneDesc = document.getElementById('icon-preview-pane-desc');
+    if (!paneIcon || !paneName || !paneDesc) return;
+    
+    paneIcon.innerHTML = `<i class="fa-solid fa-face-smile"></i>`;
+    paneName.innerText = 'fa-solid fa-face-smile';
+    paneDesc.innerText = 'Passe o mouse sobre qualquer ícone da lista para ver os detalhes em tempo real';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('icon-grid-container');
+    if (grid) {
+        grid.addEventListener('scroll', function() {
+            if (this.scrollTop + this.clientHeight >= this.scrollHeight - 20) {
+                appendMoreIcons();
+            }
+        });
+    }
+    
+    const overlay = document.getElementById('icon-modal-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) closeIconPicker();
+        });
+    }
+});
+</script>

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ResearcherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ResearcherRepository::class)]
@@ -36,6 +37,18 @@ class Researcher
 
     #[ORM\Column(options: ['default' => 0])]
     private ?int $position = 0;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $curriculoPt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $curriculoEn = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $linkedin = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $email = null;
 
     public function __construct()
     {
@@ -137,6 +150,50 @@ class Researcher
     public function setPosition(int $position): static
     {
         $this->position = $position;
+        return $this;
+    }
+
+    public function getCurriculoPt(): ?string
+    {
+        return $this->curriculoPt;
+    }
+
+    public function setCurriculoPt(?string $curriculoPt): static
+    {
+        $this->curriculoPt = $curriculoPt;
+        return $this;
+    }
+
+    public function getCurriculoEn(): ?string
+    {
+        return $this->curriculoEn;
+    }
+
+    public function setCurriculoEn(?string $curriculoEn): static
+    {
+        $this->curriculoEn = $curriculoEn;
+        return $this;
+    }
+
+    public function getLinkedin(): ?string
+    {
+        return $this->linkedin;
+    }
+
+    public function setLinkedin(?string $linkedin): static
+    {
+        $this->linkedin = $linkedin;
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
         return $this;
     }
 }

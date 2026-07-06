@@ -9,6 +9,7 @@ use App\Repository\HomeBannerRepository;
 use App\Repository\JobOpportunityRepository;
 use App\Repository\NewsRepository;
 use App\Repository\PartnerRepository;
+use App\Repository\PageContentRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\ResearcherRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,9 @@ use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\ProjectDocument;
+use App\Entity\YoutubeMedia;
 
 class MainController extends AbstractController
 {
@@ -44,33 +48,10 @@ class MainController extends AbstractController
     #[Route('/{_locale}/sobre', name: 'app_sobre', requirements: ['_locale' => 'pt|en'])]
     public function sobre(PartnerRepository $partnerRepo): Response
     {
-        $institutionsBR = [
-            'Centro de Energia Nuclear na Agricultura - Cena - USP',
-            'Faculdade de Zootecnia e Engenharia de Alimentos - FZEA - USP',
-            'Universidade Federal de São Carlos - UFSCar',
-            'Universidade Estadual de Campinas - Unicamp',
-            'Instituto Biológico de São Paulo',
-            'Universidade Estadual Paulista - Unesp',
-            'Instituto Agronômico de Campinas - IAC',
-            'Empresa Brasileira de Pesquisa Agropecuária - Embrapa'
-        ];
-        $institutionsINT = [
-            'Centro de Cooperação Internacional - Cirad | França',
-            'Conselho Superior de Pesquisas Científicas - CSIC | Espanha',
-            'Instituto Andaluz - Ifapa | Espanha',
-            'Universidade da Flórida | EUA',
-            'Universidade da Califórnia | EUA',
-            'Departamento de Queensland | Austrália',
-            'Universidade de Durham | Inglaterra',
-            'Universidade de Cambridge | Inglaterra',
-            'Universidade de Warwick | Inglaterra',
-            'Universidade do Algarve | Portugal'
-        ];
-
         return $this->render('pub/main/sobre.html.twig', [
             'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
-            'institutionsBR' => $institutionsBR,
-            'institutionsINT' => $institutionsINT,
+            'partnersBR' => $partnerRepo->findBy(['region' => 'BR'], ['position' => 'ASC']),
+            'partnersINT' => $partnerRepo->findBy(['region' => 'INT'], ['position' => 'ASC']),
         ]);
     }
 
@@ -79,24 +60,18 @@ class MainController extends AbstractController
         Request $request,
         ResearcherRepository $researcherRepo,
         ProjectRepository $projectRepo,
-        PartnerRepository $partnerRepo
+        PartnerRepository $partnerRepo,
+        EntityManagerInterface $entityManager
     ): Response {
-        $search = $request->query->get('search');
-        if ($search) {
-            $projetos = $projectRepo->createQueryBuilder('p')
-                ->leftJoin('p.pesquisador', 'r')
-                ->where('p.nomePt LIKE :search OR p.nomeEn LIKE :search OR p.objetivoPt LIKE :search OR p.objetivoEn LIKE :search OR r.nome LIKE :search')
-                ->setParameter('search', '%' . $search . '%')
-                ->getQuery()
-                ->getResult();
-        } else {
-            $projetos = $projectRepo->findAll();
-        }
+        $search = $request->query->get('search', '');
+        $projetos = $projectRepo->findAll();
+        $projectDocuments = $entityManager->getRepository(ProjectDocument::class)->findBy([], ['year' => 'DESC', 'id' => 'DESC']);
 
         return $this->render('pub/main/pesquisa.html.twig', [
             'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
             'pesquisadores' => $researcherRepo->findBy([], ['position' => 'ASC']),
             'projetos' => $projetos,
+            'projectDocuments' => $projectDocuments,
             'search' => $search,
         ]);
     }
@@ -106,7 +81,8 @@ class MainController extends AbstractController
         Request $request,
         NewsRepository $newsRepo,
         ClippingRepository $clippingRepo,
-        PartnerRepository $partnerRepo
+        PartnerRepository $partnerRepo,
+        EntityManagerInterface $entityManager
     ): Response {
         $search = $request->query->get('search');
         if ($search) {
@@ -120,20 +96,26 @@ class MainController extends AbstractController
             $noticias = $newsRepo->findBy([], ['date' => 'DESC']);
         }
 
+        $medias = $entityManager->getRepository(YoutubeMedia::class)->findBy([], ['position' => 'ASC', 'id' => 'DESC']);
+
         return $this->render('pub/main/comunicacao.html.twig', [
             'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
             'noticias' => $noticias,
             'midia' => $clippingRepo->findAll(),
+            'medias' => $medias,
             'search' => $search,
         ]);
     }
 
     #[Route('/{_locale}/eventos', name: 'app_eventos', requirements: ['_locale' => 'pt|en'])]
-    public function eventos(EventRepository $eventRepo, PartnerRepository $partnerRepo): Response
+    public function eventos(EventRepository $eventRepo, PartnerRepository $partnerRepo, DocumentRepository $documentRepo): Response
     {
+        $pastDocuments = $documentRepo->findBy(['folderPt' => 'Anais de Eventos'], ['createdAt' => 'DESC']);
+
         return $this->render('pub/main/eventos.html.twig', [
             'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
             'agenda' => $eventRepo->findAll(),
+            'pastDocuments' => $pastDocuments,
         ]);
     }
 
@@ -232,6 +214,41 @@ class MainController extends AbstractController
         }
 
         return $this->render('pub/main/detalhe/oportunidade.html.twig', [
+            'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
+            'item' => $item,
+        ]);
+    }
+
+    #[Route('/{_locale}/pagina/{slug}', name: 'app_pagina_detalhe', requirements: ['_locale' => 'pt|en'])]
+    public function paginaDetalhe(string $slug, PageContentRepository $pageContentRepository, PartnerRepository $partnerRepo): Response
+    {
+        $item = $pageContentRepository->findOneBy(['slugPt' => $slug, 'isActive' => true]) 
+            ?: $pageContentRepository->findOneBy(['slugEn' => $slug, 'isActive' => true]);
+            
+        if (!$item) {
+            throw $this->createNotFoundException('Página não encontrada');
+        }
+
+        return $this->render('pub/main/detalhe/pagina.html.twig', [
+            'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
+            'item' => $item,
+        ]);
+    }
+
+    #[Route('/{_locale}/pesquisador/{id}', name: 'app_pesquisador_detalhe', requirements: ['_locale' => 'pt|en', 'id' => '\d+'])]
+    public function pesquisadorDetalhe(int $id, ResearcherRepository $researcherRepository, PartnerRepository $partnerRepo): Response
+    {
+        $item = $researcherRepository->find($id);
+        if (!$item) {
+            throw $this->createNotFoundException('Pesquisador não encontrado');
+        }
+
+        // Must have curriculum filled in either language to show detail page
+        if (empty($item->getCurriculoPt()) && empty($item->getCurriculoEn())) {
+            throw $this->createNotFoundException('Pesquisador sem currículo cadastrado');
+        }
+
+        return $this->render('pub/main/detalhe/pesquisador.html.twig', [
             'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
             'item' => $item,
         ]);

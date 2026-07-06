@@ -87,10 +87,13 @@
             <span>Páginas Institucionais</span>
         </a>
 
+        {# Parceiros hidden from admin menu per user request #}
+        {#
         <a {{nav_item_class('app_admin_partner')}} href="{{ path('app_admin_partner_index') }}">
             <i class="fa-solid fa-handshake" aria-hidden="true"></i>
             <span>Parceiros</span>
         </a>
+        #}
 
         <div class="sidebar-section-label">Pesquisa & Carreira</div>
 
@@ -102,6 +105,11 @@
         <a {{nav_item_class('app_admin_project')}} href="{{ path('app_admin_project_index') }}">
             <i class="fa-solid fa-flask" aria-hidden="true"></i>
             <span>Projetos Científicos</span>
+        </a>
+
+        <a {{nav_item_class('admin_project_document')}} href="{{ path('admin_project_document_index') }}">
+            <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
+            <span>Docs de Projetos</span>
         </a>
 
         <a {{nav_item_class('app_admin_job_opportunity')}} href="{{ path('app_admin_job_opportunity_index') }}">
@@ -121,9 +129,19 @@
             <span>Eventos</span>
         </a>
 
+        <a {{nav_item_class('admin_youtube_media')}} href="{{ path('admin_youtube_media_index') }}">
+            <i class="fa-solid fa-play" aria-hidden="true"></i>
+            <span>Vídeos e Podcasts</span>
+        </a>
+
         <a {{nav_item_class('app_admin_clipping')}} href="{{ path('app_admin_clipping_index') }}">
             <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
             <span>Clipping (Na Mídia)</span>
+        </a>
+
+        <a {{nav_item_class('app_admin_social_network')}} href="{{ path('app_admin_social_network_index') }}">
+            <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+            <span>Redes Sociais</span>
         </a>
 
         <div class="sidebar-section-label">Área Restrita</div>
@@ -205,6 +223,8 @@
 
 {# ── Mobile overlay ────────────────────────────────────────────────────── #}
 <div class="sidebar-overlay" data-nav-target="overlay" data-action="click->nav#closeSidebar" aria-hidden="true"></div>
+
+{{ include('admin/_icon_picker_modal.html.twig') }}
 
 {% block javascripts %}{% endblock %}
 

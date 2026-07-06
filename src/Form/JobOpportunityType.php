@@ -10,6 +10,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\ImageType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
+use Vich\UploaderBundle\Form\Type\VichFileType;
+
 class JobOpportunityType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -41,6 +43,14 @@ class JobOpportunityType extends AbstractType
                 'label' => 'Slug (Português)'])
             ->add('slugEn', null, [
                 'label' => 'Slug (Inglês)'])
+            ->add('pdfFile', VichFileType::class, [
+                'required' => false,
+                'allow_delete' => true,
+                'delete_label' => 'Marque para excluir o PDF atual',
+                'download_uri' => false,
+                'asset_helper' => true,
+                'label' => 'Arquivo PDF do Edital',
+            ])
             ->add('image', ImageType::class, [
                 'label' => 'Imagem de Destaque',
             ])

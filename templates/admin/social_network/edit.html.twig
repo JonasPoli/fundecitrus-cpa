@@ -1,0 +1,27 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fa-solid fa-share-nodes admin-page-title-icon" aria-hidden="true"></i>
+                Editar Rede Social
+            </h1>
+            <p class="page-subtitle">Modifique as informações da rede social.</p>
+        </div>
+        <a href="{{ path('app_admin_social_network_index') }}" class="btn-secondary">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Voltar
+        </a>
+    </div>
+
+    {{ include('admin/social_network/_form.html.twig') }}
+
+    <form method="post" action="{{ path('app_admin_social_network_delete', {'id': social_network.id}) }}" onsubmit="return confirm('Tem certeza de que quer excluir este registro?');" class="text-right mt-6">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ social_network.id) }}">
+        <button type="submit" class="btn-danger">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            Excluir
+        </button>
+    </form>
+{% endblock %}

@@ -2,6 +2,15 @@
     <div class="admin-card space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.name) }}
+            {{ form_row(form.region) }}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.url) }}
+            {{ form_row(form.newTab) }}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 {{ form_row(form.logo) }}
                 {% if partner is defined and partner.logo and partner.logo.imageName %}
@@ -11,10 +20,31 @@
                     </div>
                 {% endif %}
             </div>
+
+            <div class="relative">
+                {{ form_label(form.iconClass) }}
+                <div class="flex items-center gap-3 mt-1">
+                    <div id="partner-icon-preview" class="w-12 h-12 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 text-xl flex-shrink-0">
+                        <i class="{{ partner.iconClass ?: 'fa-solid fa-building-columns' }}"></i>
+                    </div>
+                    <div class="flex-grow">
+                        {{ form_widget(form.iconClass, { 'id': 'partner-icon-input' }) }}
+                    </div>
+                    <button type="button" onclick="openIconPicker('partner-icon-input', 'partner-icon-preview')" class="btn-secondary h-[42px] flex items-center gap-2 text-sm px-4">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Escolher
+                    </button>
+                </div>
+                {{ form_errors(form.iconClass) }}
+            </div>
         </div>
     </div>
     
-    <div class="w-full text-right mt-6">
+    <div class="flex items-center justify-end gap-3 mt-6">
+        <a href="{{ path('app_admin_partner_index') }}" class="btn-secondary">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Voltar
+        </a>
         <button type="submit" class="btn-primary">
             <i class="fa-solid fa-check" aria-hidden="true"></i>
             Salvar

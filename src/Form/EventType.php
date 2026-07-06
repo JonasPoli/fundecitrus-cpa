@@ -37,6 +37,10 @@ class EventType extends AbstractType
                 'label' => 'Slug (Português)'])
             ->add('slugEn', null, [
                 'label' => 'Slug (Inglês)'])
+            ->add('registrationLink', null, [
+                'label' => 'Link para Inscrição (URL)',
+                'required' => false,
+            ])
             ->add('image', ImageType::class, [
                 'label' => 'Imagem de Destaque',
             ])

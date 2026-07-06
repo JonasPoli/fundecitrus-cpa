@@ -1,0 +1,98 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-share-nodes admin-page-title-icon" aria-hidden="true"></i>
+            Redes Sociais
+        </h1>
+        <p class="page-subtitle">Gerencie os links e ícones das redes sociais no rodapé do site.</p>
+    </div>
+    <div>
+        <a href="{{ path('app_admin_social_network_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar
+        </a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Ícone</th>
+                <th>Nome</th>
+                <th>URL</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="social-sortable">
+            {% for item in social_networks %}
+                <tr class="sortable-row" data-id="{{ item.id }}">
+                    <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td>
+                        <span class="inline-flex w-8 h-8 rounded-full bg-slate-100 items-center justify-center text-slate-600">
+                            <i class="{{ item.iconClass ?: 'fa-solid fa-link' }}"></i>
+                        </span>
+                    </td>
+                    <td class="font-semibold">{{ item.name }}</td>
+                    <td class="text-xs text-slate-500 font-mono">{{ item.url }}</td>
+                    <td>
+                        {% if item.isActive %}
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                                Ativo
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">
+                                Inativo
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_admin_social_network_edit', {'id': item.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">Nenhuma rede social cadastrada.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            {% if social_networks is not empty %}
+                $('.admin-table').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/pt-BR.json',
+                    },
+                    ordering: false,
+                    pageLength: 10,
+                    lengthMenu: [[5, 10, 25, -1], [5, 10, 25, 'Todos']],
+                });
+            {% endif %}
+        });
+    </script>
+    {{ include('admin/_sortable_script.html.twig', {
+        tbody_id: 'social-sortable',
+        reorder_url: path('app_admin_reorder', { entityName: 'SocialNetwork' })
+    }) }}
+{% endblock %}

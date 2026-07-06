@@ -5,18 +5,19 @@
 {% set modulo = app.request.locale == 'en' ? item.moduloEn : item.moduloPt %}
 
 {% block title %}{{ nome }} | CPA Citros{% endblock %}
+{% block meta_description %}{{ objetivo }}{% endblock %}
 {% block body %}
 <!-- Detalhe do Pesquisa: Tech UI Layout -->
 <div class="bg-slate-50 py-24 pb-48">
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
         
-        <div class="mb-10 inline-flex items-center gap-3">
-            <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="text-slate-400 hover:text-primary transition-colors">
+        <div class="mb-10">
+            <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="text-slate-400 hover:text-primary transition-colors inline-flex items-center gap-3">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
+                <span class="text-sm font-bold text-slate-400 uppercase tracking-widest hover:text-primary transition-colors">
+                    {{ app.request.locale == 'en' ? 'Scientific Project Details' : 'Detalhe do Projeto Científico' }}
+                </span>
             </a>
-            <span class="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                {{ app.request.locale == 'en' ? 'Scientific Project Details' : 'Detalhe do Projeto Científico' }}
-            </span>
         </div>
         
         <div class="bg-white rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 overflow-hidden">

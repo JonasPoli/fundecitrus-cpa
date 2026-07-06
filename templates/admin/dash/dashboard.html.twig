@@ -5,121 +5,143 @@
 
 {% block body %}
 
-{# ── Page Header ───────────────────────────────────────────────────────────── #}
 <div class="page-header">
-    <h1 class="page-title">Dashboard</h1>
-    <p class="text-sm text-slate-500 dark:text-slate-400">
-        Bem-vindo, <strong>{{ app.user.userIdentifier }}</strong> · {{ 'now'|date('d/m/Y') }}
-    </p>
+    <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle">
+            Bem-vindo, <strong>{{ app.user.name ?? app.user.userIdentifier }}</strong> · {{ 'now'|date('d/m/Y') }}
+        </p>
+    </div>
 </div>
 
 {# ── Stat Cards ────────────────────────────────────────────────────────────── #}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
-    {# Total de Usuários #}
+    {# Usuários #}
     <div class="stat-card">
-        <div class="stat-card-icon bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light"
-             aria-hidden="true">
+        <div class="stat-card-icon bg-primary/10 text-primary" aria-hidden="true">
             <i class="fa-solid fa-users" aria-hidden="true"></i>
         </div>
         <div>
             <p class="stat-card-value">{{ stats.users_total }}</p>
-            <p class="stat-card-label">Usuários cadastrados</p>
+            <p class="stat-card-label">Usuários ({{ stats.users_admin }} Admins)</p>
         </div>
     </div>
 
-    {# Administradores #}
+    {# Pesquisadores #}
     <div class="stat-card">
-        <div class="stat-card-icon bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400"
-             aria-hidden="true">
-            <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+        <div class="stat-card-icon bg-blue-100 text-blue-700" aria-hidden="true">
+            <i class="fa-solid fa-user-doctor" aria-hidden="true"></i>
         </div>
         <div>
-            <p class="stat-card-value">{{ stats.users_admin }}</p>
-            <p class="stat-card-label">Administradores</p>
+            <p class="stat-card-value">{{ stats.researchers_total }}</p>
+            <p class="stat-card-label">Pesquisadores</p>
         </div>
     </div>
 
-    {# Slot para card customizado #}
-    <div class="stat-card opacity-40">
-        <div class="stat-card-icon bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
-             aria-hidden="true">
-            <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+    {# Projetos #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-purple-100 text-purple-700" aria-hidden="true">
+            <i class="fa-solid fa-microscope" aria-hidden="true"></i>
         </div>
         <div>
-            <p class="stat-card-value">—</p>
-            <p class="stat-card-label">Personalize aqui</p>
+            <p class="stat-card-value">{{ stats.projects_total }}</p>
+            <p class="stat-card-label">Projetos Científicos</p>
         </div>
     </div>
 
-    {# Slot para card customizado #}
-    <div class="stat-card opacity-40">
-        <div class="stat-card-icon bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400"
-             aria-hidden="true">
-            <i class="fa-solid fa-bell" aria-hidden="true"></i>
+    {# Notícias #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-amber-100 text-amber-700" aria-hidden="true">
+            <i class="fa-solid fa-newspaper" aria-hidden="true"></i>
         </div>
         <div>
-            <p class="stat-card-value">—</p>
-            <p class="stat-card-label">Personalize aqui</p>
+            <p class="stat-card-value">{{ stats.news_total }}</p>
+            <p class="stat-card-label">Notícias Publicadas</p>
+        </div>
+    </div>
+
+    {# Eventos #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-emerald-100 text-emerald-700" aria-hidden="true">
+            <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">{{ stats.events_total }}</p>
+            <p class="stat-card-label">Eventos Acadêmicos</p>
+        </div>
+    </div>
+
+    {# Oportunidades #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-rose-100 text-rose-700" aria-hidden="true">
+            <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">{{ stats.jobs_total }}</p>
+            <p class="stat-card-label">Vagas ({{ stats.jobs_open }} abertas)</p>
+        </div>
+    </div>
+
+    {# Documentos Restritos #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-slate-100 text-slate-700" aria-hidden="true">
+            <i class="fa-solid fa-file-shield" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">{{ stats.documents_total }}</p>
+            <p class="stat-card-label">Documentos Científicos</p>
+        </div>
+    </div>
+
+    {# Instituições Parceiras #}
+    <div class="stat-card">
+        <div class="stat-card-icon bg-teal-100 text-teal-700" aria-hidden="true">
+            <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
+        </div>
+        <div>
+            <p class="stat-card-value">{{ stats.partners_total }}</p>
+            <p class="stat-card-label">Instituições Parceiras</p>
         </div>
     </div>
 
 </div>
 
-{# ── Quick Actions ─────────────────────────────────────────────────────────── #}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+{# ── Quick Actions and Information ─────────────────────────────────────────── #}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     {# Ações Rápidas #}
-    <div class="admin-card lg:col-span-1">
+    <div class="admin-card lg:col-span-3">
         <h2 class="admin-card-title">
-            <i class="fa-solid fa-bolt" aria-hidden="true" class="mr-1"></i>
-            Ações rápidas
+            <i class="fa-solid fa-bolt text-primary mr-1" aria-hidden="true"></i>
+            Atalhos Rápidos
         </h2>
-        <nav aria-label="Ações rápidas" class="space-y-2">
-            <a href="{{ path('app_admin_user_new') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-slate-900/5 dark:hover:bg-white/5 transition-colors">
-                <i class="fa-solid fa-user-plus" aria-hidden="true" class="text-primary dark:text-primary-light w-4"></i>
-                Novo usuário
+        <nav aria-label="Ações rápidas" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <a href="{{ path('app_admin_news_new') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm border border-slate-100 dark:border-white/10 hover:bg-slate-950/5 dark:hover:bg-white/5 transition-colors font-medium">
+                <i class="fa-solid fa-plus text-primary w-4 text-center"></i>
+                Nova Notícia
             </a>
-            <a href="{{ path('app_admin_user_index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-slate-900/5 dark:hover:bg-white/5 transition-colors">
-                <i class="fa-solid fa-users" aria-hidden="true" class="text-primary dark:text-primary-light w-4"></i>
-                Ver todos os usuários
+            <a href="{{ path('app_admin_event_new') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm border border-slate-100 dark:border-white/10 hover:bg-slate-950/5 dark:hover:bg-white/5 transition-colors font-medium">
+                <i class="fa-solid fa-plus text-primary w-4 text-center"></i>
+                Novo Evento
+            </a>
+            <a href="{{ path('app_admin_project_new') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm border border-slate-100 dark:border-white/10 hover:bg-slate-950/5 dark:hover:bg-white/5 transition-colors font-medium">
+                <i class="fa-solid fa-plus text-primary w-4 text-center"></i>
+                Novo Projeto
+            </a>
+            <a href="{{ path('app_admin_researcher_new') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm border border-slate-100 dark:border-white/10 hover:bg-slate-950/5 dark:hover:bg-white/5 transition-colors font-medium">
+                <i class="fa-solid fa-plus text-primary w-4 text-center"></i>
+                Novo Pesquisador
+            </a>
+            <a href="{{ path('app_admin_job_opportunity_new') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm border border-slate-100 dark:border-white/10 hover:bg-slate-950/5 dark:hover:bg-white/5 transition-colors font-medium">
+                <i class="fa-solid fa-plus text-primary w-4 text-center"></i>
+                Nova Vaga/Bolsa
+            </a>
+            <a href="{{ path('app_admin_document_new') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm border border-slate-100 dark:border-white/10 hover:bg-slate-950/5 dark:hover:bg-white/5 transition-colors font-medium">
+                <i class="fa-solid fa-plus text-primary w-4 text-center"></i>
+                Novo Documento
             </a>
         </nav>
-    </div>
-
-    {# Área de conteúdo principal #}
-    <div class="admin-card lg:col-span-2">
-        <h2 class="admin-card-title">
-            <i class="fa-solid fa-layer-group" aria-hidden="true" class="mr-1"></i>
-            Starter Kit WAB
-        </h2>
-        <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
-            Este é o painel de administração base da WAB Ninjas. Personalize os cards de estatísticas e as ações rápidas de acordo com o projeto.
-        </p>
-        <ul class="text-sm text-slate-500 dark:text-slate-400 space-y-1 list-none">
-            <li class="flex items-center gap-2">
-                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
-                <span>Symfony 7.4 + PHP 8.2</span>
-            </li>
-            <li class="flex items-center gap-2">
-                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
-                <span>Autenticação com hash de senha seguro</span>
-            </li>
-            <li class="flex items-center gap-2">
-                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
-                <span>Dark / Light mode com preferência do sistema</span>
-            </li>
-            <li class="flex items-center gap-2">
-                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
-                <span>Ícones acessíveis (aria-hidden + sr-only)</span>
-            </li>
-            <li class="flex items-center gap-2">
-                <i class="fa-solid fa-circle-check" class="text-emerald-500" aria-hidden="true"></i>
-                <span>Stimulus + Turbo (Hotwire)</span>
-            </li>
-        </ul>
     </div>
 
 </div>
