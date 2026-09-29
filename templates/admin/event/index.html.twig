@@ -47,6 +47,10 @@
                             <i class="fa-solid fa-pen" aria-hidden="true"></i>
                             Editar
                         </a>
+                        <a href="{{ path('app_admin_event_registration_index', {'id': event.id}) }}" class="btn-secondary" title="Inscrições">
+                            <i class="fa-solid fa-users" aria-hidden="true"></i>
+                            {{ event.registrations|length }}
+                        </a>
                     </td>
                 </tr>
             {% else %}

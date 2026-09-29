@@ -1,65 +1,81 @@
 {% extends 'pub/base.html.twig' %}
 
 {% block body %}
-<!-- Hero Section (Banners com Slider / Destaque Dinâmico) -->
-{% set active_banner = banners|first %}
-{% if active_banner %}
-<section class="relative bg-theme-gradient text-white border-0 py-32 lg:py-48 overflow-hidden isolate border-b border-white/10">
-    <div class="absolute top-0 -left-40 w-96 h-96 bg-primary rounded-full mix-blend-screen filter blur-[128px] opacity-20 animate-pulse" style="animation-duration: 8s;"></div>
-    <div class="absolute bottom-0 -right-40 w-96 h-96 bg-secondary rounded-full mix-blend-screen filter blur-[128px] opacity-20"></div>
+{% set en = app.request.locale == 'en' %}
+{% if banners is not empty %}
+<section id="hero" class="relative isolate overflow-hidden bg-brand-900 text-white h-[82svh] min-h-[520px] max-h-[980px] lg:h-[calc(100svh-8.5rem)] lg:min-h-[600px]" aria-roledescription="carousel" aria-label="{{ en ? 'Highlights' : 'Destaques' }}">
+    {% for banner in banners %}
+        {% set title = en ? banner.titleEn : banner.titlePt %}
+        {% set subtitle = en ? banner.subtitleEn : banner.subtitlePt %}
+        {% set image = banner.image and banner.image.imageName ? asset('uploads/' ~ banner.image.imageName) : asset(loop.first ? 'images/banner1.jpg' : 'images/banner2.jpg') %}
+        <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-out {{ loop.first ? 'opacity-100' : 'opacity-0 pointer-events-none' }}" data-slide="{{ loop.index0 }}" role="group" aria-roledescription="slide" aria-label="{{ loop.index }} / {{ banners|length }}" {{ loop.first ? '' : 'aria-hidden="true"' }}>
+            <img src="{{ image }}" alt="" class="hero-image absolute inset-0 w-full h-full object-cover scale-105 transition-transform duration-[8000ms] ease-out" {{ loop.first ? 'fetchpriority="high"' : 'loading="lazy"' }}>
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/55 to-brand-900/20"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-900/70 via-brand-900/20 to-transparent hidden md:block"></div>
 
-    <div class="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center gap-12">
-        <div class="md:w-1/2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                <span class="text-xs font-semibold tracking-widest uppercase text-slate-300">
-                    {{ app.request.locale == 'en' ? 'New Agricultural Front' : 'Nova Frente no Agronegócio' }}
-                </span>
-            </div>
-            <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">
-                    {{ app.request.locale == 'en' ? active_banner.titleEn : active_banner.titlePt }}
-                </span>
-            </h1>
-            <p class="text-lg lg:text-xl text-slate-300 max-w-xl mb-10 leading-relaxed font-medium">
-                {{ app.request.locale == 'en' ? active_banner.subtitleEn : active_banner.subtitlePt }}
-            </p>
-            <div class="flex flex-wrap gap-4">
-                {% if active_banner.buttonLink %}
-                    <a href="{{ active_banner.buttonLink }}" class="bg-primary hover:bg-primary-dark text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 ring-1 ring-inset ring-white/20">
-                        {{ app.request.locale == 'en' ? (active_banner.buttonTextEn ?: 'Learn More') : (active_banner.buttonTextPt ?: 'Saiba Mais') }}
-                    </a>
-                {% endif %}
-                <a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="bg-white/30 hover:bg-white/10 text-white font-semibold px-8 py-4 rounded-xl backdrop-blur-md border border-white/10 transition-all">
-                    {{ app.request.locale == 'en' ? 'Who We Are' : 'Quem Somos' }}
-                </a>
-            </div>
-        </div>
-        <div class="md:w-1/2 w-full mt-12 md:mt-0 relative group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-3xl blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-            <div class="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl ring-1 ring-white/10">
-                {% if active_banner.image and active_banner.image.imageName %}
-                    <img src="{{ asset('uploads/' ~ active_banner.image.imageName) }}" alt="CPA Citros" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <div class="relative z-10 h-full max-w-7xl mx-auto px-5 sm:px-6 flex flex-col justify-end pb-24 sm:pb-28 lg:pb-32">
+                {% if loop.first %}
+                    <h1 class="text-[3.25rem] leading-[0.95] sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-white">{{ title }}</h1>
+                    {% if subtitle %}
+                        <p class="mt-4 sm:mt-6 max-w-xl lg:max-w-2xl text-base sm:text-lg lg:text-2xl font-medium leading-snug text-white/85">{{ subtitle }}</p>
+                    {% endif %}
                 {% else %}
-                    <img src="{{ asset('images/banner1.jpg') }}" alt="CPA Citros" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <p class="max-w-4xl text-[1.625rem] leading-tight sm:text-4xl lg:text-5xl font-bold tracking-tight text-white text-balance">{{ title }}</p>
+                    {% if subtitle %}
+                        <p class="mt-4 max-w-2xl text-base sm:text-lg text-white/85">{{ subtitle }}</p>
+                    {% endif %}
                 {% endif %}
-                <div class="absolute inset-0 border-4 border-white/10 rounded-3xl z-20 pointer-events-none"></div>
+
+                <div class="mt-7 sm:mt-9 flex flex-wrap gap-3">
+                    {% if banner.buttonLink %}
+                        <a href="{{ banner.buttonLink }}" class="inline-flex items-center gap-2 bg-citrus hover:bg-secondary-dark text-brand-900 font-bold px-6 py-3.5 rounded-xl transition-colors">
+                            {{ en ? (banner.buttonTextEn ?: 'Learn more') : (banner.buttonTextPt ?: 'Saiba mais') }}
+                            <i class="fa-solid fa-arrow-right text-sm" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    {% if loop.first %}
+                        <a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur-md text-white font-semibold px-6 py-3.5 rounded-xl transition-colors">
+                            {{ en ? 'About CPA Citros' : 'Conheça o CPA' }}
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur-md text-white font-semibold px-6 py-3.5 rounded-xl transition-colors">
+                            {{ en ? 'Our research' : 'Nossa pesquisa' }}
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
+    {% endfor %}
+
+    {% if banners|length > 1 %}
+        <div class="absolute z-20 inset-x-0 bottom-0">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 pb-8 sm:pb-10 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2" role="tablist" aria-label="{{ en ? 'Choose slide' : 'Escolher destaque' }}">
+                    {% for banner in banners %}
+                        <button type="button" class="hero-dot group relative h-11 w-10 sm:w-14 flex items-center" data-go="{{ loop.index0 }}" role="tab" aria-selected="{{ loop.first ? 'true' : 'false' }}" aria-label="{{ en ? 'Slide' : 'Destaque' }} {{ loop.index }}">
+                            <span class="block h-1 w-full rounded-full bg-white/30 overflow-hidden">
+                                <span class="hero-progress block h-full w-0 bg-citrus"></span>
+                            </span>
+                        </button>
+                    {% endfor %}
+                </div>
+                <div class="hidden sm:flex items-center gap-2">
+                    <button type="button" data-step="-1" class="w-11 h-11 rounded-full border border-white/30 bg-white/5 hover:bg-white/15 backdrop-blur flex items-center justify-center transition-colors" aria-label="{{ en ? 'Previous' : 'Anterior' }}"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                    <button type="button" data-step="1" class="w-11 h-11 rounded-full border border-white/30 bg-white/5 hover:bg-white/15 backdrop-blur flex items-center justify-center transition-colors" aria-label="{{ en ? 'Next' : 'Próximo' }}"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </section>
 {% endif %}
 
 <!-- Bento Grid Moderno: Institucional / HLB -->
-<section class="py-32 bg-white relative">
+<section class="py-16 sm:py-24 lg:py-32 bg-white relative">
     <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-2xl mx-auto mb-20">
-            <h2 class="text-primary font-bold tracking-widest uppercase text-sm mb-3">
-                {{ app.request.locale == 'en' ? 'About CPA' : 'Conheça o CPA' }}
-            </h2>
-            <h3 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+        <div class="text-center max-w-2xl mx-auto mb-10 lg:mb-16">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
                 {{ app.request.locale == 'en' ? 'Network Infrastructure for a Global Challenge' : 'Infraestrutura em Rede para um Desafio Global' }}
-            </h3>
+            </h2>
         </div>
 
         <div class="grid lg:grid-cols-3 gap-8">
@@ -84,11 +100,8 @@
             <!-- Bento Box 2: HLB -->
             <div class="col-span-1 bg-theme-gradient text-white border-0 rounded-3xl p-8 lg:p-12 border border-slate-800 shadow-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-500">
                 <img src="{{ asset('images/hlb.jpg') }}" class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/80 to-transparent"></div>
                 <div class="relative z-10 flex flex-col h-full justify-end">
-                    <div class="inline-flex px-3 py-1 rounded bg-secondary text-slate-900 font-bold text-xs uppercase mb-4 w-max">
-                        {{ app.request.locale == 'en' ? 'Botanical Threat' : 'Ameaça Botânica' }}
-                    </div>
                     <h4 class="text-2xl font-bold text-white mb-2">
                         {{ app.request.locale == 'en' ? 'The HLB Crisis' : 'A Crise do HLB' }}
                     </h4>
@@ -105,19 +118,16 @@
 </section>
 
 <!-- Magazine Feed Notícias -->
-<section class="py-32 bg-slate-50 border-t border-slate-200">
+<section class="py-16 sm:py-24 lg:py-32 bg-slate-50 border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+        <div class="flex flex-col md:flex-row justify-between md:items-end mb-10 lg:mb-16 gap-4 md:gap-6">
             <div>
-                <h2 class="text-primary font-bold tracking-widest uppercase text-sm mb-3">
-                    {{ app.request.locale == 'en' ? 'News Feed' : 'Radar de Notícias' }}
-                </h2>
-                <h3 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
                     {{ app.request.locale == 'en' ? 'Latest Updates' : 'Últimas Atualizações' }}
-                </h3>
+                </h2>
             </div>
-            <a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="rounded-full px-6 py-3 bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-100 transition-colors shadow-sm text-sm">
-                {{ app.request.locale == 'en' ? 'View all news' : 'Ver quadro de mídias' }}
+            <a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="self-start md:self-auto rounded-full px-6 py-3 bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-100 transition-colors shadow-sm text-sm">
+                {{ app.request.locale == 'en' ? 'View all news' : 'Ver todas as notícias' }}
             </a>
         </div>
 
@@ -138,11 +148,11 @@
                     </div>
                 </div>
                 <div class="px-4 pb-4 flex-1 flex flex-col">
-                    <h4 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary transition-colors leading-snug">
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary transition-colors leading-snug">
                         {{ title }}
-                    </h4>
+                    </h3>
                     <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-1">{{ summary }}</p>
-                    <a href="{{ path('app_noticia_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="text-secondary font-bold text-sm">
+                    <a href="{{ path('app_noticia_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="text-primary font-bold text-sm">
                         {{ app.request.locale == 'en' ? 'Read more' : 'Leia mais' }} <span class="inline-block group-hover:translate-x-1 transition-transform">&rarr;</span>
                     </a>
                 </div>
@@ -155,4 +165,97 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const hero = document.getElementById('hero');
+    if (!hero) return;
+    const slides = [...hero.querySelectorAll('.hero-slide')];
+    const dots = [...hero.querySelectorAll('.hero-dot')];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DURATION = 7000;
+    let current = 0;
+    let timer = null;
+    let startedAt = 0;
+    let remaining = DURATION;
+    let raf = null;
+
+    const zoom = (index) => {
+        if (reduceMotion) return;
+        slides.forEach((slide, i) => slide.querySelector('.hero-image')?.classList.toggle('scale-100', i === index));
+    };
+
+    const paintProgress = () => {
+        const dot = dots[current];
+        if (!dot) return;
+        const elapsed = DURATION - remaining + (Date.now() - startedAt);
+        dot.querySelector('.hero-progress').style.width = Math.min(100, (elapsed / DURATION) * 100) + '%';
+        raf = requestAnimationFrame(paintProgress);
+    };
+
+    const show = (index) => {
+        current = (index + slides.length) % slides.length;
+        slides.forEach((slide, i) => {
+            const active = i === current;
+            slide.classList.toggle('opacity-100', active);
+            slide.classList.toggle('opacity-0', !active);
+            slide.classList.toggle('pointer-events-none', !active);
+            slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+            slide.querySelectorAll('a, button').forEach((el) => el.tabIndex = active ? 0 : -1);
+        });
+        dots.forEach((dot, i) => {
+            dot.setAttribute('aria-selected', i === current ? 'true' : 'false');
+            dot.querySelector('.hero-progress').style.width = i < current ? '100%' : '0%';
+        });
+        zoom(current);
+        restart();
+    };
+
+    const stop = () => {
+        clearTimeout(timer);
+        cancelAnimationFrame(raf);
+        remaining = Math.max(0, remaining - (Date.now() - startedAt));
+    };
+
+    const restart = () => {
+        clearTimeout(timer);
+        cancelAnimationFrame(raf);
+        remaining = DURATION;
+        play();
+    };
+
+    const play = () => {
+        if (slides.length < 2 || reduceMotion) return;
+        startedAt = Date.now();
+        timer = setTimeout(() => show(current + 1), remaining);
+        paintProgress();
+    };
+
+    dots.forEach((dot) => dot.addEventListener('click', () => show(Number(dot.dataset.go))));
+    hero.querySelectorAll('[data-step]').forEach((btn) => btn.addEventListener('click', () => show(current + Number(btn.dataset.step))));
+    hero.addEventListener('mouseenter', stop);
+    hero.addEventListener('mouseleave', play);
+    hero.addEventListener('focusin', stop);
+    hero.addEventListener('focusout', play);
+    hero.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') show(current + 1);
+        if (e.key === 'ArrowLeft') show(current - 1);
+    });
+
+    let touchX = null;
+    hero.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; stop(); }, {passive: true});
+    hero.addEventListener('touchend', (e) => {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        touchX = null;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1)); else play();
+    }, {passive: true});
+
+    document.addEventListener('visibilitychange', () => document.hidden ? stop() : play());
+
+    show(0);
+});
+</script>
 {% endblock %}

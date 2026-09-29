@@ -1,0 +1,16 @@
+<div data-collection-item class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 p-4">
+    <div class="flex items-center justify-between mb-3">
+        <span class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ item_label }} <span data-collection-number></span></span>
+        <div class="flex gap-2">
+            <button type="button" data-collection-up class="btn-secondary !px-2 !py-1 text-xs" title="Mover para cima" aria-label="Mover para cima">
+                <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+            </button>
+            <button type="button" data-collection-remove class="btn-danger !px-2 !py-1 text-xs" title="Remover" aria-label="Remover">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-{{ columns|default(2) }} gap-4">
+        {{ fields|raw }}
+    </div>
+</div>

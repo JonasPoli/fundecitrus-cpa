@@ -2,22 +2,16 @@
 {% block title %}{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }} | CPA Citros{% endblock %}
 {% block meta_description %}{{ app.request.locale == 'en' ? 'Official news feed, press releases, video and podcast gallery of CPA Citros.' : 'Feed de notícias, comunicados à imprensa e acervo de vídeos e podcasts do CPA Citros.' }}{% endblock %}
 {% block body %}
-<section class="bg-theme-gradient text-white border-0 text-white pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
+<section class="bg-theme-gradient text-white border-0 text-white pt-16 pb-28 sm:pt-24 sm:pb-40 lg:pt-32 lg:pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
     <img src="{{ asset('images/comunicacao_studio.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary rounded-full blur-[128px] opacity-20 pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl">
             {% if search is not empty %}
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 backdrop-blur-md mb-8">
-                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                    <span class="text-xs font-bold tracking-widest text-secondary uppercase">
-                        {{ app.request.locale == 'en' ? 'Search Filter Active' : 'Filtro de Busca Ativo' }}
-                    </span>
-                </div>
-                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
                     {{ app.request.locale == 'en' ? 'Search Results' : 'Resultados da Busca' }}
                 </h1>
-                <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light mb-8">
+                <p class="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed font-light mb-8">
                     {{ app.request.locale == 'en' ? 'Showing news articles containing: ' : 'Mostrando notícias contendo o termo: ' }}
                     <span class="text-white font-bold">"{{ search }}"</span>.
                 </p>
@@ -26,16 +20,10 @@
                     {{ app.request.locale == 'en' ? 'Clear filter and view all' : 'Limpar filtro e ver todas' }}
                 </a>
             {% else %}
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                    <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
-                        {{ app.request.locale == 'en' ? 'Official Media' : 'Mídia Oficial' }}
-                    </span>
-                </div>
-                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
                     {{ app.request.locale == 'en' ? 'Communication and Media' : 'Comunicação e Mídia' }}
                 </h1>
-                <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
+                <p class="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
                     {{ app.request.locale == 'en' ? 'Stay informed about laboratory developments, global conference attendance and official press releases.' : 'Mantenha-se informado sobre os avanços do laboratório, presença em simpósios mundiais e notas oficiais lançadas à imprensa.' }}
                 </p>
             {% endif %}
@@ -44,7 +32,7 @@
 </section>
 
 <!-- Notícias em Formato Magazine Floating Cards -->
-<section class="py-32 bg-slate-50">
+<section class="py-16 sm:py-24 lg:py-32 bg-slate-50">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-slate-200 pb-8">
             <h2 class="text-sm font-bold tracking-widest text-slate-400 uppercase flex items-center gap-4">
@@ -105,7 +93,7 @@
 </section>
 
 <!-- Split Na Midia e Media Central -->
-<section class="py-32 bg-white border-t border-slate-200 relative overflow-hidden">
+<section class="py-16 sm:py-24 lg:py-32 bg-white border-t border-slate-200 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-16 lg:gap-24">
             
@@ -148,7 +136,7 @@
                     {{ app.request.locale == 'en' ? 'Podcasts & Multimedia' : 'Podcasts & Multimídia' }}
                 </h2>
                 {% if medias is empty %}
-                    <div class="relative bg-theme-gradient text-white border-0 rounded-[2.5rem] p-12 text-center text-white aspect-[4/3] flex flex-col items-center justify-center shadow-2xl ring-1 ring-slate-900/10 overflow-hidden group">
+                    <div class="relative bg-theme-gradient text-white border-0 rounded-3xl lg:rounded-[2.5rem] p-12 text-center text-white aspect-[4/3] flex flex-col items-center justify-center shadow-2xl ring-1 ring-slate-900/10 overflow-hidden group">
                         <img src="{{ asset('images/comunicacao_studio.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                         

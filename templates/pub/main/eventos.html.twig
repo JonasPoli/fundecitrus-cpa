@@ -2,21 +2,15 @@
 {% block title %}{{ app.request.locale == 'en' ? 'Events' : 'Eventos' }} | CPA Citros{% endblock %}
 {% block meta_description %}{{ app.request.locale == 'en' ? 'Agenda of scientific events, workshops and academic library of CPA Citros.' : 'Calendário de eventos científicos, workshops e acervo acadêmico do CPA Citros.' }}{% endblock %}
 {% block body %}
-<section class="bg-theme-gradient text-white border-0 text-white pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
+<section class="bg-theme-gradient text-white border-0 text-white pt-16 pb-28 sm:pt-24 sm:pb-40 lg:pt-32 lg:pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
     <img src="{{ asset('images/workshop_biologico_banner.png') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary rounded-full blur-[128px] opacity-20 pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
-                    {{ app.request.locale == 'en' ? 'Official Schedule' : 'Cronograma Oficial' }}
-                </span>
-            </div>
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
                 {{ app.request.locale == 'en' ? 'Agenda & Events' : 'Agenda & Eventos' }}
             </h1>
-            <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
+            <p class="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
                 {{ app.request.locale == 'en' ? 'Check the dates of upcoming workshops, academic training and key panels led by our scientific network.' : 'Confira as datas dos próximos workshops, treinamentos acadêmicos e os fóruns principais protagonizados por nossa rede científica.' }}
             </p>
         </div>
@@ -24,7 +18,7 @@
 </section>
 
 <!-- Agenda Grid de Alta Frequência -->
-<section class="py-32 bg-slate-50 relative">
+<section class="py-16 sm:py-24 lg:py-32 bg-slate-50 relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <h2 class="text-3xl font-extrabold text-slate-900 mb-12 tracking-tight flex items-center gap-4">
             {{ app.request.locale == 'en' ? 'Featured' : 'Em destaque' }}
@@ -76,7 +70,7 @@
 </section>
 
 <!-- Acervo Passados Library -->
-<section class="py-32 bg-white relative overflow-hidden">
+<section class="py-16 sm:py-24 lg:py-32 bg-white relative overflow-hidden">
     <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/3 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10">
@@ -121,7 +115,7 @@
                 </div>
             {% endif %}
         {% else %}
-            <div class="max-w-4xl mx-auto bg-slate-50 p-12 md:p-20 rounded-[2.5rem] border border-slate-200 flex flex-col items-center justify-center shadow-inner relative group isolate">
+            <div class="max-w-4xl mx-auto bg-slate-50 p-12 md:p-20 rounded-3xl lg:rounded-[2.5rem] border border-slate-200 flex flex-col items-center justify-center shadow-inner relative group isolate">
                 <div class="w-20 h-20 bg-white rounded-2xl shadow-md rotate-3 mb-8 flex items-center justify-center text-4xl ring-1 ring-slate-900/5 group-hover:-rotate-3 transition-transform duration-500 text-slate-600">
                     <i class="fa-solid fa-book-open-reader"></i>
                 </div>

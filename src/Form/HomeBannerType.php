@@ -20,9 +20,13 @@ class HomeBannerType extends AbstractType
             ->add('titleEn', null, [
                 'label' => 'Título (Inglês)'])
             ->add('subtitlePt', null, [
-                'label' => 'Subtítulo (Português)'])
+                'label' => 'Subtítulo (Português) — opcional',
+                'required' => false,
+            ])
             ->add('subtitleEn', null, [
-                'label' => 'Subtítulo (Inglês)'])
+                'label' => 'Subtítulo (Inglês) — opcional',
+                'required' => false,
+            ])
             ->add('buttonTextPt', null, [
                 'label' => 'Texto do Botão (Português)'])
             ->add('buttonTextEn', null, [
@@ -32,7 +36,7 @@ class HomeBannerType extends AbstractType
             ->add('isActive', null, [
                 'label' => 'Ativo?'])
             ->add('image', ImageType::class, [
-                'label' => 'Imagem de Fundo',
+                'label' => 'Imagem de Fundo (paisagem, mínimo 1920×1080; o centro da foto aparece no celular)',
             ])
         ;
     }

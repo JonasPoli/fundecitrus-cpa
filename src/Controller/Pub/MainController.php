@@ -23,6 +23,10 @@ use Symfony\Component\Mailer\MailerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\ProjectDocument;
 use App\Entity\YoutubeMedia;
+use App\Entity\EventRegistration;
+use App\Form\EventRegistrationType;
+use App\Repository\ResearchAreaRepository;
+use App\Service\PartnerNetwork;
 
 class MainController extends AbstractController
 {
@@ -46,12 +50,15 @@ class MainController extends AbstractController
     }
 
     #[Route('/{_locale}/sobre', name: 'app_sobre', requirements: ['_locale' => 'pt|en'])]
-    public function sobre(PartnerRepository $partnerRepo): Response
+    public function sobre(Request $request, PartnerRepository $partnerRepo, ResearcherRepository $researcherRepo, PartnerNetwork $partnerNetwork): Response
     {
+        $partners = $partnerRepo->findBy([], ['position' => 'ASC', 'name' => 'ASC']);
+
         return $this->render('pub/main/sobre.html.twig', [
-            'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
-            'partnersBR' => $partnerRepo->findBy(['region' => 'BR'], ['position' => 'ASC']),
-            'partnersINT' => $partnerRepo->findBy(['region' => 'INT'], ['position' => 'ASC']),
+            'partners' => $partners,
+            'countries' => $partnerNetwork->byCountry($partners, $request->getLocale()),
+            'brazilianCities' => $partnerNetwork->brazilianCities($partners),
+            'researcherCount' => $researcherRepo->count([]),
         ]);
     }
 
@@ -61,16 +68,26 @@ class MainController extends AbstractController
         ResearcherRepository $researcherRepo,
         ProjectRepository $projectRepo,
         PartnerRepository $partnerRepo,
+        ResearchAreaRepository $researchAreaRepo,
         EntityManagerInterface $entityManager
     ): Response {
         $search = $request->query->get('search', '');
         $projetos = $projectRepo->findAll();
+        $areas = $researchAreaRepo->createQueryBuilder('a')
+            ->leftJoin('a.lines', 'l')->addSelect('l')
+            ->leftJoin('l.modules', 'm')->addSelect('m')
+            ->orderBy('a.position', 'ASC')
+            ->addOrderBy('l.position', 'ASC')
+            ->addOrderBy('m.position', 'ASC')
+            ->getQuery()
+            ->getResult();
         $projectDocuments = $entityManager->getRepository(ProjectDocument::class)->findBy([], ['year' => 'DESC', 'id' => 'DESC']);
 
         return $this->render('pub/main/pesquisa.html.twig', [
             'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
-            'pesquisadores' => $researcherRepo->findBy([], ['position' => 'ASC']),
+            'pesquisadores' => $researcherRepo->findBy([], ['position' => 'ASC', 'nome' => 'ASC']),
             'projetos' => $projetos,
+            'areas' => $areas,
             'projectDocuments' => $projectDocuments,
             'search' => $search,
         ]);
@@ -191,18 +208,55 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/evento/{slug}', name: 'app_evento_detalhe', requirements: ['_locale' => 'pt|en'])]
-    public function eventoDetalhe(string $slug, EventRepository $eventRepo, PartnerRepository $partnerRepo): Response
-    {
+    #[Route('/{_locale}/evento/{slug}', name: 'app_evento_detalhe', requirements: ['_locale' => 'pt|en'], methods: ['GET', 'POST'])]
+    public function eventoDetalhe(
+        string $slug,
+        Request $request,
+        EventRepository $eventRepo,
+        PartnerRepository $partnerRepo,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
+        ParameterBagInterface $parameters,
+    ): Response {
         $item = $eventRepo->findOneBy(['slugPt' => $slug]) ?: $eventRepo->findOneBy(['slugEn' => $slug]);
         if (!$item) {
             throw $this->createNotFoundException('Evento não encontrado');
         }
 
+        $locale = $request->getLocale();
+        $form = null;
+        if ($item->isRegistrationOpen()) {
+            $registration = (new EventRegistration())->setEvent($item);
+            $form = $this->createForm(EventRegistrationType::class, $registration, ['locale' => $locale]);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($registration);
+                $entityManager->flush();
+
+                try {
+                    $mailer->send((new TemplatedEmail())
+                        ->from($parameters->has('emailFrom') ? $parameters->get('emailFrom') : 'noreply@wab.com.br')
+                        ->to($parameters->has('emailContactTo') ? $parameters->get('emailContactTo') : 'contato@cpacitros.com.br')
+                        ->subject('Nova inscrição: ' . $item->getTitlePt())
+                        ->htmlTemplate('email/event_registration.html.twig')
+                        ->context(['registration' => $registration, 'event' => $item]));
+                } catch (\Throwable) {
+                }
+
+                $this->addFlash('registration_s', $locale === 'en'
+                    ? 'Registration received! We will contact you by e-mail.'
+                    : 'Inscrição recebida! Entraremos em contato por e-mail.');
+
+                return $this->redirectToRoute('app_evento_detalhe', ['_locale' => $locale, 'slug' => $slug, '_fragment' => 'inscricao'], Response::HTTP_SEE_OTHER);
+            }
+        }
+
         return $this->render('pub/main/detalhe/evento.html.twig', [
             'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
             'item' => $item,
-        ]);
+            'registrationForm' => $form?->createView(),
+        ], new Response(null, $form?->isSubmitted() ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK));
     }
 
     #[Route('/{_locale}/oportunidade/{slug}', name: 'app_oportunidade_detalhe', requirements: ['_locale' => 'pt|en'])]

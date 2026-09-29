@@ -55,7 +55,8 @@ class SeedDataCommand extends Command
             'clipping', 'document', 'event', 'home_banner', 'image',
             'job_opportunity', 'news', 'page_content', 'partner',
             'project', 'researcher', 'user', 'project_document', 'youtube_media',
-            'social_network'
+            'social_network', 'research_area', 'research_line', 'research_module',
+            'news_image', 'event_registration'
         ];
 
         foreach ($tables as $table) {
@@ -200,8 +201,6 @@ class SeedDataCommand extends Command
         $proj1->setObjetivoEn('Evaluate new regional vector control methods.');
         $proj1->setDescricaoPt('<p>O projeto investiga o controle populacional de <i>Diaphorina citri</i> através de manejos integrados, pulverizações conjuntas e coordenação regional.</p>');
         $proj1->setDescricaoEn('<p>The project investigates the population control of <i>Diaphorina citri</i> through integrated management, coordinated sprays and regional synchronization.</p>');
-        $proj1->setModuloPt('Manejo e controle do HLB');
-        $proj1->setModuloEn('HLB management and control');
         $proj1->setSlugPt('manejo-integrado-greening');
         $proj1->setSlugEn('integrated-greening-management');
         $proj1->setPesquisador($p1);
@@ -214,8 +213,6 @@ class SeedDataCommand extends Command
         $proj2->setObjetivoEn('Map susceptibility and resistance genes to HLB.');
         $proj2->setDescricaoPt('<p>Estudo focado no sequenciamento e identificação de genes específicos em citros tolerantes ao greening.</p>');
         $proj2->setDescricaoEn('<p>Study focused on sequencing and identifying specific genes in HLB-tolerant citrus cultivars.</p>');
-        $proj2->setModuloPt('Interação Genômica');
-        $proj2->setModuloEn('Genomic Interaction');
         $proj2->setSlugPt('identificacao-marcadores-geneticos');
         $proj2->setSlugEn('identification-genetic-markers');
         $proj2->setPesquisador($p2);
@@ -228,8 +225,6 @@ class SeedDataCommand extends Command
         $proj3->setObjetivoEn('Calculate return rate of orchards with rigorous control.');
         $proj3->setDescricaoPt('<p>Análise de custos operacionais do manejo do greening versus as perdas causadas pelo abandono ou ineficiência de controle.</p>');
         $proj3->setDescricaoEn('<p>Cost analysis of greening management options vs losses incurred by inefficient or lack of vector control.</p>');
-        $proj3->setModuloPt('Mitigação e sustentabilidade');
-        $proj3->setModuloEn('Mitigation and sustainability');
         $proj3->setSlugPt('avaliacao-modelos-sustentabilidade');
         $proj3->setSlugEn('evaluation-sustainability-models');
         $proj3->setPesquisador($p3);
@@ -368,7 +363,7 @@ class SeedDataCommand extends Command
         $part1->setPosition(1);
         $part1->setUrl('https://www.fundecitrus.com.br');
         $part1->setNewTab(true);
-        $part1->setRegion('BR');
+        $part1->setCountry('BR');
         $lg1 = $uploadImage('logo.png', 'partner');
         if ($lg1) $part1->setLogo($lg1);
         $this->entityManager->persist($part1);
@@ -378,7 +373,7 @@ class SeedDataCommand extends Command
         $part2->setPosition(2);
         $part2->setUrl('https://fealq.org.br');
         $part2->setNewTab(true);
-        $part2->setRegion('BR');
+        $part2->setCountry('BR');
         $lg2 = $uploadImage('logo.png', 'partner');
         if ($lg2) $part2->setLogo($lg2);
         $this->entityManager->persist($part2);
@@ -388,7 +383,7 @@ class SeedDataCommand extends Command
         $part3->setPosition(3);
         $part3->setUrl('https://www.usp.br');
         $part3->setNewTab(true);
-        $part3->setRegion('BR');
+        $part3->setCountry('BR');
         $lg3 = $uploadImage('logo.png', 'partner');
         if ($lg3) $part3->setLogo($lg3);
         $this->entityManager->persist($part3);
@@ -408,7 +403,7 @@ class SeedDataCommand extends Command
             $p = new Partner();
             $p->setName($name);
             $p->setPosition($pos++);
-            $p->setRegion('BR');
+            $p->setCountry('BR');
             $p->setIconClass('fa-solid fa-building-columns');
             $p->setUrl('https://google.com');
             $this->entityManager->persist($p);
@@ -430,7 +425,7 @@ class SeedDataCommand extends Command
             $p = new Partner();
             $p->setName($name);
             $p->setPosition($pos++);
-            $p->setRegion('INT');
+            $p->setCountry('US');
             $p->setIconClass('fa-solid fa-earth-americas');
             $p->setUrl('https://google.com');
             $this->entityManager->persist($p);

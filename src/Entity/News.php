@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\NewsRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NewsRepository::class)]
@@ -45,9 +47,47 @@ class News
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Image $image = null;
 
+    /** @var Collection<int, NewsImage> */
+    #[ORM\OneToMany(targetEntity: NewsImage::class, mappedBy: 'news', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    private Collection $gallery;
+
     public function __construct()
     {
         $this->date = new \DateTimeImmutable();
+        $this->gallery = new ArrayCollection();
+    }
+
+    /** @return Collection<int, NewsImage> */
+    public function getGallery(): Collection
+    {
+        return $this->gallery;
+    }
+
+    public function addGallery(NewsImage $newsImage): static
+    {
+        if (!$this->gallery->contains($newsImage)) {
+            $newsImage->setPosition($this->gallery->count());
+            $this->gallery->add($newsImage);
+            $newsImage->setNews($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGallery(NewsImage $newsImage): static
+    {
+        $this->gallery->removeElement($newsImage);
+
+        return $this;
+    }
+
+    /** @return NewsImage[] */
+    public function getGalleryWithImages(): array
+    {
+        return array_values($this->gallery->filter(
+            fn (NewsImage $item) => $item->getImage()?->getImageName() !== null
+        )->toArray());
     }
 
     public function getId(): ?int

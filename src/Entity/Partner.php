@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PartnerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Intl\Countries;
 
 #[ORM\Entity(repositoryClass: PartnerRepository::class)]
 class Partner
@@ -32,8 +33,20 @@ class Partner
     #[ORM\Column(length: 255, nullable: true, options: ['default' => 'fa-solid fa-building-columns'])]
     private ?string $iconClass = 'fa-solid fa-building-columns';
 
-    #[ORM\Column(length: 10, options: ['default' => 'BR'])]
-    private ?string $region = 'BR';
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $acronym = null;
+
+    #[ORM\Column(length: 2, options: ['default' => 'BR'])]
+    private ?string $country = 'BR';
+
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $city = null;
+
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 7, nullable: true)]
+    private ?string $latitude = null;
+
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 7, nullable: true)]
+    private ?string $longitude = null;
 
     public function getId(): ?int
     {
@@ -106,14 +119,79 @@ class Partner
         return $this;
     }
 
-    public function getRegion(): ?string
+    public function getAcronym(): ?string
     {
-        return $this->region;
+        return $this->acronym;
     }
 
-    public function setRegion(string $region): static
+    public function setAcronym(?string $acronym): static
     {
-        $this->region = $region;
+        $this->acronym = $acronym;
         return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): static
+    {
+        $this->country = strtoupper($country);
+        return $this;
+    }
+
+    public function getCountryName(string $locale = 'pt'): string
+    {
+        return Countries::exists((string) $this->country)
+            ? Countries::getName($this->country, $locale === 'en' ? 'en' : 'pt_BR')
+            : (string) $this->country;
+    }
+
+    public function isBrazilian(): bool
+    {
+        return $this->country === 'BR';
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = $city;
+        return $this;
+    }
+
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?string $latitude): static
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?string $longitude): static
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
+    public function getFullUrl(): ?string
+    {
+        if (!$this->url) {
+            return null;
+        }
+
+        return preg_match('#^https?://#i', $this->url) ? $this->url : 'https://' . $this->url;
     }
 }

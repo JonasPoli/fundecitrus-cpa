@@ -4,20 +4,14 @@
 {% block meta_description %}{{ app.request.locale == 'en' ? 'Contact details, suggestions channels and address location of CPA Citros.' : 'Informações de contato, canais de atendimento e endereço físico do CPA Citros.' }}{% endblock %}
 
 {% block body %}
-<section class="relative bg-theme-gradient text-white border-0 pt-32 pb-48 overflow-hidden isolate border-b border-white/10">
+<section class="relative bg-theme-gradient text-white border-0 pt-16 pb-28 sm:pt-24 sm:pb-40 lg:pt-32 lg:pb-48 overflow-hidden isolate border-b border-white/10">
     <div class="absolute top-0 -left-40 w-96 h-96 bg-primary rounded-full mix-blend-screen filter blur-[128px] opacity-20 animate-pulse" style="animation-duration: 8s;"></div>
     <div class="absolute bottom-0 -right-40 w-96 h-96 bg-secondary rounded-full mix-blend-screen filter blur-[128px] opacity-20"></div>
     <img src="{{ asset('images/banner2.jpg') }}" class="absolute inset-0 w-full h-full object-cover opacity-15 mix-blend-overlay pointer-events-none z-0">
 
     <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
-                    {{ app.request.locale == 'en' ? 'Support Desk' : 'Atendimento' }}
-                </span>
-            </div>
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
                 {{ app.request.locale == 'en' ? 'Contact Us' : 'Fale Conosco' }}
             </h1>
             <p class="text-lg lg:text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
@@ -28,14 +22,14 @@
 </section>
 
 <!-- Form UI Modern Tailwind Plus -->
-<section class="py-24 bg-slate-50 relative">
+<section class="py-14 sm:py-20 lg:py-24 bg-slate-50 relative">
     <div class="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-slate-900 to-transparent opacity-5 pointer-events-none"></div>
     
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid lg:grid-cols-3 gap-12 relative z-10 -mt-28">
+        <div class="grid lg:grid-cols-3 gap-12 relative z-10 -mt-20 lg:-mt-28">
             
             <!-- Left Form Column -->
-            <div class="lg:col-span-2 bg-white rounded-[2.5rem] shadow-2xl border border-slate-100/80 p-8 md:p-12">
+            <div class="lg:col-span-2 bg-white rounded-3xl lg:rounded-[2.5rem] shadow-2xl border border-slate-100/80 p-5 sm:p-8 md:p-12">
                 <h2 class="text-2xl font-bold text-slate-900 mb-2">
                     {{ app.request.locale == 'en' ? 'Send a Message' : 'Enviar Mensagem' }}
                 </h2>
@@ -106,7 +100,7 @@
             <div class="space-y-8">
                 
                 <!-- Contact info card -->
-                <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100/80 p-8 md:p-10 space-y-8">
+                <div class="bg-white rounded-3xl lg:rounded-[2.5rem] shadow-xl border border-slate-100/80 p-5 sm:p-8 md:p-10 space-y-8">
                     <h3 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
                         {{ app.request.locale == 'en' ? 'Contact Details' : 'Informações de Contato' }}
                     </h3>
@@ -144,20 +138,6 @@
                     </div>
                 </div>
 
-                <!-- FEALQ support card -->
-                <div class="bg-theme-gradient text-white border-0 rounded-[2.5rem] shadow-xl border border-slate-700/80 p-8 md:p-10 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl"></div>
-                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                        FEALQ
-                    </h3>
-                    <p class="text-sm leading-relaxed text-slate-200 font-light">
-                        <span class="font-bold text-white block mb-1">
-                            {{ app.request.locale == 'en' ? 'Official Financial Agent' : 'Interveniente Financeiro Oficial' }}
-                        </span>
-                        {{ app.request.locale == 'en' ? 'Luiz de Queiroz Foundation for Agrarian Studies. Ensures financial management compliance and support.' : 'Fundação de Estudos Agrários Luiz de Queiroz. Garante a conformidade e o suporte na gestão financeira das pesquisas.' }}
-                    </p>
-                </div>
 
             </div>
             

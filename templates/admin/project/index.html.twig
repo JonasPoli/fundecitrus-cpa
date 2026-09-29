@@ -34,7 +34,7 @@
                 <tr>
                     <td class="font-semibold">{{ project.nomePt }}</td>
                     <td>{{ project.nomeEn }}</td>
-                    <td><span class="badge badge-neutral">{{ project.moduloPt }}</span></td>
+                    <td><span class="badge badge-neutral">{{ project.moduleLabel('pt') ?: '—' }}</span></td>
                     <td>{{ project.pesquisador ? project.pesquisador.nome : '—' }}</td>
                     <td>
                         <a href="{{ path('app_admin_project_edit', {'id': project.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">

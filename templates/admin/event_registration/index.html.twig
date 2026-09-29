@@ -1,0 +1,75 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-users admin-page-title-icon" aria-hidden="true"></i>
+            Inscrições — {{ event.titlePt }}
+        </h1>
+        <p class="page-subtitle">{{ registrations|length }} inscrição(ões). Inscrições {{ event.registrationOpen ? 'abertas' : 'fechadas' }} no site.</p>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+        <a href="{{ path('app_admin_event_edit', {id: event.id}) }}" class="btn-secondary">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            Voltar
+        </a>
+        {% if registrations is not empty %}
+            <a href="{{ path('app_admin_event_registration_export', {id: event.id}) }}" class="btn-primary">
+                <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
+                Exportar planilha (CSV)
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="admin-card overflow-x-auto">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Nome</th>
+                <th>Instituição / Função</th>
+                <th>Cidade</th>
+                <th>Contato</th>
+                <th>Arquivo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registration in registrations %}
+                <tr>
+                    <td class="whitespace-nowrap text-sm">{{ registration.createdAt|date('d/m/Y H:i', 'America/Sao_Paulo') }}</td>
+                    <td class="font-semibold">{{ registration.name }}</td>
+                    <td class="text-sm">{{ registration.institution }}<div class="text-slate-500">{{ registration.role }}</div></td>
+                    <td class="text-sm">{{ registration.city }}</td>
+                    <td class="text-sm">
+                        <a href="mailto:{{ registration.email }}" class="text-primary hover:underline">{{ registration.email }}</a>
+                        <div class="text-slate-500">{{ registration.phone }}</div>
+                    </td>
+                    <td class="text-sm">
+                        {% if registration.fileName %}
+                            <a href="{{ path('app_admin_event_registration_file', {id: registration.id}) }}" class="text-primary hover:underline inline-flex items-center gap-1">
+                                <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+                                {{ registration.originalFileName ?: 'Baixar' }}
+                            </a>
+                        {% else %}
+                            <span class="text-slate-400">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{{ path('app_admin_event_registration_delete', {id: registration.id}) }}" onsubmit="return confirm('Excluir esta inscrição?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ registration.id) }}">
+                            <button type="submit" class="btn-danger !px-2 !py-1" title="Excluir" aria-label="Excluir inscrição">
+                                <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7">Nenhuma inscrição recebida até agora.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

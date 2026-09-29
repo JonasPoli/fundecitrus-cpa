@@ -19,10 +19,10 @@ class HomeBanner
     #[ORM\Column(length: 255)]
     private ?string $titleEn = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $subtitlePt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $subtitleEn = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -76,7 +76,7 @@ class HomeBanner
         return $this->subtitlePt;
     }
 
-    public function setSubtitlePt(string $subtitlePt): static
+    public function setSubtitlePt(?string $subtitlePt): static
     {
         $this->subtitlePt = $subtitlePt;
         return $this;
@@ -87,7 +87,7 @@ class HomeBanner
         return $this->subtitleEn;
     }
 
-    public function setSubtitleEn(string $subtitleEn): static
+    public function setSubtitleEn(?string $subtitleEn): static
     {
         $this->subtitleEn = $subtitleEn;
         return $this;

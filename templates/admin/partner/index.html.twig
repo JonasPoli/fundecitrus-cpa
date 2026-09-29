@@ -8,7 +8,7 @@
             <i class="fa-solid fa-handshake admin-page-title-icon" aria-hidden="true"></i>
             Parceiros e Apoiadores
         </h1>
-        <p class="page-subtitle">Gerencie as logomarcas dos parceiros nacionais e internacionais.</p>
+        <p class="page-subtitle">Instituições exibidas no mapa da página “Sobre”. Arraste para ordenar.</p>
     </div>
     <div>
         <a href="{{ path('app_admin_partner_new') }}" class="btn-primary">
@@ -25,6 +25,7 @@
                 <th></th>
                 <th>Logo</th>
                 <th>Nome</th>
+                <th>País / Cidade</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -39,7 +40,8 @@
                             <span class="text-slate-400 text-xs">—</span>
                         {% endif %}
                     </td>
-                    <td class="font-semibold">{{ partner.name }}</td>
+                    <td class="font-semibold">{{ partner.acronym ? partner.acronym ~ ' — ' : '' }}{{ partner.name }}</td>
+                    <td>{{ partner.countryName }}{{ partner.city ? ' / ' ~ partner.city : '' }}{% if partner.latitude is null %} <span class="text-amber-600 text-xs">(sem coordenadas)</span>{% endif %}</td>
                     <td>
                         <a href="{{ path('app_admin_partner_edit', {'id': partner.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
                             <i class="fa-solid fa-pen" aria-hidden="true"></i>
@@ -49,7 +51,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="4">Nenhum parceiro cadastrado.</td>
+                    <td colspan="5">Nenhum parceiro cadastrado.</td>
                 </tr>
             {% endfor %}
         </tbody>

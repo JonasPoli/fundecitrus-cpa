@@ -1,24 +1,43 @@
+{% set en = app.request.locale == 'en' %}
+{% set tagline = en ? 'Applied Research Center for Innovation and Sustainability in Citriculture' : 'Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura' %}
+{% set main_menu = [
+	{route: 'app_home', pt: 'Início', en: 'Home'},
+	{route: 'app_sobre', pt: 'Sobre', en: 'About'},
+	{route: 'app_pesquisa', pt: 'Pesquisa', en: 'Research'},
+	{route: 'app_comunicacao', pt: 'Comunicação', en: 'Communication'},
+	{route: 'app_eventos', pt: 'Eventos', en: 'Events'},
+	{route: 'app_oportunidades', pt: 'Oportunidades', en: 'Opportunities'},
+	{route: 'app_fale_conosco', pt: 'Fale Conosco', en: 'Contact Us'},
+] %}
+{% set active_routes = {
+	app_noticia_detalhe: 'app_comunicacao',
+	app_evento_detalhe: 'app_eventos',
+	app_oportunidade_detalhe: 'app_oportunidades',
+	app_projeto_detalhe: 'app_pesquisa',
+	app_pesquisador_detalhe: 'app_pesquisa',
+} %}
+{% set current_section = active_routes[app.current_route] ?? app.current_route %}
 <!DOCTYPE html>
-<html lang="{{ app.request.locale }}" class="scroll-smooth">
+<html lang="{{ en ? 'en' : 'pt-BR' }}" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="{% block meta_description %}CPA Citros - Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura. Inovações e tecnologias científicas voltadas aos citros.{% endblock %}">
+		<meta name="theme-color" content="#0E3B2E">
+		<meta name="description" content="{% block meta_description %}CPA Citros - {{ tagline }}.{% endblock %}">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<title>
-			{% block title %}CPA Citros | Centro de Pesquisa Aplicada{% endblock %}
-		</title>
+		<title>{% block title %}CPA Citros | {{ tagline }}{% endblock %}</title>
 
-		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
 		<style>
 			:root {
-				--color-brand-900: #D75F2B;
-				--color-brand-800: #D75F2B;
-				--color-brand-700: #EEA42C;
+				--color-brand-900: #0E3B2E;
+				--color-brand-800: #155E4A;
+				--color-brand-700: #1E6F7A;
+				--color-citrus: #EEA42C;
 			}
 			.bg-theme-gradient {
-				background-image: linear-gradient(135deg, var(--color-brand-900), var(--color-brand-800), var(--color-brand-700)) !important;
+				background-image: linear-gradient(135deg, var(--color-brand-900) 0%, var(--color-brand-800) 55%, var(--color-brand-700) 100%) !important;
 				background-color: var(--color-brand-900);
 			}
 			.bg-theme-gradient .text-slate-300,
@@ -29,8 +48,28 @@
 				color: rgba(255, 255, 255, 0.85) !important;
 			}
 			.footer-card-gradient {
-				background-image: linear-gradient(135deg, #629D42 0%, #4c7f31 100%) !important;
+				background-image: linear-gradient(135deg, #155E4A 0%, #0E3B2E 100%) !important;
 			}
+			.site-header .brand-logo { transition: height .35s ease; }
+			.site-header.is-scrolled .brand-logo { height: 3rem; }
+			.site-header.is-scrolled .header-row { height: 4.25rem; }
+			@media (max-width: 639px) {
+				.site-header.is-scrolled .brand-tagline { opacity: 0; width: 0; padding: 0; border: 0; }
+			}
+			.brand-tagline { transition: opacity .25s ease; }
+			.rich-content iframe,
+			.rich-content .ql-video {
+				display: block;
+				width: 100%;
+				height: auto;
+				aspect-ratio: 16 / 9;
+				border: 0;
+				border-radius: 1rem;
+				margin: 1.5rem 0;
+			}
+			.rich-content img { max-width: 100%; height: auto; border-radius: 1rem; }
+			.no-scrollbar { scrollbar-width: none; }
+			.no-scrollbar::-webkit-scrollbar { display: none; }
 		</style>
 		<script>
 			tailwind.config = {
@@ -41,13 +80,15 @@
 						},
 						colors: {
 							primary: {
-								DEFAULT: '#639E43',
-								dark: '#588037'
+								DEFAULT: '#2E7D4F',
+								light: '#4E9F66',
+								dark: '#1F5E3A'
 							},
 							secondary: {
-								DEFAULT: '#E3A749',
-								dark: '#cc9135'
+								DEFAULT: '#EEA42C',
+								dark: '#D98E17'
 							},
+							citrus: '#EEA42C',
 							brand: {
 								900: 'var(--color-brand-900)',
 								800: 'var(--color-brand-800)',
@@ -63,190 +104,175 @@
 		{% block stylesheets %}{% endblock %}
 	</head>
 	<body class="font-sans text-slate-800 antialiased relative min-h-screen flex flex-col bg-slate-50">
-		<div class="fixed inset-0 -z-10 h-full w-full bg-slate-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px]"></div>
+		<a href="#conteudo" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-slate-900 focus:px-4 focus:py-2 focus:rounded-lg">{{ en ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
 
-		<!-- Topbar Restrita (Pesquisadores) -->
-		<div class="bg-theme-gradient text-white border-0 border-b border-white/10 text-white text-xs py-2 px-6">
-			<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-				<div class="flex items-center gap-3">
-					<span class="inline-flex items-center rounded-md bg-secondary/10 px-2 py-0.5 text-xs font-medium text-secondary ring-1 ring-inset ring-secondary/20">
-						{{ app.request.locale == 'en' ? 'Exclusive Area' : 'Área Exclusiva' }}
-					</span>
-					<span class="text-slate-400 font-medium tracking-wide">
-						{{ app.request.locale == 'en' ? 'Restricted access for CPA Citros researchers' : 'Acesso restrito para pesquisadores CPA Citros' }}
-					</span>
-				</div>
-				<div class="flex flex-wrap items-center justify-center md:justify-end gap-3 md:gap-4">
-					{% if app.user %}
-						<div class="flex flex-wrap items-center justify-center gap-2 text-white">
-							<span>{{ app.request.locale == 'en' ? 'Hello' : 'Olá' }}, <strong>{{ app.user.displayName }}</strong></span>
-							<span class="text-white/40">|</span>
-							<a href="{{ path('app_area_restrita', {_locale: app.request.locale}) }}" class="underline hover:text-white/80 font-bold">
-								{{ app.request.locale == 'en' ? 'Restricted Area' : 'Área Restrita' }}
-							</a>
-							{% if is_granted('ROLE_ADMIN') %}
-								<span class="text-white/40">|</span>
-								<a href="{{ path('admin_dash') }}" class="underline hover:text-white/80 font-bold">Admin</a>
-							{% endif %}
-							<span class="text-white/40">|</span>
-							<a href="{{ path('app_logout') }}" class="hover:text-white/80 transition-colors font-bold"><i class="fa-solid fa-right-from-bracket"></i> {{ app.request.locale == 'en' ? 'Exit' : 'Sair' }}</a>
-						</div>
-					{% else %}
-						<form method="post" action="{{ path('app_login') }}" class="flex flex-wrap items-center justify-center gap-2">
-							<input type="email" name="_username" placeholder="E-mail" aria-label="E-mail" required class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-md outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50 focus:bg-white/20 transition-all text-xs w-32 placeholder-white/60">
-							<input type="password" name="_password" placeholder="Senha" aria-label="Senha" required class="px-3 py-1 bg-white/10 text-white border border-white/20 rounded-md outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50 focus:bg-white/20 transition-all text-xs w-32 placeholder-white/60">
-							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-							<button type="submit" class="bg-primary hover:bg-primary-dark transition-colors px-4 py-1 rounded-md font-bold text-white shadow-sm ring-1 ring-inset ring-primary/50">
-								{{ app.request.locale == 'en' ? 'Enter' : 'Entrar' }}
-							</button>
-						</form>
-					{% endif %}
-					<div class="h-4 w-px bg-white/20 mx-1 md:mx-2"></div>
-					<div class="flex items-center gap-1.5">
-						<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'pt'})) }}" class="hover:text-white/80 {% if app.request.locale == 'pt' %}font-bold text-white{% else %}text-white/60{% endif %} transition-colors" aria-label="Alterar idioma para Português">PT</a>
-						<span class="text-white/40">|</span>
-						<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'en'})) }}" class="hover:text-white/80 {% if app.request.locale == 'en' %}font-bold text-white{% else %}text-white/60{% endif %} transition-colors" aria-label="Change language to English">EN</a>
+		<!-- Barra do pesquisador -->
+		<div class="bg-brand-900 text-white text-xs">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 h-10 flex items-center justify-between gap-3">
+				{% if app.user %}
+					<div class="flex items-center gap-2 min-w-0">
+						<span class="truncate">{{ en ? 'Hello' : 'Olá' }}, <strong>{{ app.user.displayName }}</strong></span>
+						<span class="text-white/30">|</span>
+						<a href="{{ path('app_area_restrita', {_locale: app.request.locale}) }}" class="font-semibold hover:text-citrus whitespace-nowrap">{{ en ? 'Restricted Area' : 'Área Restrita' }}</a>
+						{% if is_granted('ROLE_ADMIN') %}
+							<span class="text-white/30 hidden sm:inline">|</span>
+							<a href="{{ path('admin_dash') }}" class="font-semibold hover:text-citrus hidden sm:inline">Admin</a>
+						{% endif %}
+						<span class="text-white/30">|</span>
+						<a href="{{ path('app_logout') }}" class="hover:text-citrus whitespace-nowrap" aria-label="{{ en ? 'Log out' : 'Sair' }}"><i class="fa-solid fa-right-from-bracket"></i><span class="hidden sm:inline"> {{ en ? 'Log out' : 'Sair' }}</span></a>
 					</div>
+				{% else %}
+					<button type="button" id="researcher-toggle" class="inline-flex items-center gap-2 font-semibold hover:text-citrus transition-colors" aria-expanded="false" aria-controls="researcher-login">
+						<i class="fa-solid fa-lock text-[11px] text-citrus" aria-hidden="true"></i>
+						{{ en ? 'Researcher area' : 'Área do pesquisador' }}
+						<i class="fa-solid fa-chevron-down text-[9px] opacity-70 transition-transform" aria-hidden="true"></i>
+					</button>
+				{% endif %}
+				<div class="flex items-center gap-1.5 flex-shrink-0">
+					<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'pt'})) }}" class="px-1 {{ not en ? 'font-bold text-white' : 'text-white/60 hover:text-white' }}" aria-label="Português" {{ not en ? 'aria-current="true"' }}>PT</a>
+					<span class="text-white/30">|</span>
+					<a href="{{ path(app.current_route ?: 'app_home', (app.current_route_parameters ?: {})|merge({_locale: 'en'})) }}" class="px-1 {{ en ? 'font-bold text-white' : 'text-white/60 hover:text-white' }}" aria-label="English" {{ en ? 'aria-current="true"' }}>EN</a>
 				</div>
 			</div>
+			{% if not app.user %}
+				<div id="researcher-login" class="hidden border-t border-white/10">
+					<form method="post" action="{{ path('app_login') }}" class="max-w-7xl mx-auto px-4 sm:px-6 py-3 grid grid-cols-1 sm:flex sm:items-center sm:justify-end gap-2">
+						<span class="text-white/70 sm:mr-2">{{ en ? 'Restricted access for CPA Citros researchers' : 'Acesso restrito para pesquisadores do CPA Citros' }}</span>
+						<input type="email" name="_username" placeholder="E-mail" aria-label="E-mail" required autocomplete="username" class="px-3 py-2 sm:py-1.5 bg-white/10 text-white border border-white/20 rounded-lg outline-none focus:ring-2 focus:ring-citrus/60 focus:bg-white/15 text-sm sm:text-xs sm:w-44 placeholder-white/60">
+						<input type="password" name="_password" placeholder="{{ en ? 'Password' : 'Senha' }}" aria-label="{{ en ? 'Password' : 'Senha' }}" required autocomplete="current-password" class="px-3 py-2 sm:py-1.5 bg-white/10 text-white border border-white/20 rounded-lg outline-none focus:ring-2 focus:ring-citrus/60 focus:bg-white/15 text-sm sm:text-xs sm:w-36 placeholder-white/60">
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+						<button type="submit" class="bg-citrus hover:bg-secondary-dark text-brand-900 transition-colors px-4 py-2 sm:py-1.5 rounded-lg font-bold">
+							{{ en ? 'Sign in' : 'Entrar' }}
+						</button>
+					</form>
+				</div>
+			{% endif %}
 		</div>
 
-		<!-- Header Principal (Glassmorphism Sticky) -->
-		<header id="main-header" class="sticky top-0 z-50 backdrop-blur-xl border-b transition-all duration-500 ease-in-out bg-white/80 border-transparent shadow-none">
-			<div id="header-container" class="max-w-7xl mx-auto px-6 flex items-center justify-between transition-all duration-500 ease-in-out h-28 md:h-36">
-				<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="flex items-center gap-3 group">
-					<img id="main-logo" src="{{ asset('images/logo.png') }}" alt="CPA Citros Logo" class="w-auto object-contain transition-all duration-500 ease-in-out h-24 md:h-32 group-hover:scale-[1.02] transform origin-left"/>
+		<!-- Cabeçalho -->
+		<header id="main-header" class="site-header sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200/70 transition-shadow duration-300">
+			<div class="header-row max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4 h-20 lg:h-24 transition-all duration-300">
+				<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="flex items-center gap-3 min-w-0 group" aria-label="CPA Citros — {{ tagline }}">
+					<img src="{{ asset('images/logo.png') }}" alt="CPA Citros" width="595" height="595" class="brand-logo h-14 lg:h-[4.5rem] w-auto flex-shrink-0"/>
+					<span class="brand-tagline block border-l border-slate-300 pl-3 text-[10.5px] sm:text-[11px] lg:text-xs leading-snug font-medium text-slate-600 max-w-[168px] sm:max-w-[210px] lg:max-w-[230px]">
+						{{ tagline }}
+					</span>
 				</a>
 
-				<nav class="hidden lg:flex items-center gap-1">
-					<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_home' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Home</a>
-					<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_sobre' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'About' : 'Sobre' }}</a>
-					<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_pesquisa' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }}</a>
-					<a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_comunicacao' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }}</a>
-					<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_eventos' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Eventos</a>
-					<a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_oportunidades' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }}</a>
-					<a href="{{ path('app_fale_conosco', {_locale: app.request.locale}) }}" class="ml-2 bg-theme-gradient text-white border-0 px-5 py-2 rounded-full text-sm font-semibold hover:bg-primary transition-all shadow-md hover:shadow-primary/30 ring-1 ring-slate-900/10">{{ app.request.locale == 'en' ? 'Contact Us' : 'Fale Conosco' }}</a>
+				<nav class="hidden xl:flex items-center gap-0.5" aria-label="{{ en ? 'Main menu' : 'Menu principal' }}">
+					{% for item in main_menu %}
+						{% set active = current_section == item.route %}
+						{% if loop.last %}
+							<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="ml-3 bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-colors shadow-sm" {{ active ? 'aria-current="page"' }}>{{ en ? item.en : item.pt }}</a>
+						{% else %}
+							<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors {{ active ? 'text-primary bg-primary/10' : 'text-slate-600 hover:text-primary hover:bg-primary/5' }}" {{ active ? 'aria-current="page"' }}>{{ en ? item.en : item.pt }}</a>
+						{% endif %}
+					{% endfor %}
 				</nav>
 
-				<button id="mobile-menu-toggle" type="button" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:outline-none" aria-label="Toggle Menu">
-					<i class="fa-solid fa-bars text-2xl"></i>
+				<button id="mobile-menu-toggle" type="button" class="xl:hidden flex-shrink-0 w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="{{ en ? 'Open menu' : 'Abrir menu' }}" aria-expanded="false" aria-controls="mobile-menu">
+					<i class="fa-solid fa-bars text-xl" aria-hidden="true"></i>
 				</button>
 			</div>
 
-			<!-- Mobile Menu Dropdown -->
-			<div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-200 shadow-lg">
-				<div class="px-6 py-6 flex flex-col gap-2">
-					<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_home' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Home</a>
-					<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_sobre' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'About' : 'Sobre' }}</a>
-					<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_pesquisa' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }}</a>
-					<a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_comunicacao' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Communication' : 'Comunicação' }}</a>
-					<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_eventos' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">Eventos</a>
-					<a href="{{ path('app_oportunidades', {_locale: app.request.locale}) }}" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all {% if app.current_route == 'app_oportunidades' %}bg-primary/5 text-primary{% else %}text-slate-600 hover:bg-primary/10 hover:text-primary{% endif %}">{{ app.request.locale == 'en' ? 'Opportunities' : 'Oportunidades' }}</a>
-					<a href="{{ path('app_fale_conosco', {_locale: app.request.locale}) }}" class="bg-theme-gradient text-white border-0 px-5 py-3 rounded-xl text-center text-sm font-semibold hover:bg-primary transition-all shadow-md">{{ app.request.locale == 'en' ? 'Contact Us' : 'Fale Conosco' }}</a>
-				</div>
+			<div id="mobile-menu" class="hidden xl:hidden border-t border-slate-200 bg-white max-h-[calc(100svh-7rem)] overflow-y-auto">
+				<nav class="max-w-7xl mx-auto px-4 sm:px-6 py-4 grid gap-1" aria-label="{{ en ? 'Main menu' : 'Menu principal' }}">
+					{% for item in main_menu %}
+						{% set active = current_section == item.route %}
+						{% if loop.last %}
+							<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="mt-2 bg-primary text-white px-5 py-3.5 rounded-xl text-center font-semibold">{{ en ? item.en : item.pt }}</a>
+						{% else %}
+							<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="px-4 py-3.5 rounded-xl font-semibold flex items-center justify-between {{ active ? 'text-primary bg-primary/10' : 'text-slate-700 active:bg-slate-100' }}" {{ active ? 'aria-current="page"' }}>
+								{{ en ? item.en : item.pt }}
+								<i class="fa-solid fa-chevron-right text-xs opacity-40" aria-hidden="true"></i>
+							</a>
+						{% endif %}
+					{% endfor %}
+				</nav>
 			</div>
 		</header>
 
-		{% if app.flashes('contact_s') is not empty %}
-			<div class="max-w-7xl mx-auto px-6 mt-4">
-				<div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center gap-2">
-					<i class="fa-solid fa-circle-check text-emerald-600"></i>
-					<span>{{ app.flashes('contact_s')[0] }}</span>
+		{% for type, messages in app.flashes(['contact_s', 'contact_f', 'registration_s']) %}
+			{% for message in messages %}
+				{% set ok = type != 'contact_f' %}
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 w-full">
+					<div class="{{ ok ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800' }} border px-4 py-3 rounded-xl flex items-center gap-2" role="status">
+						<i class="fa-solid {{ ok ? 'fa-circle-check text-emerald-600' : 'fa-circle-exclamation text-red-600' }}" aria-hidden="true"></i>
+						<span>{{ message }}</span>
+					</div>
 				</div>
-			</div>
-		{% endif %}
-		{% if app.flashes('contact_f') is not empty %}
-			<div class="max-w-7xl mx-auto px-6 mt-4">
-				<div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl flex items-center gap-2">
-					<i class="fa-solid fa-circle-exclamation text-red-600"></i>
-					<span>{{ app.flashes('contact_f')[0] }}</span>
-				</div>
-			</div>
-		{% endif %}
+			{% endfor %}
+		{% endfor %}
 
-		<main class="flex-1">
+		<main id="conteudo" class="flex-1">
 			{% block body %}{% endblock %}
 		</main>
 
-		<!-- Footer Master -->
-		<footer class="bg-theme-gradient text-white border-0 text-slate-300 mt-auto border-t border-slate-800">
-			<div class="max-w-7xl mx-auto px-6 py-16">
-				<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-12 border-b border-white/50 pb-12 mb-12">
-					<div class="flex flex-col items-start">
-						<img src="{{ asset('images/logo.png') }}" alt="CPA Citros Logo" class="h-14 w-auto object-contain brightness-0 invert opacity-90 transition-opacity hover:opacity-100 mb-4"/>
-						<p class="text-sm text-slate-400 leading-relaxed font-medium">
-							{{ app.request.locale == 'en' ? 'Scientific center dedicated to innovation and sustainability in citriculture.' : 'Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura.' }}
-						</p>
-						<div class="flex gap-3 mt-4">
-							{% for sn in get_social_networks() %}
-								<a href="{{ sn.url }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full footer-card-gradient hover:scale-110 text-white/90 hover:text-white flex items-center justify-center transition-all duration-300 text-sm border border-white/10 shadow-sm" title="{{ sn.name }}" aria-label="{{ sn.name }}">
-									<i class="{{ sn.iconClass ?: 'fa-solid fa-link' }}" aria-hidden="true"></i>
-									<span class="sr-only">{{ sn.name }}</span>
-								</a>
+		<!-- Rodapé -->
+		{% set funders = [
+			{name: 'Esalq/USP', file: 'esalq-usp', url: 'https://www.esalq.usp.br'},
+			{name: 'FAPESP', file: 'fapesp', url: 'https://fapesp.br'},
+			{name: 'Fundecitrus', file: 'fundecitrus', url: 'https://www.fundecitrus.com.br'},
+		] %}
+		{% macro funder_logo(funder, size) %}
+			{% set logo = null %}
+			{% for ext in ['svg', 'png', 'webp', 'jpg'] %}
+				{% if logo is null and public_file_exists('images/financiadores/' ~ funder.file ~ '.' ~ ext) %}
+					{% set logo = 'images/financiadores/' ~ funder.file ~ '.' ~ ext %}
+				{% endif %}
+			{% endfor %}
+			<a href="{{ funder.url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg transition-opacity hover:opacity-80" title="{{ funder.name }}">
+				{% if logo %}
+					<img src="{{ asset(logo) }}" alt="{{ funder.name }}" class="{{ size }} w-auto max-w-[140px] object-contain" loading="lazy">
+				{% else %}
+					<span class="{{ size }} inline-flex items-center px-3 rounded-lg border border-slate-200 text-slate-700 font-extrabold tracking-tight text-sm">{{ funder.name }}</span>
+				{% endif %}
+			</a>
+		{% endmacro %}
+		<footer class="mt-auto bg-white border-t border-slate-200">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-14">
+				<div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+					<div class="lg:col-span-4 flex items-center gap-4">
+						<img src="{{ asset('images/logo.png') }}" alt="CPA Citros" width="595" height="595" class="h-20 w-auto flex-shrink-0" loading="lazy">
+						<p class="text-sm leading-snug font-medium text-slate-600 border-l border-slate-300 pl-4 max-w-[240px]">{{ tagline }}</p>
+					</div>
+
+					<div class="lg:col-span-6">
+						<h2 class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 mb-4 border-b border-slate-300">{{ en ? 'Funding' : 'Financiadores' }}</h2>
+						<div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+							{% for funder in funders %}
+								{{ _self.funder_logo(funder, 'h-12') }}
 							{% endfor %}
 						</div>
 					</div>
-					<div>
-						<h3 class="text-white font-bold text-lg mb-6">CPA Citros</h3>
-						<ul class="space-y-3 text-sm">
-							<li>
-								<a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Who We Are' : 'Quem Somos' }}</a>
-							</li>
-							<li>
-								<a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Research Fields' : 'Linhas de Pesquisa' }}</a>
-							</li>
-							<li>
-								<a href="{{ path('app_eventos', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Events' : 'Eventos' }}</a>
-							</li>
-							<li>
-								<a href="{{ path('app_fale_conosco', {_locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">{{ app.request.locale == 'en' ? 'Contact' : 'Fale Conosco' }}</a>
-							</li>
-							{% for page in get_public_pages() %}
-								<li>
-									<a href="{{ path('app_pagina_detalhe', {slug: (app.request.locale == 'en' ? page.slugEn : page.slugPt), _locale: app.request.locale}) }}" class="hover:text-secondary hover:translate-x-1.5 transition-all duration-300 inline-block">
-										{{ app.request.locale == 'en' ? page.titleEn : page.titlePt }}
-									</a>
-								</li>
-							{% endfor %}
-						</ul>
-					</div>
-					<div>
-						<h3 class="text-white font-bold text-lg mb-6">
-							{{ app.request.locale == 'en' ? 'Support Desk' : 'Central de Atendimento' }}
-						</h3>
-						<div class="inline-flex items-center gap-3 footer-card-gradient p-4 rounded-xl border border-white/10 w-full mb-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-							<span class="text-2xl">✉️</span>
-							<div>
-								<p class="text-xs font-semibold text-white/70 uppercase tracking-widest">E-mail</p>
-								<a href="mailto:contato@cpacitros.com.br" class="text-white font-bold hover:text-white/80 transition-colors">contato@cpacitros.com.br</a>
-							</div>
-						</div>
-						<p class="text-sm text-slate-400 leading-relaxed">
-							{{ app.request.locale == 'en' ? 'Office hours: Mon - Fri, 8:00 AM - 5:00 PM.' : 'Atendimento comercial de Segunda a Sexta, das 8h às 17h.' }}
-						</p>
-					</div>
-					<div>
-						<h3 class="text-white font-bold text-lg mb-6">
-							{{ app.request.locale == 'en' ? 'Financial Support' : 'Apoio Financeiro' }}
-						</h3>
-						<div class="p-6 rounded-xl footer-card-gradient border border-white/10 ring-1 ring-inset ring-white/10 relative overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-							<div class="absolute -right-4 -top-4 w-24 h-24 bg-white/15 rounded-full blur-2xl"></div>
-							<p class="text-sm leading-relaxed relative z-10 text-white/90">
-								<span class="font-bold text-white block mb-1">FEALQ</span>
-								{{ app.request.locale == 'en' ? 'Luiz de Queiroz Foundation for Agrarian Studies. Official financial agent.' : 'Fundação de Estudos Agrários Luiz de Queiroz. Instituição interveniente financeira oficial.' }}
-							</p>
-						</div>
+
+					<div class="lg:col-span-2">
+						<h2 class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 mb-4 border-b border-slate-300">{{ en ? 'Support' : 'Apoio' }}</h2>
+						{{ _self.funder_logo({name: 'Fealq', file: 'fealq', url: 'https://fealq.org.br'}, 'h-9') }}
 					</div>
 				</div>
 
+				<div class="mt-10 pt-6 border-t border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm">
+					<nav aria-label="{{ en ? 'Footer menu' : 'Menu do rodapé' }}" class="grid grid-cols-2 sm:flex sm:flex-wrap gap-x-6 gap-y-2">
+						{% for item in main_menu %}
+							<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="text-slate-600 hover:text-primary font-medium">{{ en ? item.en : item.pt }}</a>
+						{% endfor %}
+					</nav>
+					<a href="mailto:contato@cpacitros.com.br" class="inline-flex items-center gap-2 text-slate-700 hover:text-primary font-semibold">
+						<i class="fa-solid fa-envelope text-primary" aria-hidden="true"></i>
+						contato@cpacitros.com.br
+					</a>
+				</div>
+			</div>
 
-
-				<div class="text-center text-xs text-slate-500 font-medium mt-16 tracking-widest uppercase flex flex-col md:flex-row items-center justify-center gap-2">
-					<span>&copy; {{ "now"|date("Y") }} CPA Citros.</span>
-					<span class="text-slate-600 hidden md:inline">|</span>
-					<span class="text-[10px] text-slate-600 normal-case tracking-normal">
-						{{ app.request.locale == 'en' ? 'Developed by' : 'Desenvolvido por' }}
-						<a href="https://wab.com.br" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors font-semibold">WAB</a>
+			<div class="bg-brand-900 text-white/80 text-xs">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
+					<span>&copy; {{ "now"|date("Y") }} CPA Citros — {{ en ? 'All rights reserved' : 'Todos os direitos reservados' }}</span>
+					<span class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+						{% for page in get_public_pages() %}
+							<a href="{{ path('app_pagina_detalhe', {slug: (en ? page.slugEn : page.slugPt), _locale: app.request.locale}) }}" class="hover:text-white">{{ en ? page.titleEn : page.titlePt }}</a>
+						{% endfor %}
+						<span class="text-white/50">{{ en ? 'Developed by' : 'Desenvolvido por' }} <a href="https://wab.com.br" target="_blank" rel="noopener noreferrer" class="font-semibold text-white/70 hover:text-white">WAB</a></span>
 					</span>
 				</div>
 			</div>
@@ -255,43 +281,32 @@
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
 				const header = document.getElementById('main-header');
-				const container = document.getElementById('header-container');
-				const logo = document.getElementById('main-logo');
-
-				const handleScroll = () => {
-					const isScrolled = window.scrollY > 20;
-
-					if (isScrolled) {
-						header.classList.remove('bg-white/80', 'border-transparent', 'shadow-none');
-						header.classList.add('bg-white/95', 'border-slate-200/60', 'shadow-md');
-
-						container.classList.remove('h-28', 'md:h-36');
-						container.classList.add('h-20');
-
-						logo.classList.remove('h-24', 'md:h-32');
-						logo.classList.add('h-16');
-					} else {
-						header.classList.add('bg-white/80', 'border-transparent', 'shadow-none');
-						header.classList.remove('bg-white/95', 'border-slate-200/60', 'shadow-md');
-
-						container.classList.add('h-28', 'md:h-36');
-						container.classList.remove('h-20');
-
-						logo.classList.add('h-24', 'md:h-32');
-						logo.classList.remove('h-16');
-					}
+				const onScroll = () => {
+					const scrolled = window.scrollY > 24;
+					header.classList.toggle('is-scrolled', scrolled);
+					header.classList.toggle('shadow-md', scrolled);
 				};
+				window.addEventListener('scroll', onScroll, {passive: true});
+				onScroll();
 
-				const toggleBtn = document.getElementById('mobile-menu-toggle');
-				const mobileMenu = document.getElementById('mobile-menu');
-				if (toggleBtn && mobileMenu) {
-					toggleBtn.addEventListener('click', () => {
-						mobileMenu.classList.toggle('hidden');
+				const bindToggle = (buttonId, panelId) => {
+					const button = document.getElementById(buttonId);
+					const panel = document.getElementById(panelId);
+					if (!button || !panel) return;
+					button.addEventListener('click', () => {
+						const open = panel.classList.toggle('hidden') === false;
+						button.setAttribute('aria-expanded', open ? 'true' : 'false');
+						button.querySelector('.fa-chevron-down')?.classList.toggle('rotate-180', open);
+						const icon = button.querySelector('.fa-bars, .fa-xmark');
+						if (icon) {
+							icon.classList.toggle('fa-bars', !open);
+							icon.classList.toggle('fa-xmark', open);
+						}
+						if (open) panel.querySelector('input')?.focus();
 					});
-				}
-
-				window.addEventListener('scroll', handleScroll, {passive: true});
-				handleScroll();
+				};
+				bindToggle('mobile-menu-toggle', 'mobile-menu');
+				bindToggle('researcher-toggle', 'researcher-login');
 			});
 		</script>
 

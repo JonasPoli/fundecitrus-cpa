@@ -32,63 +32,198 @@
 {% endblock %}
 
 {% block body %}
-<section class="bg-theme-gradient text-white border-0 pt-32 pb-48 relative overflow-hidden isolate border-b-8 border-secondary">
+<section class="bg-theme-gradient text-white border-0 py-16 sm:py-24 lg:py-28 relative overflow-hidden isolate">
     <img src="{{ asset('images/hlb.jpg') }}" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay pointer-events-none z-0">
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary rounded-full blur-[128px] opacity-20 pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                <span class="text-xs font-bold tracking-widest text-slate-300 uppercase">
-                    {{ app.request.locale == 'en' ? 'Advanced Scientific Research' : 'Pesquisa Científica Avançada' }}
-                </span>
-            </div>
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">
                 {{ app.request.locale == 'en' ? 'Frontal Combat Against HLB' : 'Combate Frontal ao HLB' }}
             </h1>
-            <p class="text-xl text-slate-300 max-w-2xl leading-relaxed font-light mb-12">
+            <p class="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed font-light">
                 {{ app.request.locale == 'en' ? 'Greening destabilized continents. Our research fields operate by dissecting the problem into molecular, biological and defensive tactics.' : 'O Greening desestabilizou continentes. Nossas linhas de pesquisa atuam fatiando o problema em táticas moleculares, biológicas e defensivas.' }}
             </p>
             
-            <!-- Cards de Pilares (Glass) -->
-            <div class="grid sm:grid-cols-3 gap-6">
-                <!-- Pilar 1 -->
-                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-                    <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-white mb-4 ring-1 ring-white/20 font-bold">1</div>
-                    <h4 class="font-bold text-white text-lg mb-2">
-                        {{ app.request.locale == 'en' ? 'Management' : 'Manejo' }}
-                    </h4>
-                    <p class="text-sm text-slate-400 leading-relaxed text-balance">
-                        {{ app.request.locale == 'en' ? 'Bacterial containment and psyllid vector control.' : 'Contenção da bactéria e neutralização do psilídeo.' }}
-                    </p>
-                </div>
-                <!-- Pilar 2 -->
-                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white mb-4 ring-1 ring-white/20 font-bold">2</div>
-                    <h4 class="font-bold text-white text-lg mb-2">
-                        {{ app.request.locale == 'en' ? 'Genomic Interaction' : 'Interação Genômica' }}
-                    </h4>
-                    <p class="text-sm text-slate-400 leading-relaxed text-balance">
-                        {{ app.request.locale == 'en' ? 'Molecular study of the vector-citrus relationship.' : 'Estudo molecular da relação vetor-árvore.' }}
-                    </p>
-                </div>
-                <!-- Pilar 3 -->
-                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
-                    <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-slate-900 mb-4 ring-1 ring-white/20 font-bold">3</div>
-                    <h4 class="font-bold text-white text-lg mb-2">
-                        {{ app.request.locale == 'en' ? 'Mitigation' : 'Mitigação' }}
-                    </h4>
-                    <p class="text-sm text-slate-400 leading-relaxed text-balance">
-                        {{ app.request.locale == 'en' ? 'Methods to maintain high yield in diseased trees.' : 'Tratamentos para manter alta produção no pomar doente.' }}
-                    </p>
-                </div>
-            </div>
         </div>
     </div>
 </section>
 
+{% set en = app.request.locale == 'en' %}
+{% set slot_pools = [
+    [{x: 175, y: 255}, {x: 330, y: 125}, {x: 310, y: 355}, {x: 150, y: 420}],
+    [{x: 540, y: 150}, {x: 615, y: 330}, {x: 690, y: 190}, {x: 470, y: 300}],
+] %}
+{% set fruits = [] %}
+{% set used = [0, 0] %}
+{% for area in areas %}
+    {% set pool_index = loop.index0 % 2 %}
+    {% for line in area.lines %}
+        {% set pool = slot_pools[pool_index] %}
+        {% set slot = pool[used[pool_index]] ?? null %}
+        {% if slot is null %}
+            {% set pool_index = 1 - pool_index %}
+            {% set slot = slot_pools[pool_index][used[pool_index]] ?? {x: 400, y: 80} %}
+        {% endif %}
+        {% set used = pool_index == 0 ? [used[0] + 1, used[1]] : [used[0], used[1] + 1] %}
+        {% set fruits = fruits|merge([{line: line, area: area, areaIndex: loop.parent.loop.index0, slot: slot}]) %}
+    {% endfor %}
+{% endfor %}
+
+<!-- Linhas de pesquisa: laranjeira -->
+<section id="linhas" class="py-16 sm:py-24 bg-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                {{ en ? 'Research lines' : 'Linhas de pesquisa' }}
+            </h2>
+            <p class="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed">
+                {{ en ? 'Each orange is a research line. Tap an orange to see its modules.' : 'Cada laranja é uma linha de pesquisa. Clique numa laranja para ver os módulos.' }}
+            </p>
+        </div>
+
+        {% if fruits is empty %}
+            <p class="mt-10 text-slate-500">{{ en ? 'Research lines will be published soon.' : 'As linhas de pesquisa serão publicadas em breve.' }}</p>
+        {% else %}
+        <div class="mt-8 lg:mt-12 grid gap-8 lg:gap-12 lg:grid-cols-[3fr_2fr] lg:items-start">
+            <div class="relative">
+                <svg id="research-tree" viewBox="0 0 800 640" class="w-full h-auto max-w-[520px] mx-auto lg:max-w-none" role="group" aria-label="{{ en ? 'Orange tree with research lines' : 'Laranjeira com as linhas de pesquisa' }}">
+                    <defs>
+                        <radialGradient id="fruit-a" cx="35%" cy="30%" r="75%">
+                            <stop offset="0%" stop-color="#FFC75A"/>
+                            <stop offset="55%" stop-color="#F59E2B"/>
+                            <stop offset="100%" stop-color="#DB6A16"/>
+                        </radialGradient>
+                        <radialGradient id="fruit-b" cx="35%" cy="30%" r="75%">
+                            <stop offset="0%" stop-color="#FFE08A"/>
+                            <stop offset="55%" stop-color="#F6B93B"/>
+                            <stop offset="100%" stop-color="#E5901A"/>
+                        </radialGradient>
+                        <linearGradient id="trunk" x1="0" x2="1">
+                            <stop offset="0%" stop-color="#6B4428"/>
+                            <stop offset="100%" stop-color="#8A5A36"/>
+                        </linearGradient>
+                        <filter id="fruit-shadow" x="-30%" y="-30%" width="160%" height="160%">
+                            <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#0E3B2E" flood-opacity=".28"/>
+                        </filter>
+                    </defs>
+
+                    <ellipse cx="400" cy="622" rx="190" ry="14" fill="#0E3B2E" opacity=".08"/>
+                    <path d="M372 626 C378 560 384 520 386 470 C360 440 320 410 262 380 L272 364 C326 386 366 408 392 430 C394 380 398 330 396 280 L412 280 C414 330 414 380 414 428 C444 402 492 378 548 352 L556 368 C502 396 452 428 420 466 C420 520 424 566 434 626 Z" fill="url(#trunk)"/>
+
+                    <g fill="#2E7D4F">
+                        <circle cx="400" cy="230" r="190"/>
+                        <circle cx="215" cy="290" r="150"/>
+                        <circle cx="590" cy="280" r="150"/>
+                        <circle cx="300" cy="140" r="120"/>
+                        <circle cx="520" cy="130" r="125"/>
+                        <circle cx="400" cy="360" r="120"/>
+                    </g>
+                    <g fill="#3F8F4A" opacity=".9">
+                        <circle cx="250" cy="200" r="95"/>
+                        <circle cx="560" cy="210" r="100"/>
+                        <circle cx="410" cy="120" r="95"/>
+                        <circle cx="160" cy="360" r="70"/>
+                        <circle cx="650" cy="360" r="70"/>
+                    </g>
+                    <g fill="#5FA95B" opacity=".55">
+                        <circle cx="330" cy="90" r="55"/>
+                        <circle cx="480" cy="80" r="50"/>
+                        <circle cx="200" cy="180" r="50"/>
+                        <circle cx="620" cy="170" r="55"/>
+                        <circle cx="420" cy="260" r="70"/>
+                    </g>
+                    <g fill="#8CC56B" opacity=".5">
+                        <path d="M110 300 q30 -40 70 -20 q-30 40 -70 20z"/>
+                        <path d="M690 260 q30 -40 70 -10 q-35 35 -70 10z"/>
+                        <path d="M380 40 q30 -30 60 -5 q-30 30 -60 5z"/>
+                        <path d="M240 420 q25 -30 60 -10 q-28 30 -60 10z"/>
+                        <path d="M520 430 q30 -25 60 0 q-30 28 -60 0z"/>
+                    </g>
+
+                    {% for fruit in fruits %}
+                        {% set label = fruit.line.name(app.request.locale) %}
+                        <g class="tree-fruit cursor-pointer outline-none" data-line="{{ fruit.line.id }}" tabindex="0" role="button" aria-controls="line-{{ fruit.line.id }}" aria-label="{{ loop.index }}. {{ label }}">
+                            <g class="fruit-body transition-transform duration-300" style="transform-origin: {{ fruit.slot.x }}px {{ fruit.slot.y }}px; transform-box: view-box;">
+                                <circle cx="{{ fruit.slot.x }}" cy="{{ fruit.slot.y }}" r="80" fill="url(#fruit-{{ fruit.areaIndex % 2 == 0 ? 'a' : 'b' }})" filter="url(#fruit-shadow)"/>
+                                <circle class="fruit-ring" cx="{{ fruit.slot.x }}" cy="{{ fruit.slot.y }}" r="86" fill="none" stroke="#fff" stroke-width="0" />
+                                <path d="M{{ fruit.slot.x - 2 }} {{ fruit.slot.y - 78 }} q18 -26 44 -18 q-16 24 -44 18z" fill="#3F8F4A"/>
+                                <circle cx="{{ fruit.slot.x - 28 }}" cy="{{ fruit.slot.y - 32 }}" r="12" fill="#fff" opacity=".35"/>
+                                <text class="fruit-number sm:hidden" x="{{ fruit.slot.x }}" y="{{ fruit.slot.y }}" text-anchor="middle" dy="0.35em" font-size="64" font-weight="800" fill="#fff" font-family="Inter, sans-serif">{{ loop.index }}</text>
+                                <foreignObject class="hidden sm:block" x="{{ fruit.slot.x - 66 }}" y="{{ fruit.slot.y - 60 }}" width="132" height="120">
+                                    <div xmlns="http://www.w3.org/1999/xhtml" style="width:132px;height:120px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Inter,sans-serif;font-weight:800;font-size:15.5px;line-height:1.12;color:#fff;text-shadow:0 1px 2px rgba(120,50,0,.45);">{{ label }}</div>
+                                </foreignObject>
+                            </g>
+                        </g>
+                    {% endfor %}
+                </svg>
+
+                <div class="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-600">
+                    {% for area in areas %}
+                        <span class="inline-flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded-full flex-shrink-0 {{ loop.index0 % 2 == 0 ? 'bg-[#F59E2B]' : 'bg-[#F6C343]' }}"></span>
+                            {{ area.name(app.request.locale) }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="research-lines" class="space-y-6">
+                {% set number = 0 %}
+                {% for area in areas %}
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full {{ loop.index0 % 2 == 0 ? 'bg-[#F59E2B]' : 'bg-[#F6C343]' }}"></span>
+                            {{ area.name(app.request.locale) }}
+                        </h3>
+                        <div class="space-y-2">
+                            {% for line in area.lines %}
+                                {% set number = number + 1 %}
+                                {% set description = line.description(app.request.locale) %}
+                                <div id="line-{{ line.id }}" class="line-item rounded-2xl ring-1 ring-slate-200 bg-white transition-shadow scroll-mt-28" data-line="{{ line.id }}">
+                                    <button type="button" class="line-toggle w-full flex items-center gap-3 text-left p-4" aria-expanded="false" aria-controls="line-panel-{{ line.id }}">
+                                        <span class="w-9 h-9 flex-shrink-0 rounded-full {{ loop.parent.loop.index0 % 2 == 0 ? 'bg-[#F59E2B]' : 'bg-[#F6C343]' }} text-white font-extrabold flex items-center justify-center shadow-inner">{{ number }}</span>
+                                        <span class="flex-1 font-bold text-slate-900 leading-snug">{{ line.name(app.request.locale) }}</span>
+                                        {% if line.modules is not empty %}<span class="text-xs text-slate-500 whitespace-nowrap hidden sm:inline">{{ line.modules|length }} {{ line.modules|length == 1 ? (en ? 'module' : 'módulo') : (en ? 'modules' : 'módulos') }}</span>{% endif %}
+                                        <i class="line-chevron fa-solid fa-chevron-down text-slate-400 text-sm transition-transform" aria-hidden="true"></i>
+                                    </button>
+                                    <div id="line-panel-{{ line.id }}" class="line-panel hidden px-4 pb-4">
+                                        {% if description %}
+                                            <p class="text-sm text-slate-600 leading-relaxed mb-3">{{ description }}</p>
+                                        {% endif %}
+                                        {% if line.modules is not empty %}
+                                            <p class="text-xs font-semibold text-slate-500 mb-2">{{ en ? 'Modules' : 'Módulos' }}</p>
+                                            <ul class="flex flex-wrap gap-2">
+                                                {% for module in line.modules %}
+                                                    <li class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary-dark px-3 py-1.5 text-sm font-medium">
+                                                        <i class="fa-solid fa-leaf text-[10px]" aria-hidden="true"></i>{{ module.name(app.request.locale) }}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                        {% if line.projects is not empty %}
+                                            <p class="text-xs font-semibold text-slate-500 mt-4 mb-2">{{ en ? 'Projects' : 'Projetos' }}</p>
+                                            <ul class="space-y-1">
+                                                {% for project in line.projects %}
+                                                    <li>
+                                                        <a href="{{ path('app_projeto_detalhe', {slug: en ? project.slugEn : project.slugPt, _locale: app.request.locale}) }}" class="text-sm text-primary hover:underline font-medium">{{ en ? project.nomeEn : project.nomePt }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
 <!-- Projetos Table Layout Premium -->
-<section class="py-32 bg-slate-50 relative">
+<section class="py-16 sm:py-24 lg:py-32 bg-slate-50 relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="sm:flex sm:items-center sm:justify-between mb-12">
             <div>
@@ -137,7 +272,7 @@
                     {% for projeto in projetos %}
                     {% set nome = app.request.locale == 'en' ? projeto.nomeEn : projeto.nomePt %}
                     {% set objetivo = app.request.locale == 'en' ? projeto.objetivoEn : projeto.objetivoPt %}
-                    {% set modulo = app.request.locale == 'en' ? projeto.moduloEn : projeto.moduloPt %}
+                    {% set modulo = projeto.moduleLabel(app.request.locale) %}
                     {% set slug = app.request.locale == 'en' ? projeto.slugEn : projeto.slugPt %}
                     <tr class="hover:bg-slate-50/50 transition-colors">
                         <!-- Mobile Cell -->
@@ -187,7 +322,7 @@
 </section>
 
 <!-- Documentos de Projetos Section -->
-<section class="py-32 bg-slate-100/50 relative border-t border-slate-200">
+<section class="py-16 sm:py-24 lg:py-32 bg-slate-100/50 relative border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div>
             <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -248,7 +383,7 @@
                         <th scope="col" class="py-4 pl-4 pr-3 text-left text-xs font-bold uppercase tracking-widest text-slate-500 sm:pl-6">
                             {{ app.request.locale == 'en' ? 'Document' : 'Documento' }}
                         </th>
-                        <th scope="col" class="px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
+                        <th scope="col" class="hidden md:table-cell px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
                             {{ app.request.locale == 'en' ? 'Project' : 'Projeto' }}
                         </th>
                         <th scope="col" class="px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
@@ -257,7 +392,7 @@
                         <th scope="col" class="px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
                             {{ app.request.locale == 'en' ? 'Year' : 'Ano' }}
                         </th>
-                        <th scope="col" class="px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
+                        <th scope="col" class="hidden md:table-cell px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
                             {{ app.request.locale == 'en' ? 'Researcher' : 'Pesquisador' }}
                         </th>
                         <th scope="col" class="relative py-4 pl-3 pr-4 sm:pr-6">
@@ -271,7 +406,7 @@
                         <td class="py-5 pl-4 pr-3 text-sm sm:pl-6 font-bold text-slate-900">
                             {{ item.title }}
                         </td>
-                        <td class="px-3 py-5 text-sm text-slate-500">
+                        <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500">
                             {{ app.request.locale == 'en' ? item.project.nomeEn : item.project.nomePt }}
                         </td>
                         <td class="px-3 py-5 text-sm text-slate-500 font-medium">
@@ -287,7 +422,7 @@
                         <td class="px-3 py-5 text-sm text-slate-500 year-val font-mono">
                             {{ item.year }}
                         </td>
-                        <td class="px-3 py-5 text-sm text-slate-500 researcher-val">
+                        <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500 researcher-val">
                             {{ item.researcher }}
                         </td>
                         <td class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
@@ -309,60 +444,132 @@
     </div>
 </section>
 
-<!-- Equipe de Pesquisadores Avatar Grid -->
-<section class="py-32 bg-white border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="text-center max-w-2xl mx-auto mb-20">
-            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
-                {{ app.request.locale == 'en' ? 'Research Faculty' : 'Equipe de Pesquisadores' }}
-            </h2>
-            <p class="mt-4 text-slate-600">
-                {{ app.request.locale == 'en' ? 'The scientific minds guiding greening containment and agricultural sustainability globally.' : 'A mente científica guiando a sustentabilidade e contenção da patologia nos arredores de São Paulo e no mundo.' }}
-            </p>
+<!-- Pesquisadores -->
+{% set institutions = pesquisadores|map(p => p.institution)|filter(i => i is not empty)|reduce((carry, i) => i in carry ? carry : carry|merge([i]), [])|sort %}
+<section id="pesquisadores" class="py-16 sm:py-24 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <div class="max-w-2xl">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                    {{ app.request.locale == 'en' ? 'Researchers' : 'Pesquisadores' }}
+                </h2>
+                <p class="mt-3 text-slate-600">
+                    {{ app.request.locale == 'en' ? pesquisadores|length ~ ' researchers from institutions in Brazil and abroad.' : pesquisadores|length ~ ' pesquisadores de instituições do Brasil e do exterior.' }}
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
+                <label class="relative block">
+                    <span class="sr-only">{{ app.request.locale == 'en' ? 'Search by name' : 'Buscar por nome' }}</span>
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" aria-hidden="true"></i>
+                    <input type="search" id="researcher-search" placeholder="{{ app.request.locale == 'en' ? 'Search by name' : 'Buscar por nome' }}" class="w-full lg:w-64 h-11 pl-10 pr-3 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </label>
+                <label class="block">
+                    <span class="sr-only">{{ app.request.locale == 'en' ? 'Institution' : 'Instituição' }}</span>
+                    <select id="researcher-institution" class="w-full lg:w-64 h-11 px-3 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <option value="">{{ app.request.locale == 'en' ? 'All institutions' : 'Todas as instituições' }}</option>
+                        {% for institution in institutions %}
+                            <option value="{{ institution }}">{{ institution }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
         </div>
-        
-        <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+
+        <ul role="list" id="researcher-list" class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {% for pessoa in pesquisadores %}
                 {% set area = app.request.locale == 'en' ? pessoa.areaEn : pessoa.areaPt %}
-                {% set hasCurriculo = (pessoa.curriculoPt is not empty or pessoa.curriculoEn is not empty) %}
-                <li class="group">
-                    {% if hasCurriculo %}
-                        <a href="{{ path('app_pesquisador_detalhe', {id: pessoa.id, _locale: app.request.locale}) }}" class="block">
-                    {% endif %}
-                    <div class="aspect-square w-full rounded-3xl overflow-hidden bg-slate-100 ring-1 ring-slate-900/5 mb-6 relative">
+                <li class="researcher-card min-w-0" data-name="{{ pessoa.nome|lower }}" data-institution="{{ pessoa.institution }}">
+                    <div class="h-full flex items-center gap-3 rounded-2xl ring-1 ring-slate-200 bg-white p-3 pr-4 {{ pessoa.hasCurriculum ? 'hover:ring-primary/40 hover:shadow-md transition-all relative' }}">
                         {% if pessoa.foto and pessoa.foto.imageName %}
-                            <img src="{{ asset('uploads/' ~ pessoa.foto.imageName) }}" alt="{{ pessoa.nome }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-105">
+                            <img src="{{ asset('uploads/' ~ pessoa.foto.imageName) }}" alt="" class="w-12 h-12 rounded-full object-cover flex-shrink-0" loading="lazy">
                         {% else %}
-                            <img src="{{ asset('images/foto_pesquisador.png') }}" alt="{{ pessoa.nome }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-105">
+                            <span class="w-12 h-12 rounded-full bg-primary/10 text-primary-dark font-bold flex items-center justify-center flex-shrink-0" aria-hidden="true">{{ pessoa.initials }}</span>
                         {% endif %}
-                        <div class="absolute inset-0 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] rounded-3xl pointer-events-none"></div>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold leading-7 text-slate-900 tracking-tight group-hover:text-primary transition-colors">{{ pessoa.nome }}</h3>
-                        <p class="text-sm font-semibold leading-6 text-primary">{{ area }}</p>
-                    </div>
-                    {% if hasCurriculo %}
-                        </a>
-                    {% endif %}
-                    <div class="mt-3 flex items-center gap-4 text-slate-400">
+                        <div class="min-w-0 flex-1">
+                            {% if pessoa.hasCurriculum %}
+                                <a href="{{ path('app_pesquisador_detalhe', {id: pessoa.id, _locale: app.request.locale}) }}" class="font-semibold text-slate-900 leading-snug hover:text-primary after:absolute after:inset-0">{{ pessoa.nome }}</a>
+                            {% else %}
+                                <p class="font-semibold text-slate-900 leading-snug">{{ pessoa.nome }}</p>
+                            {% endif %}
+                            {% if pessoa.institution %}
+                                <p class="text-sm text-slate-500 truncate">{{ pessoa.institution }}</p>
+                            {% endif %}
+                            {% if area %}
+                                <p class="text-xs text-slate-400 truncate">{{ area }}</p>
+                            {% endif %}
+                        </div>
                         {% if pessoa.lattes %}
-                            <a href="{{ pessoa.lattes }}" target="_blank" class="text-xs font-bold hover:text-secondary uppercase tracking-widest transition-colors" title="ID Lattes">Lattes</a>
-                        {% endif %}
-                        {% if pessoa.linkedin %}
-                            <a href="{{ pessoa.linkedin }}" target="_blank" class="hover:text-secondary transition-colors" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                        {% endif %}
-                        {% if pessoa.email %}
-                            <a href="mailto:{{ pessoa.email }}" class="hover:text-secondary transition-colors" title="E-mail"><i class="fa-solid fa-envelope"></i></a>
+                            <a href="{{ pessoa.lattes }}" target="_blank" rel="noopener noreferrer" class="relative z-10 text-[11px] font-bold text-slate-400 hover:text-primary uppercase" title="Currículo Lattes">Lattes</a>
                         {% endif %}
                     </div>
                 </li>
             {% endfor %}
         </ul>
+        <p id="researcher-empty" class="hidden mt-8 text-center text-slate-500">{{ app.request.locale == 'en' ? 'No researcher found.' : 'Nenhum pesquisador encontrado.' }}</p>
     </div>
 </section>
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const items = [...document.querySelectorAll('.line-item')];
+        const fruits = [...document.querySelectorAll('.tree-fruit')];
+
+        const open = (id, scroll) => {
+            items.forEach((item) => {
+                const active = item.dataset.line === String(id);
+                item.querySelector('.line-panel').classList.toggle('hidden', !active);
+                item.querySelector('.line-toggle').setAttribute('aria-expanded', active ? 'true' : 'false');
+                item.querySelector('.line-chevron').classList.toggle('rotate-180', active);
+                item.classList.toggle('ring-2', active);
+                item.classList.toggle('ring-citrus', active);
+                item.classList.toggle('shadow-lg', active);
+                if (active && scroll) {
+                    const rect = item.getBoundingClientRect();
+                    if (rect.top < 90 || rect.bottom > window.innerHeight) item.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }
+            });
+            fruits.forEach((fruit) => {
+                const active = fruit.dataset.line === String(id);
+                fruit.querySelector('.fruit-body').style.transform = active ? 'scale(1.08)' : '';
+                fruit.querySelector('.fruit-ring').setAttribute('stroke-width', active ? '7' : '0');
+                fruit.setAttribute('aria-expanded', active ? 'true' : 'false');
+            });
+        };
+
+        items.forEach((item) => item.querySelector('.line-toggle').addEventListener('click', () => {
+            const isOpen = item.querySelector('.line-toggle').getAttribute('aria-expanded') === 'true';
+            open(isOpen ? null : item.dataset.line, false);
+        }));
+        fruits.forEach((fruit) => {
+            fruit.addEventListener('click', () => open(fruit.dataset.line, true));
+            fruit.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(fruit.dataset.line, true); }
+            });
+        });
+        if (items.length) open(items[0].dataset.line, false);
+
+        const search = document.getElementById('researcher-search');
+        const institution = document.getElementById('researcher-institution');
+        const cards = [...document.querySelectorAll('.researcher-card')];
+        const empty = document.getElementById('researcher-empty');
+        const normalize = (text) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        const applyFilter = () => {
+            const term = normalize(search.value.trim());
+            const inst = institution.value;
+            let visible = 0;
+            cards.forEach((card) => {
+                const show = (!term || normalize(card.dataset.name).includes(term)) && (!inst || card.dataset.institution === inst);
+                card.classList.toggle('hidden', !show);
+                if (show) visible++;
+            });
+            empty.classList.toggle('hidden', visible > 0);
+        };
+        search?.addEventListener('input', applyFilter);
+        institution?.addEventListener('change', applyFilter);
+    });
+    </script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>

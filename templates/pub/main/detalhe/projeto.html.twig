@@ -2,13 +2,13 @@
 {% set nome = app.request.locale == 'en' ? item.nomeEn : item.nomePt %}
 {% set objetivo = app.request.locale == 'en' ? item.objetivoEn : item.objetivoPt %}
 {% set descricao = app.request.locale == 'en' ? item.descricaoEn : item.descricaoPt %}
-{% set modulo = app.request.locale == 'en' ? item.moduloEn : item.moduloPt %}
+{% set modulo = item.moduleLabel(app.request.locale) %}
 
 {% block title %}{{ nome }} | CPA Citros{% endblock %}
 {% block meta_description %}{{ objetivo }}{% endblock %}
 {% block body %}
 <!-- Detalhe do Pesquisa: Tech UI Layout -->
-<div class="bg-slate-50 py-24 pb-48">
+<div class="bg-slate-50 py-12 pb-24 sm:py-20 sm:pb-40 lg:py-24 lg:pb-48">
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
         
         <div class="mb-10">
@@ -20,7 +20,7 @@
             </a>
         </div>
         
-        <div class="bg-white rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 overflow-hidden">
+        <div class="bg-white rounded-3xl lg:rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 overflow-hidden">
             <!-- Header do Projeto -->
             <div class="bg-primary p-12 lg:p-16 relative overflow-hidden isolate text-white">
                 <div class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none mix-blend-screen"></div>
@@ -28,7 +28,7 @@
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start gap-8">
                     <div>
                         <div class="inline-flex items-center px-3 py-1 rounded bg-secondary text-slate-900 font-bold text-xs uppercase mb-6">{{ modulo }}</div>
-                        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{{ nome }}</h1>
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{{ nome }}</h1>
                         <p class="text-slate-100 text-lg max-w-xl leading-relaxed">{{ objetivo }}</p>
                     </div>
                     

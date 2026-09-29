@@ -3,20 +3,14 @@
 {% block meta_description %}{{ app.request.locale == 'en' ? 'Learn about CPA Citros, our mission, research structure, team and international partners.' : 'Conheça o CPA Citros, nossa missão, estrutura de pesquisa, docentes e parceiros internacionais.' }}{% endblock %}
 {% block body %}
 <!-- Quem somos: Split Premium Layout -->
-<section class="py-24 bg-white overflow-hidden isolate relative">
+<section class="py-14 sm:py-20 lg:py-24 bg-white overflow-hidden isolate relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div class="grid lg:grid-cols-2 gap-10 lg:gap-24 items-center">
             <div class="relative z-10">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 ring-1 ring-inset ring-slate-200 mb-8">
-                    <span class="w-2 h-2 rounded-full bg-primary"></span>
-                    <span class="text-xs font-semibold tracking-widest uppercase text-slate-600">
-                        {{ app.request.locale == 'en' ? 'Center Foundation' : 'Fundação do Centro' }}
-                    </span>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
                     {{ app.request.locale == 'en' ? 'The global epicentre in the fight against HLB' : 'O epicentro global na luta contra o HLB' }}
-                </h2>
-                <div class="space-y-6 text-lg text-slate-600 leading-relaxed font-light">
+                </h1>
+                <div class="space-y-5 text-base sm:text-lg text-slate-600 leading-relaxed font-light">
                     <p>
                         {% if app.request.locale == 'en' %}
                             The mission of <strong class="text-slate-900 font-semibold">CPA Citros</strong> is to develop research, disseminate knowledge, and transfer state-of-the-art technology to the citrus sector, aiming to isolate, contain, and mitigate greening.
@@ -34,131 +28,298 @@
                 </div>
             </div>
             
-            <div class="relative w-full h-full min-h-[400px] lg:min-h-[600px] rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group">
+            <div class="relative w-full h-full min-h-[260px] sm:min-h-[400px] lg:min-h-[600px] rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group">
                 <div class="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-700"></div>
                 <img src="{{ asset('images/sobre.jpg') }}" alt="Laboratório CPA" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
-                <div class="absolute inset-0 border-4 border-white/20 rounded-[2.5rem] pointer-events-none z-20"></div>
+                <div class="absolute inset-0 border-4 border-white/20 rounded-3xl lg:rounded-[2.5rem] pointer-events-none z-20"></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Parceiros: Bento Cloud Grid -->
-<section class="py-32 bg-slate-50 relative border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-        <div class="text-center max-w-2xl mx-auto mb-20">
-            <h2 class="text-secondary font-bold tracking-widest uppercase text-sm mb-3">
-                {{ app.request.locale == 'en' ? 'Integration Network' : 'Rede de Integração' }}
+{% set en = app.request.locale == 'en' %}
+<!-- Rede de instituições parceiras -->
+<section id="parceiros" class="py-16 sm:py-24 bg-slate-50 relative border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                {{ en ? 'Partner Institutions' : 'Instituições Parceiras' }}
             </h2>
-            <h3 class="text-4xl font-extrabold text-slate-900 tracking-tight">
-                {{ app.request.locale == 'en' ? 'Partner Institutions' : 'Instituições Parceiras' }}
-            </h3>
-            <p class="mt-4 text-slate-500 font-medium text-lg">
-                {{ app.request.locale == 'en' ? 'CPA Citros technological ecosystem' : 'Ecossistema tecnológico do CPA Citros' }}
+            <p class="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed">
+                {{ en ? 'CPA Citros works as a network: institutions from Brazil and abroad researching together.' : 'O CPA Citros funciona em rede: instituições do Brasil e do exterior pesquisando juntas.' }}
             </p>
         </div>
-        
-        <div class="grid lg:grid-cols-2 gap-16">
-            <!-- Coluna Brasil -->
-            <div class="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 relative overflow-hidden group">
-                <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
-                <h4 class="text-2xl font-bold text-slate-800 mb-8 relative z-10 flex items-center gap-3">
-                    <span class="w-8 h-1 bg-primary rounded-full"></span>
-                    Brasil
-                </h4>
-                <ul class="space-y-4 relative z-10">
-                    {% for p in partnersBR %}
-                        {% set url = p.url %}
-                        {% if url is not empty and not (url starts with 'http://' or url starts with 'https://') %}
-                            {% set url = 'https://' ~ url %}
-                        {% endif %}
-                        {% set hasLink = url is not empty %}
-                        <li class="p-0 rounded-2xl overflow-hidden hover:shadow-md transition-all">
-                            {% if hasLink %}
-                                <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-4 p-4 bg-slate-50 ring-1 ring-inset ring-slate-100/50 hover:bg-white hover:ring-slate-200 transition-all group/item">
-                            {% else %}
-                                <div class="flex items-start gap-4 p-4 bg-slate-50 ring-1 ring-inset ring-slate-100/50 hover:bg-white hover:ring-slate-200 transition-all group/item">
-                            {% endif %}
-                                <div class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-slate-900/5 group-hover/item:text-primary transition-colors">
-                                    <i class="{{ p.iconClass ?: 'fa-solid fa-building-columns' }} text-slate-400 group-hover/item:text-primary transition-colors"></i>
-                                </div>
-                                <span class="text-slate-700 font-medium leading-relaxed group-hover/item:text-slate-900 transition-colors">{{ p.name }}</span>
-                            {% if hasLink %}
-                                </a>
-                            {% else %}
-                                </div>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
+
+        <dl class="mt-8 grid grid-cols-3 gap-3 sm:gap-6 max-w-2xl">
+            <div class="rounded-2xl bg-white ring-1 ring-slate-200 px-3 py-4 sm:p-5">
+                <dt class="text-xs sm:text-sm text-slate-500">{{ en ? 'Institutions' : 'Instituições' }}</dt>
+                <dd class="text-2xl sm:text-4xl font-extrabold text-brand-800">{{ partners|length }}</dd>
             </div>
-            
-            <!-- Coluna Estrangeira -->
-            <div class="bg-theme-gradient text-white border-0 rounded-[2rem] p-8 md:p-12 shadow-2xl relative overflow-hidden group border border-slate-700">
-                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
-                <h4 class="text-2xl font-bold text-white mb-8 relative z-10 flex items-center gap-3">
-                    <span class="w-8 h-1 bg-secondary rounded-full"></span>
-                    {{ app.request.locale == 'en' ? 'Global Partners' : 'Mundo' }}
-                </h4>
-                <ul class="space-y-4 relative z-10">
-                    {% for p in partnersINT %}
-                        {% set url = p.url %}
-                        {% if url is not empty and not (url starts with 'http://' or url starts with 'https://') %}
-                            {% set url = 'https://' ~ url %}
-                        {% endif %}
-                        {% set hasLink = url is not empty %}
-                        <li class="p-0 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-                            {% if hasLink %}
-                                <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-4 p-4 bg-slate-800/50 ring-1 ring-inset ring-white/5 hover:bg-slate-800 hover:ring-white/10 transition-all group/item backdrop-blur-sm">
-                            {% else %}
-                                <div class="flex items-start gap-4 p-4 bg-slate-800/50 ring-1 ring-inset ring-white/5 hover:bg-slate-800 hover:ring-white/10 transition-all group/item backdrop-blur-sm">
-                            {% endif %}
-                                <div class="w-8 h-8 rounded-full bg-theme-gradient text-white border-0 shadow-inner flex items-center justify-center flex-shrink-0 mt-0.5 ring-1 ring-white/10">
-                                    <i class="{{ p.iconClass ?: 'fa-solid fa-earth-americas' }} text-slate-400 group-hover/item:text-secondary transition-colors"></i>
-                                </div>
-                                <span class="text-slate-300 group-hover:text-white font-medium leading-relaxed group-hover/item:text-white transition-colors">{{ p.name }}</span>
-                            {% if hasLink %}
-                                </a>
-                            {% else %}
-                                </div>
-                            {% endif %}
-                        </li>
+            <div class="rounded-2xl bg-white ring-1 ring-slate-200 px-3 py-4 sm:p-5">
+                <dt class="text-xs sm:text-sm text-slate-500">{{ en ? 'Countries' : 'Países' }}</dt>
+                <dd class="text-2xl sm:text-4xl font-extrabold text-brand-800">{{ countries|length }}</dd>
+            </div>
+            <div class="rounded-2xl bg-white ring-1 ring-slate-200 px-3 py-4 sm:p-5">
+                <dt class="text-xs sm:text-sm text-slate-500">{{ en ? 'Researchers' : 'Pesquisadores' }}</dt>
+                <dd class="text-2xl sm:text-4xl font-extrabold text-brand-800">{{ researcherCount }}</dd>
+            </div>
+        </dl>
+
+        <div class="mt-8 grid gap-4 lg:gap-6 lg:grid-cols-3">
+            <!-- Mapa-múndi -->
+            <figure class="lg:col-span-2 relative rounded-3xl bg-white ring-1 ring-slate-200 p-3 sm:p-6" id="world-map-card">
+                <figcaption class="px-1 pb-2 sm:pb-4 flex items-center justify-between gap-3">
+                    <span class="font-bold text-slate-900">{{ en ? 'Around the world' : 'No mundo' }}</span>
+                    <span class="hidden md:inline text-xs text-slate-500">{{ en ? 'Hover or click a country' : 'Passe o mouse ou clique num país' }}</span>
+                </figcaption>
+                <svg id="world-map" viewBox="0 0 1000 435" class="w-full h-auto select-none" role="img" aria-label="{{ en ? 'World map with partner countries highlighted' : 'Mapa-múndi com os países parceiros destacados' }}">
+                    <g class="map-countries" fill="#E2E8F0" stroke="#fff" stroke-width="0.6">
+                        {{ include('pub/_map/world_paths.svg.twig') }}
+                    </g>
+                    <g class="map-links" stroke="#0E3B2E" stroke-width="1.2" stroke-opacity=".45"></g>
+                    <g class="map-markers">
+                        {% for country in countries|filter(c => c.point) %}
+                            <g class="map-marker cursor-pointer" data-country="{{ country.code }}" data-x="{{ country.point.x }}" data-y="{{ country.point.y }}" tabindex="0" role="button" aria-label="{{ country.name }}: {{ country.count }}">
+                                <circle class="marker-dot" cx="{{ country.point.x }}" cy="{{ country.point.y }}" r="3" fill="#0E3B2E"/>
+                                <g class="marker-bubble" transform="translate({{ country.point.x }} {{ country.point.y }})">
+                                    <circle r="{{ country.count > 9 ? 17 : 13 }}" fill="#EEA42C" stroke="#fff" stroke-width="2.5"/>
+                                    <text text-anchor="middle" dy="0.35em" font-size="{{ country.count > 9 ? 15 : 13 }}" font-weight="800" fill="#0E3B2E" font-family="Inter, sans-serif">{{ country.count }}</text>
+                                </g>
+                            </g>
+                        {% endfor %}
+                    </g>
+                </svg>
+                <div id="map-tooltip" class="pointer-events-none absolute z-20 hidden max-w-[260px] rounded-xl bg-brand-900 text-white text-xs shadow-xl p-3"></div>
+            </figure>
+
+            <!-- Mapa do Brasil -->
+            <figure class="rounded-3xl bg-white ring-1 ring-slate-200 p-4 sm:p-6 flex flex-col">
+                <figcaption class="font-bold text-slate-900 pb-3">{{ en ? 'In Brazil' : 'No Brasil' }}</figcaption>
+                <div class="flex gap-4 items-start lg:flex-col">
+                    <svg id="brazil-map" viewBox="0 0 500 515" class="w-2/5 max-w-[180px] lg:w-full lg:max-w-[240px] lg:mx-auto h-auto flex-shrink-0" role="img" aria-label="{{ en ? 'Map of Brazil with partner cities' : 'Mapa do Brasil com as cidades parceiras' }}">
+                        {% set partner_states = brazilianCities|map(c => c.name matches '/\\(([A-Z]{2})\\)/' ? (c.name|split('(')|last|trim(')')) : null)|filter(v => v) %}
+                        <g fill="#E2E8F0" stroke="#fff" stroke-width="1.2">
+                            {{ include('pub/_map/brazil_paths.svg.twig') }}
+                        </g>
+                        <style>{% for uf in partner_states %}#brazil-map path[data-state="{{ uf }}"]{fill:#CFE6D6}{% endfor %}</style>
+                        {% for city in brazilianCities %}
+                            <circle cx="{{ city.point.x }}" cy="{{ city.point.y }}" r="{{ 9 + city.count * 3 }}" fill="#EEA42C" fill-opacity=".85" stroke="#0E3B2E" stroke-width="1.5"><title>{{ city.name }}: {{ city.count }}</title></circle>
+                        {% endfor %}
+                    </svg>
+                    <ul class="flex-1 w-full text-sm divide-y divide-slate-100">
+                        {% for city in brazilianCities %}
+                            <li class="flex items-center justify-between gap-3 py-1.5">
+                                <span class="text-slate-700 truncate">{{ city.name }}</span>
+                                <span class="flex-shrink-0 inline-flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 rounded-full bg-citrus/20 text-brand-900 text-xs font-bold">{{ city.count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </figure>
+        </div>
+
+        <!-- Filtro por país -->
+        <div id="lista-parceiros" class="mt-10 scroll-mt-28">
+            <div class="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar">
+                <div class="flex gap-2 w-max sm:w-auto sm:flex-wrap pb-1" role="toolbar" aria-label="{{ en ? 'Filter by country' : 'Filtrar por país' }}">
+                    <button type="button" data-filter="all" aria-pressed="true" class="country-chip inline-flex items-center gap-2 h-10 px-4 rounded-full text-sm font-semibold ring-1 ring-slate-200 bg-white text-slate-700 transition-colors">
+                        {{ en ? 'All' : 'Todos' }}
+                        <span class="chip-count text-xs rounded-full px-1.5 bg-slate-100">{{ partners|length }}</span>
+                    </button>
+                    {% for country in countries %}
+                        <button type="button" data-filter="{{ country.code }}" aria-pressed="false" class="country-chip inline-flex items-center gap-2 h-10 px-4 rounded-full text-sm font-semibold ring-1 ring-slate-200 bg-white text-slate-700 transition-colors">
+                            <img src="https://flagcdn.com/w40/{{ country.code|lower }}.png" alt="" width="20" height="15" class="w-5 h-auto rounded-sm ring-1 ring-black/5" loading="lazy">
+                            {{ country.name }}
+                            <span class="chip-count text-xs rounded-full px-1.5 bg-slate-100">{{ country.count }}</span>
+                        </button>
                     {% endfor %}
-                </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 space-y-10">
+                {% for country in countries %}
+                    <div class="country-group" data-country="{{ country.code }}">
+                        <h3 class="flex items-center gap-3 text-lg font-bold text-slate-900 mb-4">
+                            <img src="https://flagcdn.com/w40/{{ country.code|lower }}.png" alt="" width="24" height="18" class="w-6 h-auto rounded-sm ring-1 ring-black/5" loading="lazy">
+                            {{ country.name }}
+                            <span class="text-sm font-medium text-slate-500">· {{ country.count }} {{ country.count == 1 ? (en ? 'institution' : 'instituição') : (en ? 'institutions' : 'instituições') }}</span>
+                        </h3>
+                        <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {% for partner in country.partners %}
+                                {% set url = partner.fullUrl %}
+                                <li>
+                                    <{{ url ? 'a' : 'div' }} {% if url %}href="{{ url }}" target="_blank" rel="noopener noreferrer"{% endif %} class="group h-full flex items-start gap-3 rounded-2xl bg-white ring-1 ring-slate-200 p-4 transition-all {{ url ? 'hover:ring-primary/40 hover:shadow-md' }}">
+                                        {% if partner.logo and partner.logo.imageName %}
+                                            <img src="{{ asset('uploads/' ~ partner.logo.imageName) }}" alt="" class="w-11 h-11 rounded-lg object-contain bg-white ring-1 ring-slate-100 flex-shrink-0" loading="lazy">
+                                        {% else %}
+                                            <span class="w-11 h-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                                                <i class="{{ partner.iconClass ?: 'fa-solid fa-building-columns' }}" aria-hidden="true"></i>
+                                            </span>
+                                        {% endif %}
+                                        <span class="min-w-0 flex-1">
+                                            {% if partner.acronym %}
+                                                <span class="block font-bold text-slate-900 leading-tight">{{ partner.acronym }}</span>
+                                            {% endif %}
+                                            <span class="block text-sm text-slate-600 leading-snug mt-0.5">{{ partner.name }}</span>
+                                            {% if partner.city %}
+                                                <span class="mt-1.5 inline-flex items-center gap-1 text-xs text-slate-500"><i class="fa-solid fa-location-dot text-[10px]" aria-hidden="true"></i>{{ partner.city }}</span>
+                                            {% endif %}
+                                        </span>
+                                        {% if url %}
+                                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-300 group-hover:text-primary mt-1" aria-hidden="true"></i>
+                                        {% endif %}
+                                    </{{ url ? 'a' : 'div' }}>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </section>
 
-<!-- Estrutura / FEALQ Premium Callout -->
-<section class="py-0 relative">
-    <div class="relative bg-theme-gradient text-white border-0 overflow-hidden isolate pt-32 pb-48">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10">
-            <h2 class="text-4xl font-extrabold text-white mb-6 tracking-tight">
-                {{ app.request.locale == 'en' ? 'Governance and Structure' : 'Governança e Estrutura' }}
+<!-- Governança -->
+<section class="bg-theme-gradient text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid gap-10 lg:grid-cols-5 lg:items-center">
+        <div class="lg:col-span-3">
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                {{ en ? 'Governance and Structure' : 'Governança e Estrutura' }}
             </h2>
-            <p class="max-w-2xl mx-auto text-slate-300 text-xl font-light leading-relaxed">
-                {{ app.request.locale == 'en' ? 'Based at Esalq-USP in Piracicaba (SP), CPA expands its horizons as a neural virtual collaboration network.' : 'Centralizado na Esalq-USP em Piracicaba (SP), o CPA expande seus horizontes operando como uma inteligência neural virtual entre laboratórios do mundo todo.' }}
+            <p class="mt-4 text-lg text-white/80 leading-relaxed max-w-2xl">
+                {{ en ? 'Based at Esalq-USP in Piracicaba (SP), CPA Citros connects laboratories in Brazil and abroad in a collaborative research network.' : 'Sediado na Esalq-USP, em Piracicaba (SP), o CPA Citros conecta laboratórios do Brasil e do exterior numa rede colaborativa de pesquisa.' }}
             </p>
         </div>
-    </div>
-    
-    <!-- Fealq Floating Premium Card -->
-    <div class="max-w-4xl mx-auto px-6 -mt-32 relative z-20 pb-32">
-        <div class="bg-white/95 backdrop-blur-2xl rounded-[2.5rem] p-10 md:p-16 shadow-2xl ring-1 ring-slate-900/10 text-center flex flex-col items-center group">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 ring-1 ring-inset ring-slate-200 mb-6">
-                <span class="text-xs font-bold tracking-widest uppercase text-slate-500">
-                    {{ app.request.locale == 'en' ? 'Official Financial Management' : 'Gestão Financeira Oficial' }}
-                </span>
-            </div>
-            
-            <h3 class="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter mb-4 grayscale group-hover:grayscale-0 transition-all duration-500">FEALQ</h3>
-            <p class="text-lg font-bold text-primary mb-6">Fundação de Estudos Agrários Luiz de Queiroz</p>
-            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-6"></div>
-            <p class="text-slate-500 text-sm md:text-base max-w-lg leading-relaxed">
-                {{ app.request.locale == 'en' ? 'Financial processing for funding, researcher grants, and lab acquisitions are fully handled by FEALQ, isolating bureaucratic processes from active scientific study.' : 'A estruturação e injeções financeiras para custeio, salários de pesquisadores e compras de laboratório ficam inteiramente a cargo da interveniente FEALQ, isolando a administração burocrática dos estudos científicos.' }}
+        <div class="lg:col-span-2 rounded-2xl bg-white/10 ring-1 ring-white/15 p-5 sm:p-6">
+            <p class="text-xs uppercase tracking-wider text-white/60 font-semibold">{{ en ? 'Financial management' : 'Gestão financeira' }}</p>
+            <p class="mt-1 font-bold">Fealq — Fundação de Estudos Agrários Luiz de Queiroz</p>
+            <p class="mt-2 text-sm text-white/75 leading-relaxed">
+                {{ en ? 'Handles the financial administration of the projects, so researchers can focus on science.' : 'Responsável pela administração financeira dos projetos, para que os pesquisadores se dediquem à ciência.' }}
             </p>
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const svg = document.getElementById('world-map');
+    const card = document.getElementById('world-map-card');
+    const tooltip = document.getElementById('map-tooltip');
+    const chips = [...document.querySelectorAll('.country-chip')];
+    const groups = [...document.querySelectorAll('.country-group')];
+    const listTop = document.getElementById('lista-parceiros');
+    const data = {
+        {% for country in countries %}
+        '{{ country.code }}': {
+            name: {{ country.name|json_encode|raw }},
+            count: {{ country.count }},
+            items: {{ country.partners|map(p => p.acronym ?: p.name)|json_encode|raw }}
+        },
+        {% endfor %}
+    };
+
+    const highlight = (code, on) => {
+        svg.querySelectorAll(`path[data-iso="${code}"]`).forEach((p) => p.setAttribute('fill', on ? '#1F5E3A' : '#2E7D4F'));
+    };
+
+    Object.keys(data).forEach((code) => {
+        svg.querySelectorAll(`path[data-iso="${code}"]`).forEach((path) => {
+            path.setAttribute('fill', '#2E7D4F');
+            path.classList.add('cursor-pointer');
+            path.dataset.partner = code;
+        });
+    });
+
+    const markers = [...svg.querySelectorAll('.map-marker')];
+    const nodes = markers.map((m) => {
+        const r = Number(m.querySelector('.marker-bubble circle').getAttribute('r'));
+        return {el: m, ax: Number(m.dataset.x), ay: Number(m.dataset.y), x: Number(m.dataset.x), y: Number(m.dataset.y), r};
+    });
+    for (let step = 0; step < 120; step++) {
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const a = nodes[i], b = nodes[j];
+                let dx = b.x - a.x, dy = b.y - a.y;
+                const min = a.r + b.r + 4;
+                let dist = Math.hypot(dx, dy);
+                if (dist < min) {
+                    if (dist === 0) { dx = 1; dy = 0; dist = 1; }
+                    const push = (min - dist) / 2;
+                    a.x -= dx / dist * push; a.y -= dy / dist * push;
+                    b.x += dx / dist * push; b.y += dy / dist * push;
+                }
+            }
+        }
+    }
+    const links = svg.querySelector('.map-links');
+    nodes.forEach((n) => {
+        n.el.querySelector('.marker-bubble').setAttribute('transform', `translate(${n.x.toFixed(1)} ${n.y.toFixed(1)})`);
+        if (Math.hypot(n.x - n.ax, n.y - n.ay) > 2) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', n.ax); line.setAttribute('y1', n.ay);
+            line.setAttribute('x2', n.x.toFixed(1)); line.setAttribute('y2', n.y.toFixed(1));
+            links.appendChild(line);
+        }
+    });
+
+    const filter = (code, scroll) => {
+        chips.forEach((chip) => {
+            const active = chip.dataset.filter === code;
+            chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+            chip.classList.toggle('bg-brand-900', active);
+            chip.classList.toggle('text-white', active);
+            chip.classList.toggle('ring-brand-900', active);
+            chip.classList.toggle('bg-white', !active);
+            chip.classList.toggle('text-slate-700', !active);
+            chip.querySelector('.chip-count').classList.toggle('bg-white/20', active);
+            chip.querySelector('.chip-count').classList.toggle('bg-slate-100', !active);
+            if (active) chip.scrollIntoView({block: 'nearest', inline: 'center', behavior: 'smooth'});
+        });
+        groups.forEach((group) => group.classList.toggle('hidden', code !== 'all' && group.dataset.country !== code));
+        if (scroll) listTop.scrollIntoView({behavior: 'smooth', block: 'start'});
+    };
+
+    chips.forEach((chip) => chip.addEventListener('click', () => filter(chip.dataset.filter, false)));
+
+    const showTooltip = (code, event) => {
+        const info = data[code];
+        if (!info || !window.matchMedia('(hover: hover)').matches) return;
+        const list = info.items.slice(0, 8).join(' · ') + (info.items.length > 8 ? ' …' : '');
+        tooltip.innerHTML = `<strong class="block text-sm mb-1">${info.name} · ${info.count}</strong><span class="text-white/80">${list}</span>`;
+        tooltip.classList.remove('hidden');
+        const box = card.getBoundingClientRect();
+        let left = event.clientX - box.left + 14;
+        let top = event.clientY - box.top + 14;
+        left = Math.min(left, box.width - tooltip.offsetWidth - 8);
+        top = Math.min(top, box.height - tooltip.offsetHeight - 8);
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+    };
+    const hideTooltip = () => tooltip.classList.add('hidden');
+
+    const targetCode = (event) => event.target.closest('[data-partner]')?.dataset.partner || event.target.closest('.map-marker')?.dataset.country;
+    let hovered = null;
+    svg.addEventListener('mousemove', (event) => {
+        const code = targetCode(event);
+        if (code !== hovered) {
+            if (hovered) highlight(hovered, false);
+            if (code) highlight(code, true);
+            hovered = code;
+        }
+        code ? showTooltip(code, event) : hideTooltip();
+    });
+    svg.addEventListener('mouseleave', () => { if (hovered) highlight(hovered, false); hovered = null; hideTooltip(); });
+    svg.addEventListener('click', (event) => {
+        const code = targetCode(event);
+        if (code) filter(code, true);
+    });
+    markers.forEach((m) => m.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); filter(m.dataset.country, true); }
+    }));
+
+    filter('all', false);
+});
+</script>
 {% endblock %}

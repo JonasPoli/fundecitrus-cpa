@@ -19,7 +19,7 @@
 {% block title %}{{ item.nome }} | CPA Citros{% endblock %}
 {% block meta_description %}{{ item.nome }} - {{ area }}. {{ curriculo|striptags|slice(0, 150) }}...{% endblock %}
 {% block body %}
-<div class="bg-slate-50 py-24 pb-48">
+<div class="bg-slate-50 py-12 pb-24 sm:py-20 sm:pb-40 lg:py-24 lg:pb-48">
     <div class="max-w-4xl mx-auto px-6 lg:px-8">
         
         <div class="mb-10">
@@ -31,7 +31,7 @@
             </a>
         </div>
         
-        <div class="bg-white rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 overflow-hidden">
+        <div class="bg-white rounded-3xl lg:rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 overflow-hidden">
             <!-- Header do Pesquisador -->
             <div class="bg-primary p-12 lg:p-16 relative overflow-hidden isolate text-white">
                 <div class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none mix-blend-screen"></div>
