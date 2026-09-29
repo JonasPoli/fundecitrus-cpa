@@ -65,9 +65,9 @@
             </div>
         </dl>
 
-        <div class="mt-8 grid gap-4 lg:gap-6 lg:grid-cols-3">
+        <div class="mt-8 grid gap-4 lg:gap-6 {{ brazilianCities is not empty ? 'lg:grid-cols-3' }}">
             <!-- Mapa-múndi -->
-            <figure class="lg:col-span-2 relative rounded-3xl bg-white ring-1 ring-slate-200 p-3 sm:p-6" id="world-map-card">
+            <figure class="{{ brazilianCities is not empty ? 'lg:col-span-2' }} relative rounded-3xl bg-white ring-1 ring-slate-200 p-3 sm:p-6" id="world-map-card">
                 <figcaption class="px-1 pb-2 sm:pb-4 flex items-center justify-between gap-3">
                     <span class="font-bold text-slate-900">{{ en ? 'Around the world' : 'No mundo' }}</span>
                     <span class="hidden md:inline text-xs text-slate-500">{{ en ? 'Hover or click a country' : 'Passe o mouse ou clique num país' }}</span>
@@ -92,6 +92,7 @@
                 <div id="map-tooltip" class="pointer-events-none absolute z-20 hidden max-w-[260px] rounded-xl bg-brand-900 text-white text-xs shadow-xl p-3"></div>
             </figure>
 
+            {% if brazilianCities is not empty %}
             <!-- Mapa do Brasil -->
             <figure class="rounded-3xl bg-white ring-1 ring-slate-200 p-4 sm:p-6 flex flex-col">
                 <figcaption class="font-bold text-slate-900 pb-3">{{ en ? 'In Brazil' : 'No Brasil' }}</figcaption>
@@ -116,6 +117,7 @@
                     </ul>
                 </div>
             </figure>
+            {% endif %}
         </div>
 
         <!-- Filtro por país -->

@@ -167,12 +167,12 @@
                 </div>
             </div>
 
-            <div id="research-lines" class="space-y-6">
+            <div id="research-lines" class="space-y-8">
                 {% set number = 0 %}
                 {% for area in areas %}
                     <div>
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full {{ loop.index0 % 2 == 0 ? 'bg-[#F59E2B]' : 'bg-[#F6C343]' }}"></span>
+                        <h3 class="text-lg sm:text-xl font-extrabold text-brand-900 leading-snug tracking-tight mb-3 pb-2 border-b-2 {{ loop.index0 % 2 == 0 ? 'border-[#F59E2B]' : 'border-[#F6C343]' }} flex items-start gap-2.5">
+                            <span class="mt-1.5 w-3.5 h-3.5 flex-shrink-0 rounded-full {{ loop.index0 % 2 == 0 ? 'bg-[#F59E2B]' : 'bg-[#F6C343]' }}"></span>
                             {{ area.name(app.request.locale) }}
                         </h3>
                         <div class="space-y-2">
