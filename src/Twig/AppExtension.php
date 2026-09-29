@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Repository\SocialNetworkRepository;
+use App\Repository\FooterCategoryRepository;
 use App\Repository\PageContentRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -21,6 +22,7 @@ class AppExtension extends AbstractExtension
         RequestStack $requestStack,
         SocialNetworkRepository $socialNetworkRepo,
         PageContentRepository $pageContentRepository,
+        private readonly FooterCategoryRepository $footerCategoryRepository,
         #[Autowire('%kernel.project_dir%')] string $projectDir,
     ) {
         $this->publicDir = $projectDir . '/public';
@@ -36,6 +38,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('get_social_networks', [$this, 'getSocialNetworks']),
             new TwigFunction('get_public_pages', [$this, 'getPublicPages']),
             new TwigFunction('public_file_exists', [$this, 'publicFileExists']),
+            new TwigFunction('get_footer_categories', [$this, 'getFooterCategories']),
         ];
     }
 
@@ -84,5 +87,19 @@ class AppExtension extends AbstractExtension
         $path = ltrim($path, '/');
 
         return !str_contains($path, '..') && is_file($this->publicDir . '/' . $path);
+    }
+
+    /** @return array<int, array{category: \App\Entity\FooterCategory, companies: \App\Entity\FooterCompany[]}> */
+    public function getFooterCategories(): array
+    {
+        $categories = [];
+        foreach ($this->footerCategoryRepository->findForFooter() as $category) {
+            $companies = $category->getActiveCompanies();
+            if ($companies) {
+                $categories[] = ['category' => $category, 'companies' => $companies];
+            }
+        }
+
+        return $categories;
     }
 }
