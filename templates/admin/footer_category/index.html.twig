@@ -1,0 +1,56 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-layer-group admin-page-title-icon" aria-hidden="true"></i>
+            Rodapé — Categorias
+        </h1>
+        <p class="page-subtitle">Grupos de logos do rodapé (ex.: Financiadores, Apoio). Arraste para mudar a ordem em que aparecem.</p>
+    </div>
+    <a href="{{ path('app_admin_footer_category_new') }}" class="btn-primary">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        Adicionar
+    </a>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Nome</th>
+                <th>Tamanho dos logos</th>
+                <th>Empresas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="footer-category-sortable">
+            {% for category in categories %}
+                <tr class="sortable-row" data-id="{{ category.id }}">
+                    <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td class="font-semibold">{{ category.namePt }}<div class="text-xs text-slate-500 font-normal">{{ category.nameEn }}</div></td>
+                    <td>{{ {lg: 'Grande', md: 'Médio', sm: 'Pequeno'}[category.logoSize] }}</td>
+                    <td><a href="{{ path('app_admin_footer_company_index') }}#categoria-{{ category.id }}" class="text-primary hover:underline">{{ category.companies|length }}</a></td>
+                    <td>
+                        <a href="{{ path('app_admin_footer_category_edit', {id: category.id}) }}" class="btn-secondary">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5">Nenhuma categoria cadastrada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ include('admin/_sortable_script.html.twig', {
+        tbody_id: 'footer-category-sortable',
+        reorder_url: path('app_admin_reorder', { entityName: 'FooterCategory' })
+    }) }}
+{% endblock %}

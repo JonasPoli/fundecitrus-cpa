@@ -9,7 +9,7 @@
    - Remove os parceiros e pesquisadores que não estão nas listas do cliente e os 3 projetos de exemplo (projetos com documentos vinculados são mantidos).
    - Pode ser rodado de novo sem duplicar nada.
 6. `./build.sh` (cache, Tailwind do admin e asset map).
-7. Logos do rodapé: colocar em `public/images/financiadores/` os arquivos
-   `esalq-usp`, `fapesp`, `fundecitrus` e `fealq` (`.svg`, `.png`, `.webp` ou `.jpg`).
-   Enquanto não existirem, o rodapé mostra o nome em texto.
+7. Logos do rodapé: gerenciados no admin em **Logos do Rodapé** (categorias e empresas com logo, nome e URL).
+   A migration `Version20260929201500` já cria Financiadores (Esalq/USP, FAPESP, Fundecitrus) e Apoio (Fealq);
+   basta enviar os logos. Empresa sem logo aparece com o nome em texto.
 8. Conferir se `var/uploads/registrations` pode ser gravado pelo PHP (arquivos das inscrições, fora da pasta pública).

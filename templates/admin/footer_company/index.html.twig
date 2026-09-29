@@ -1,0 +1,93 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-building admin-page-title-icon" aria-hidden="true"></i>
+            Rodapé — Empresas
+        </h1>
+        <p class="page-subtitle">Logos exibidos no rodapé do site, agrupados por categoria. Arraste para mudar a ordem dentro de cada categoria.</p>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+        <a href="{{ path('app_admin_footer_category_index') }}" class="btn-secondary">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+            Categorias
+        </a>
+        <a href="{{ path('app_admin_footer_company_new') }}" class="btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Adicionar empresa
+        </a>
+    </div>
+</div>
+
+{% for category in categories %}
+    <div class="admin-card mb-6" id="categoria-{{ category.id }}">
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <h2 class="admin-card-title !mb-0">{{ category.namePt }}</h2>
+            <a href="{{ path('app_admin_footer_company_new', {category: category.id}) }}" class="btn-secondary text-sm">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                Adicionar nesta categoria
+            </a>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Logo</th>
+                    <th>Nome</th>
+                    <th>Site</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="footer-company-sortable-{{ category.id }}">
+                {% for company in category.companies %}
+                    <tr class="sortable-row" data-id="{{ company.id }}">
+                        <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                        <td>
+                            {% if company.logo and company.logo.imageName %}
+                                <img src="{{ asset('uploads/' ~ company.logo.imageName) }}" alt="{{ company.name }}" class="h-10 w-auto max-w-[120px] object-contain bg-white rounded border border-slate-200 p-1">
+                            {% else %}
+                                <span class="text-amber-600 text-xs">sem logo</span>
+                            {% endif %}
+                        </td>
+                        <td class="font-semibold">{{ company.name }}</td>
+                        <td class="text-sm">
+                            {% if company.fullUrl %}
+                                <a href="{{ company.fullUrl }}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">{{ company.url|replace({'https://': '', 'http://': ''})|trim('/') }}</a>
+                            {% else %}
+                                <span class="text-slate-400">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge {{ company.active ? 'badge-success' : 'badge-neutral' }}">{{ company.active ? 'Visível' : 'Oculta' }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_admin_footer_company_edit', {id: company.id}) }}" class="btn-secondary">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                Editar
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6">Nenhuma empresa nesta categoria.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="admin-card">
+        <p>Nenhuma categoria cadastrada. <a href="{{ path('app_admin_footer_category_new') }}" class="text-primary hover:underline">Crie a primeira categoria</a> (ex.: Financiadores).</p>
+    </div>
+{% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {% for category in categories %}
+        {{ include('admin/_sortable_script.html.twig', {
+            tbody_id: 'footer-company-sortable-' ~ category.id,
+            reorder_url: path('app_admin_reorder', { entityName: 'FooterCompany' })
+        }) }}
+    {% endfor %}
+{% endblock %}
