@@ -94,7 +94,7 @@
         <div class="grid lg:grid-cols-3 gap-12 items-start">
             
             <!-- Main Content Column -->
-            <article class="lg:col-span-2 bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-slate-100" itemprop="articleBody">
+            <article class="min-w-0 lg:col-span-2 bg-white rounded-3xl p-5 sm:p-8 md:p-12 shadow-xl border border-slate-100" itemprop="articleBody">
                 <header class="mb-8">
                     <div class="flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
                         <span class="inline-flex items-center rounded-md bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
@@ -141,9 +141,21 @@
                 {% endif %}
 
                 <!-- Content Body -->
-                <div class="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary hover:prose-a:text-primary-dark">
-                    {{ content|raw }}
+                {% set gallery = item.galleryWithImages %}
+                {% set normalized = content|replace({'<p>[galeria]</p>': '[galeria]', '<p>[galeria]<br></p>': '[galeria]', '<p><br>[galeria]</p>': '[galeria]'}) %}
+                {% set parts = normalized|split('[galeria]', 2) %}
+                {% set prose_class = 'rich-content prose prose-base sm:prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary hover:prose-a:text-primary-dark' %}
+                <div class="{{ prose_class }}">
+                    {{ parts[0]|raw }}
                 </div>
+                {% if gallery is not empty %}
+                    {{ include('pub/main/detalhe/_news_gallery.html.twig', {gallery: gallery, title: title}) }}
+                {% endif %}
+                {% if parts[1] is defined %}
+                    <div class="{{ prose_class }}">
+                        {{ parts[1]|raw }}
+                    </div>
+                {% endif %}
 
                 <!-- Bottom share -->
                 <div class="flex flex-wrap items-center gap-3 border-t border-slate-100 pt-8 mt-12">

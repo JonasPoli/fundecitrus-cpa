@@ -11,6 +11,7 @@ use App\Form\ImageType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class NewsType extends AbstractType
 {
@@ -43,6 +44,14 @@ class NewsType extends AbstractType
             ])
             ->add('image', ImageType::class, [
                 'label' => 'Imagem de Destaque',
+            ])
+            ->add('gallery', CollectionType::class, [
+                'entry_type' => NewsImageType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
             ])
             ->add('youtubeVideoCode', null, [
                 'label' => 'Código do Vídeo do YouTube (ex: dQw4w9WgXcQ)',

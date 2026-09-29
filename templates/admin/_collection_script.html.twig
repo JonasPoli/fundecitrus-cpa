@@ -1,0 +1,45 @@
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-collection]').forEach((wrapper) => {
+        const list = wrapper.querySelector('[data-collection-list]');
+        const addButton = wrapper.querySelector('[data-collection-add]');
+        let index = list.querySelectorAll('[data-collection-item]').length;
+
+        const renumber = () => {
+            list.querySelectorAll('[data-collection-item]').forEach((item, i) => {
+                const position = item.querySelector('[data-collection-position]');
+                if (position) position.value = i;
+                const label = item.querySelector('[data-collection-number]');
+                if (label) label.textContent = i + 1;
+            });
+        };
+
+        const bindRemove = (item) => {
+            item.querySelector('[data-collection-remove]')?.addEventListener('click', () => {
+                item.remove();
+                renumber();
+            });
+            item.querySelector('[data-collection-up]')?.addEventListener('click', () => {
+                const previous = item.previousElementSibling;
+                if (previous) list.insertBefore(item, previous);
+                renumber();
+            });
+        };
+
+        list.querySelectorAll('[data-collection-item]').forEach(bindRemove);
+
+        addButton?.addEventListener('click', () => {
+            const html = wrapper.dataset.prototype.replace(/__name__/g, index++);
+            const template = document.createElement('template');
+            template.innerHTML = wrapper.dataset.itemTemplate.replace('__FIELDS__', html).trim();
+            const item = template.content.firstElementChild;
+            list.appendChild(item);
+            bindRemove(item);
+            renumber();
+            item.querySelector('input:not([type=hidden])')?.focus();
+        });
+
+        renumber();
+    });
+});
+</script>

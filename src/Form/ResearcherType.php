@@ -17,10 +17,18 @@ class ResearcherType extends AbstractType
         $builder
             ->add('nome', null, [
                 'label' => 'Nome'])
+            ->add('institution', null, [
+                'label' => 'Instituição (ex: Esalq/USP)',
+                'required' => false,
+            ])
             ->add('areaPt', null, [
-                'label' => 'Área de Atuação (Português)'])
+                'label' => 'Área de Atuação (Português)',
+                'required' => false,
+            ])
             ->add('areaEn', null, [
-                'label' => 'Área de Atuação (Inglês)'])
+                'label' => 'Área de Atuação (Inglês)',
+                'required' => false,
+            ])
             ->add('lattes', null, [
                 'label' => 'Link do Currículo Lattes',
                 'required' => false,

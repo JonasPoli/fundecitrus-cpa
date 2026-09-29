@@ -5,6 +5,7 @@ namespace App\Twig;
 use App\Repository\SocialNetworkRepository;
 use App\Repository\PageContentRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -14,9 +15,15 @@ class AppExtension extends AbstractExtension
     private RequestStack $requestStack;
     private SocialNetworkRepository $socialNetworkRepo;
     private PageContentRepository $pageContentRepository;
+    private string $publicDir;
 
-    public function __construct(RequestStack $requestStack, SocialNetworkRepository $socialNetworkRepo, PageContentRepository $pageContentRepository)
-    {
+    public function __construct(
+        RequestStack $requestStack,
+        SocialNetworkRepository $socialNetworkRepo,
+        PageContentRepository $pageContentRepository,
+        #[Autowire('%kernel.project_dir%')] string $projectDir,
+    ) {
+        $this->publicDir = $projectDir . '/public';
         $this->requestStack = $requestStack;
         $this->socialNetworkRepo = $socialNetworkRepo;
         $this->pageContentRepository = $pageContentRepository;
@@ -28,6 +35,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('nav_item_class', [$this, 'navItemClass'], ['is_safe' => ['html']]),
             new TwigFunction('get_social_networks', [$this, 'getSocialNetworks']),
             new TwigFunction('get_public_pages', [$this, 'getPublicPages']),
+            new TwigFunction('public_file_exists', [$this, 'publicFileExists']),
         ];
     }
 
@@ -69,5 +77,12 @@ class AppExtension extends AbstractExtension
     public function getPublicPages(): array
     {
         return $this->pageContentRepository->findBy(['isActive' => true]);
+    }
+
+    public function publicFileExists(string $path): bool
+    {
+        $path = ltrim($path, '/');
+
+        return !str_contains($path, '..') && is_file($this->publicDir . '/' . $path);
     }
 }

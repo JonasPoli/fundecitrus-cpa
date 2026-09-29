@@ -1,0 +1,69 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-lemon admin-page-title-icon" aria-hidden="true"></i>
+            {{ line.id ? 'Editar' : 'Adicionar' }} Linha de Pesquisa
+        </h1>
+    </div>
+    <a href="{{ path('app_admin_research_line_index') }}" class="btn-secondary">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Voltar
+    </a>
+</div>
+
+{{ form_start(form) }}
+    <div class="admin-card space-y-6">
+        {{ form_row(form.area) }}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.namePt) }}
+            {{ form_row(form.nameEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.descriptionPt) }}
+            {{ form_row(form.descriptionEn) }}
+        </div>
+    </div>
+
+    <div class="admin-card mt-6">
+        <h2 class="admin-card-title">Módulos</h2>
+        <p class="text-sm text-slate-500 mb-4">Aparecem quando o visitante clica na laranja desta linha. Uma linha pode não ter módulos.</p>
+        {% set module_item_template %}{{ include('admin/_collection_item.html.twig', {item_label: 'Módulo', fields: '__FIELDS__'}) }}{% endset %}
+        <div data-collection
+             data-prototype="{{ form_widget(form.modules.vars.prototype)|e('html_attr') }}"
+             data-item-template="{{ module_item_template|e('html_attr') }}">
+            <div data-collection-list class="space-y-4">
+                {% for child in form.modules %}
+                    {{ include('admin/_collection_item.html.twig', {item_label: 'Módulo', fields: form_widget(child)}) }}
+                {% endfor %}
+            </div>
+            <button type="button" data-collection-add class="btn-secondary mt-4">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                Adicionar módulo
+            </button>
+        </div>
+        {% do form.modules.setRendered %}
+    </div>
+
+    <div class="w-full text-right mt-6">
+        <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            Salvar
+        </button>
+    </div>
+{{ form_end(form) }}
+
+{% if line.id %}
+    <form method="post" action="{{ path('app_admin_research_line_delete', {id: line.id}) }}" onsubmit="return confirm('Excluir esta linha e seus módulos? Os projetos ligados a ela ficarão sem linha.');" class="text-right mt-6">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ line.id) }}">
+        <button type="submit" class="btn-danger">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            Excluir
+        </button>
+    </form>
+{% endif %}
+
+{{ include('admin/_collection_script.html.twig') }}
+{% endblock %}

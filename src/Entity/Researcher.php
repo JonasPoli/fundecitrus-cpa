@@ -19,10 +19,13 @@ class Researcher
     #[ORM\Column(length: 255)]
     private ?string $nome = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $institution = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $areaPt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $areaEn = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -71,12 +74,37 @@ class Researcher
         return $this;
     }
 
+    public function getInstitution(): ?string
+    {
+        return $this->institution;
+    }
+
+    public function setInstitution(?string $institution): static
+    {
+        $this->institution = $institution;
+        return $this;
+    }
+
+    public function getInitials(): string
+    {
+        $parts = preg_split('/\s+/', trim((string) $this->nome));
+        $first = $parts[0] ?? '';
+        $last = count($parts) > 1 ? end($parts) : '';
+
+        return mb_strtoupper(mb_substr($first, 0, 1) . mb_substr($last, 0, 1));
+    }
+
+    public function hasCurriculum(): bool
+    {
+        return !empty($this->curriculoPt) || !empty($this->curriculoEn);
+    }
+
     public function getAreaPt(): ?string
     {
         return $this->areaPt;
     }
 
-    public function setAreaPt(string $areaPt): static
+    public function setAreaPt(?string $areaPt): static
     {
         $this->areaPt = $areaPt;
         return $this;
@@ -87,7 +115,7 @@ class Researcher
         return $this->areaEn;
     }
 
-    public function setAreaEn(string $areaEn): static
+    public function setAreaEn(?string $areaEn): static
     {
         $this->areaEn = $areaEn;
         return $this;

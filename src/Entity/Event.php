@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\EventRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
@@ -137,6 +139,36 @@ class Event
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $registrationLink = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $registrationOpen = false;
+
+    /** @var Collection<int, EventRegistration> */
+    #[ORM\OneToMany(targetEntity: EventRegistration::class, mappedBy: 'event')]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
+    private Collection $registrations;
+
+    public function __construct()
+    {
+        $this->registrations = new ArrayCollection();
+    }
+
+    public function isRegistrationOpen(): bool
+    {
+        return $this->registrationOpen;
+    }
+
+    public function setRegistrationOpen(bool $registrationOpen): static
+    {
+        $this->registrationOpen = $registrationOpen;
+        return $this;
+    }
+
+    /** @return Collection<int, EventRegistration> */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
 
     public function getImage(): ?Image
     {

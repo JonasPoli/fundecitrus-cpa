@@ -1,0 +1,54 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-layer-group admin-page-title-icon" aria-hidden="true"></i>
+            Grandes Áreas de Pesquisa
+        </h1>
+        <p class="page-subtitle">Cada grande área é um galho da laranjeira na página “Pesquisa”. Arraste para ordenar.</p>
+    </div>
+    <a href="{{ path('app_admin_research_area_new') }}" class="btn-primary">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        Adicionar
+    </a>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Nome</th>
+                <th>Linhas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="research-area-sortable">
+            {% for area in areas %}
+                <tr class="sortable-row" data-id="{{ area.id }}">
+                    <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td class="font-semibold">{{ area.namePt }}<div class="text-xs text-slate-500 font-normal">{{ area.nameEn }}</div></td>
+                    <td>{{ area.lines|length }}</td>
+                    <td>
+                        <a href="{{ path('app_admin_research_area_edit', {id: area.id}) }}" class="btn-secondary">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4">Nenhuma grande área cadastrada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ include('admin/_sortable_script.html.twig', {
+        tbody_id: 'research-area-sortable',
+        reorder_url: path('app_admin_reorder', { entityName: 'ResearchArea' })
+    }) }}
+{% endblock %}

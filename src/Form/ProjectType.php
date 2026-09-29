@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Project;
 use App\Entity\Researcher;
+use App\Entity\ResearchLine;
+use App\Entity\ResearchModule;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -32,10 +34,22 @@ class ProjectType extends AbstractType
                 'label' => 'Descrição (Inglês)',
                 'attr' => ['class' => 'quill-textarea'],
             ])
-            ->add('moduloPt', null, [
-                'label' => 'Módulo / Pilar (Português)'])
-            ->add('moduloEn', null, [
-                'label' => 'Módulo / Pilar (Inglês)'])
+            ->add('researchLine', EntityType::class, [
+                'class' => ResearchLine::class,
+                'choice_label' => 'namePt',
+                'group_by' => fn (ResearchLine $line) => $line->getArea()?->getNamePt(),
+                'label' => 'Linha de Pesquisa',
+                'placeholder' => 'Selecione a linha...',
+                'required' => false,
+            ])
+            ->add('researchModule', EntityType::class, [
+                'class' => ResearchModule::class,
+                'choice_label' => 'namePt',
+                'group_by' => fn (ResearchModule $module) => $module->getLine()?->getNamePt(),
+                'label' => 'Módulo (opcional — define a linha automaticamente)',
+                'placeholder' => 'Sem módulo específico',
+                'required' => false,
+            ])
             ->add('slugPt', null, [
                 'label' => 'Slug (Português)'])
             ->add('slugEn', null, [

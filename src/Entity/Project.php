@@ -42,11 +42,13 @@ class Project
     #[ORM\Column(type: Types::TEXT)]
     private ?string $descricaoEn = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $moduloPt = null;
+    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?ResearchLine $researchLine = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $moduloEn = null;
+    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?ResearchModule $researchModule = null;
 
     #[ORM\Column(length: 255)]
     private ?string $slugPt = null;
@@ -129,26 +131,38 @@ class Project
         return $this;
     }
 
-    public function getModuloPt(): ?string
+    public function getResearchLine(): ?ResearchLine
     {
-        return $this->moduloPt;
+        return $this->researchLine ?? $this->researchModule?->getLine();
     }
 
-    public function setModuloPt(string $moduloPt): static
+    public function setResearchLine(?ResearchLine $researchLine): static
     {
-        $this->moduloPt = $moduloPt;
+        $this->researchLine = $researchLine;
         return $this;
     }
 
-    public function getModuloEn(): ?string
+    public function getResearchModule(): ?ResearchModule
     {
-        return $this->moduloEn;
+        return $this->researchModule;
     }
 
-    public function setModuloEn(string $moduloEn): static
+    public function setResearchModule(?ResearchModule $researchModule): static
     {
-        $this->moduloEn = $moduloEn;
+        $this->researchModule = $researchModule;
+        if ($researchModule) {
+            $this->researchLine = $researchModule->getLine();
+        }
         return $this;
+    }
+
+    public function getModuleLabel(string $locale): ?string
+    {
+        if ($this->researchModule) {
+            return $this->researchModule->getName($locale);
+        }
+
+        return $this->getResearchLine()?->getName($locale);
     }
 
     public function getSlugPt(): ?string

@@ -2,8 +2,19 @@
     <div class="admin-card space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.name) }}
-            {{ form_row(form.region) }}
+            {{ form_row(form.acronym) }}
         </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.country) }}
+            {{ form_row(form.city) }}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.latitude) }}
+            {{ form_row(form.longitude) }}
+        </div>
+        <p class="text-xs text-slate-500 -mt-3">A latitude e longitude posicionam o ponto no mapa da página “Sobre”. No Google Maps, clique com o botão direito sobre o local e copie os números.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.url) }}

@@ -1,0 +1,62 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-lemon admin-page-title-icon" aria-hidden="true"></i>
+            Linhas de Pesquisa e Módulos
+        </h1>
+        <p class="page-subtitle">Cada linha é uma laranja da árvore na página “Pesquisa”; ao clicar nela aparecem os módulos. Arraste para ordenar.</p>
+    </div>
+    <a href="{{ path('app_admin_research_line_new') }}" class="btn-primary">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        Adicionar
+    </a>
+</div>
+
+<div class="admin-card">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Linha</th>
+                <th>Grande Área</th>
+                <th>Módulos</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="research-line-sortable">
+            {% for line in lines %}
+                <tr class="sortable-row" data-id="{{ line.id }}">
+                    <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td class="font-semibold">{{ line.namePt }}</td>
+                    <td class="text-sm">{{ line.area.namePt }}</td>
+                    <td class="text-sm">
+                        {% for module in line.modules %}
+                            <span class="badge badge-neutral mb-1">{{ module.namePt }}</span>
+                        {% else %}
+                            <span class="text-slate-400">—</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_admin_research_line_edit', {id: line.id}) }}" class="btn-secondary">
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5">Nenhuma linha cadastrada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ include('admin/_sortable_script.html.twig', {
+        tbody_id: 'research-line-sortable',
+        reorder_url: path('app_admin_reorder', { entityName: 'ResearchLine' })
+    }) }}
+{% endblock %}

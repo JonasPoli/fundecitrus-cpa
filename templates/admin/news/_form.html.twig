@@ -32,7 +32,32 @@
             </div>
         </div>
     </div>
-    
+
+    <div class="admin-card space-y-4 mt-6">
+        <div>
+            <h2 class="admin-card-title">Galeria de fotos (carrossel)</h2>
+            <p class="text-sm text-slate-500">
+                As fotos aparecem em carrossel dentro da notícia. Para escolher onde, escreva <code class="px-1 bg-slate-100 dark:bg-slate-800 rounded">[galeria]</code> sozinho numa linha do texto; sem isso, o carrossel aparece no fim do texto.
+                Para incluir vídeos no meio do texto, use o botão <i class="fa-solid fa-film"></i> do editor e cole o link do YouTube.
+            </p>
+        </div>
+        {% set gallery_item_template %}{{ include('admin/_collection_item.html.twig', {item_label: 'Foto', fields: '__FIELDS__', columns: 1}) }}{% endset %}
+        <div data-collection
+             data-prototype="{{ form_widget(form.gallery.vars.prototype)|e('html_attr') }}"
+             data-item-template="{{ gallery_item_template|e('html_attr') }}">
+            <div data-collection-list class="space-y-4">
+                {% for child in form.gallery %}
+                    {{ include('admin/_collection_item.html.twig', {item_label: 'Foto', fields: form_widget(child), columns: 1}) }}
+                {% endfor %}
+            </div>
+            <button type="button" data-collection-add class="btn-secondary mt-4">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                Adicionar foto
+            </button>
+        </div>
+        {% do form.gallery.setRendered %}
+    </div>
+
     <div class="w-full text-right mt-6">
         <button type="submit" class="btn-primary">
             <i class="fa-solid fa-check" aria-hidden="true"></i>
@@ -42,3 +67,4 @@
 {{ form_end(form) }}
 
 {{ include('admin/_quill_script.html.twig') }}
+{{ include('admin/_collection_script.html.twig') }}

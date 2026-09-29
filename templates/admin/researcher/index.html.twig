@@ -25,8 +25,8 @@
                 <th></th>
                 <th>Foto</th>
                 <th>Nome</th>
-                <th>Área de Atuação (PT)</th>
-                <th>Área de Atuação (EN)</th>
+                <th>Instituição</th>
+                <th>Área de Atuação</th>
                 <th>Currículo Lattes</th>
                 <th>Ações</th>
             </tr>
@@ -43,8 +43,8 @@
                         {% endif %}
                     </td>
                     <td class="font-semibold">{{ researcher.nome }}</td>
-                    <td>{{ researcher.areaPt }}</td>
-                    <td>{{ researcher.areaEn }}</td>
+                    <td>{{ researcher.institution ?: '—' }}</td>
+                    <td>{{ researcher.areaPt ?: '—' }}</td>
                     <td>
                         {% if researcher.lattes %}
                             <a href="{{ researcher.lattes }}" target="_blank" class="text-primary hover:underline text-xs inline-flex items-center gap-1">
