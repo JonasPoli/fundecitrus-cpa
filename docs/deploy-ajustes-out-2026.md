@@ -1,6 +1,6 @@
 # Publicação — ajustes out/2026
 
-1. Backup do banco de produção.
+1. Backup do banco de produção: `php bin/db-backup.php` (grava `~/backups/<banco>-<data>.sql.gz`).
 2. `git pull` e `./build.sh` (cache, Tailwind do admin e asset map). Não há dependências novas no Composer.
 3. `php bin/console doctrine:migrations:migrate` (migration `Version20261009150000`):
    - `researcher.category` (todos os atuais viram "Pesquisador");
