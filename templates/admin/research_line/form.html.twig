@@ -16,7 +16,6 @@
 
 {{ form_start(form) }}
     <div class="admin-card space-y-6">
-        {{ form_row(form.area) }}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.namePt) }}
             {{ form_row(form.nameEn) }}
@@ -25,11 +24,19 @@
             {{ form_row(form.descriptionPt) }}
             {{ form_row(form.descriptionEn) }}
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                {{ form_row(form.image) }}
+                {% if line.image and line.image.imageName %}
+                    <img src="{{ asset('uploads/' ~ line.image.imageName) }}" alt="" class="mt-2 h-32 w-32 object-cover rounded border border-slate-200">
+                {% endif %}
+            </div>
+        </div>
     </div>
 
     <div class="admin-card mt-6">
         <h2 class="admin-card-title">Módulos</h2>
-        <p class="text-sm text-slate-500 mb-4">Aparecem quando o visitante clica na laranja desta linha. Uma linha pode não ter módulos.</p>
+        <p class="text-sm text-slate-500 mb-4">Aparecem como tópicos quando o visitante clica na caixa desta linha. Os projetos são ligados aos módulos no cadastro de cada projeto. Uma linha pode não ter módulos.</p>
         {% set module_item_template %}{{ include('admin/_collection_item.html.twig', {item_label: 'Módulo', fields: '__FIELDS__'}) }}{% endset %}
         <div data-collection
              data-prototype="{{ form_widget(form.modules.vars.prototype)|e('html_attr') }}"

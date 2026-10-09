@@ -15,4 +15,17 @@ class ResearchLineRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ResearchLine::class);
     }
+
+    /** @return ResearchLine[] lines with image and modules loaded, in display order */
+    public function findForPage(): array
+    {
+        return $this->createQueryBuilder('l')
+            ->leftJoin('l.image', 'i')->addSelect('i')
+            ->leftJoin('l.modules', 'm')->addSelect('m')
+            ->orderBy('l.position', 'ASC')
+            ->addOrderBy('l.id', 'ASC')
+            ->addOrderBy('m.position', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

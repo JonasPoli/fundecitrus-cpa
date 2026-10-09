@@ -1,45 +1,285 @@
 {% extends 'pub/base.html.twig' %}
 {% block title %}{{ app.request.locale == 'en' ? 'About' : 'Sobre' }} | CPA Citros{% endblock %}
-{% block meta_description %}{{ app.request.locale == 'en' ? 'Learn about CPA Citros, our mission, research structure, team and international partners.' : 'Conheça o CPA Citros, nossa missão, estrutura de pesquisa, docentes e parceiros internacionais.' }}{% endblock %}
+{% block meta_description %}{{ app.request.locale == 'en' ? 'Learn about CPA Citros: who we are, governance, team and partner institutions.' : 'Conheça o CPA Citros: quem somos, governança, equipe e instituições parceiras.' }}{% endblock %}
+
+{% macro governance_member(member, en, logo) %}
+    {% set title = member.title(en ? 'en' : 'pt') %}
+    {% set description = member.description(en ? 'en' : 'pt') %}
+    <li class="flex items-center gap-3 p-2.5 rounded-xl">
+        {% if member.image and member.image.imageName %}
+            <img src="{{ asset('uploads/' ~ member.image.imageName) }}" alt="" class="{{ logo ? 'h-10 w-16 object-contain' : 'h-11 w-11 rounded-full object-cover' }} flex-shrink-0" loading="lazy">
+        {% endif %}
+        <span class="min-w-0">
+            <span class="block text-sm font-semibold text-slate-900 leading-snug">{{ title }}</span>
+            {% if description %}
+                <span class="block text-xs text-slate-500 leading-snug mt-0.5">{{ description|nl2br }}</span>
+            {% endif %}
+        </span>
+    </li>
+{% endmacro %}
+
+{% macro governance_node(group, members, en, highlight) %}
+    {% import _self as macros %}
+    {% set count = members|length %}
+    <div class="gov-node relative h-full" {{ count ? 'data-gov-node' }}>
+        <button type="button" class="gov-toggle w-full h-full text-left rounded-2xl p-4 sm:p-5 ring-1 transition {{ highlight ? 'bg-emerald-50 ring-emerald-200' : 'bg-white ring-slate-200' }} {{ count ? 'hover:ring-primary/50 hover:shadow-md' : 'cursor-default' }}" {% if count %}aria-expanded="false" aria-controls="gov-panel-{{ group.value }}"{% else %}disabled{% endif %}>
+            <span class="block font-semibold text-slate-900 leading-snug">{{ group.label(en ? 'en' : 'pt') }}</span>
+            <span class="mt-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs">
+                <span class="text-slate-500">{{ count }} {{ count == 1 ? (en ? 'member' : 'integrante') : (en ? 'members' : 'integrantes') }}</span>
+                {% if count %}
+                    <span class="font-semibold text-primary inline-flex items-center gap-1">
+                        {{ en ? 'See members' : 'Ver integrantes' }}
+                        <i class="gov-arrow fa-solid fa-arrow-down text-[10px] transition-transform" aria-hidden="true"></i>
+                    </span>
+                {% endif %}
+            </span>
+        </button>
+        {% if count %}
+            <div id="gov-panel-{{ group.value }}" class="gov-panel hidden pt-2 lg:absolute lg:inset-x-0 lg:top-full lg:z-30">
+                <ul class="rounded-2xl bg-white shadow-xl ring-1 ring-slate-200 p-2 max-h-[22rem] overflow-y-auto">
+                    {% for member in members %}
+                        {{ macros.governance_member(member, en, false) }}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
 {% block body %}
-<!-- Quem somos: Split Premium Layout -->
-<section class="py-14 sm:py-20 lg:py-24 bg-white overflow-hidden isolate relative">
+{% import _self as macros %}
+{% set en = app.request.locale == 'en' %}
+{% set tagline = en ? 'Applied Research Center for Innovation and Sustainability in Citriculture' : 'Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura' %}
+
+<!-- Quem somos -->
+<section id="quem-somos" class="scroll-mt-20 py-14 sm:py-20 lg:py-24 bg-white overflow-hidden isolate relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-10 lg:gap-24 items-center">
+        <div class="grid lg:grid-cols-2 gap-10 lg:gap-20 lg:items-stretch">
             <div class="relative z-10">
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
-                    {{ app.request.locale == 'en' ? 'The global epicentre in the fight against HLB' : 'O epicentro global na luta contra o HLB' }}
+                    {{ en ? 'Who we are' : 'Quem somos' }}
                 </h1>
-                <div class="space-y-5 text-base sm:text-lg text-slate-600 leading-relaxed font-light">
-                    <p>
-                        {% if app.request.locale == 'en' %}
-                            The mission of <strong class="text-slate-900 font-semibold">CPA Citros</strong> is to develop research, disseminate knowledge, and transfer state-of-the-art technology to the citrus sector, aiming to isolate, contain, and mitigate greening.
-                        {% else %}
-                            A missão do <strong class="text-slate-900 font-semibold">CPA Citros</strong> é desenvolver pesquisa, difundir conhecimento e transferir tecnologia de última ponta para o setor citrícola, visando isolar, conter e mitigar a praga do <i>greening</i>.
-                        {% endif %}
-                    </p>
-                    <p>
-                        {% if app.request.locale == 'en' %}
-                            The center consolidates its operations through international scientific grants and works in a decentralized network. Researchers from different institutions and nationalities execute vital projects under the guidelines of our governance.
-                        {% else %}
-                            O centro consolida-se através de subsídios das principais esferas científicas mundiais e atua em rede descentralizada. Pesquisadores de diferentes instituições e nacionalidades assinam projetos vitais sob as diretrizes estruturais de nossa governança.
-                        {% endif %}
-                    </p>
+                <div class="space-y-5 text-base sm:text-lg text-slate-600 leading-relaxed">
+                    {% if en %}
+                        <p>CPA Citros is a research center created through a strategic partnership between Esalq/USP, Fundecitrus and FAPESP, with the purpose of developing scientific and technological solutions to the main challenges facing Brazilian citriculture. The initiative brings together specialists from several institutions and nationalities, consolidating the largest intelligence network ever formed to tackle HLB, the most destructive citrus disease in the world.</p>
+                        <p>Coordinated by Esalq/USP, CPA Citros is a network of research laboratories without a physical headquarters, integrating researchers from different fields — such as crop science, plant pathology, plant breeding, biotechnology, microbiology, entomology and data science — in a collaborative and continuous effort. Its goal is to accelerate discoveries, generate innovation applied to the field and strengthen the sustainability of the citrus chain.</p>
+                        <p>Currently, the center's main focus is on investigating the interaction between the plant, <i>Candidatus</i> Liberibacter asiaticus and <i>Diaphorina citri</i>, on developing more effective management strategies to fight HLB and on mitigating the damage caused by the disease. It also promotes knowledge dissemination and technology transfer to the sector, helping keep Brazilian citriculture competitive and prepared for future challenges.</p>
+                        <p>With long-term investments and an international collaboration network, CPA Citros represents a milestone in applied agribusiness research, reinforcing Brazil's commitment to innovation, sustainability and world leadership in the production of citrus and citrus products.</p>
+                    {% else %}
+                        <p>O <strong class="text-slate-900 font-semibold">CPA Citros</strong> é um centro de pesquisa criado por meio de uma parceria estratégica entre a Esalq/USP, o Fundecitrus e a FAPESP, com o propósito de desenvolver soluções científicas e tecnológicas para os principais desafios da citricultura brasileira. A iniciativa reúne especialistas de diversas instituições e nacionalidades, consolidando a maior rede de inteligência já formada para o enfrentamento do HLB, a doença mais destrutiva dos citros no mundo.</p>
+                        <p>Coordenado pela Esalq/USP, o CPA Citros é uma rede de laboratórios de pesquisa sem uma sede física, que integra pesquisadores de diferentes áreas — como fitotecnia, fitopatologia, melhoramento genético, biotecnologia, microbiologia, entomologia e ciência de dados —, promovendo uma atuação colaborativa e contínua. Seu objetivo é acelerar descobertas, gerar inovação aplicada ao campo e fortalecer a sustentabilidade da cadeia citrícola.</p>
+                        <p>Atualmente, a principal atuação do centro está voltada à investigação da interação entre planta, <i>Candidatus</i> Liberibacter asiaticus e <i>Diaphorina citri</i>, no desenvolvimento de estratégias de manejo mais eficazes para combate ao HLB e na mitigação dos danos causados pela doença. Além disso, promove a difusão de conhecimento e a transferência de tecnologia para o setor, contribuindo para manter a citricultura brasileira competitiva e preparada para desafios futuros.</p>
+                        <p>Com investimentos de longo prazo e uma rede internacional de colaboração, o CPA Citros representa um marco na pesquisa aplicada ao agronegócio, reforçando o compromisso do Brasil com a inovação, a sustentabilidade e a liderança mundial na produção de citros e derivados.</p>
+                    {% endif %}
                 </div>
             </div>
-            
-            <div class="relative w-full h-full min-h-[260px] sm:min-h-[400px] lg:min-h-[600px] rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group">
+
+            <div class="relative w-full min-h-[260px] sm:min-h-[400px] lg:min-h-0 lg:h-full rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group">
                 <div class="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-700"></div>
-                <img src="{{ asset('images/sobre.jpg') }}" alt="Laboratório CPA" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                <img src="{{ asset('images/sobre.jpg') }}" alt="{{ en ? 'CPA Citros laboratory' : 'Laboratório CPA Citros' }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
                 <div class="absolute inset-0 border-4 border-white/20 rounded-3xl lg:rounded-[2.5rem] pointer-events-none z-20"></div>
             </div>
         </div>
     </div>
 </section>
 
-{% set en = app.request.locale == 'en' %}
+{# Missão: texto em construção. A seção aparece quando "mission" for preenchido (incluir também o item no submenu de base.html.twig). #}
+{% set mission = en ? '' : '' %}
+{% if mission %}
+<section id="missao" class="scroll-mt-20 py-14 sm:py-20 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-6">{{ en ? 'Mission' : 'Missão' }}</h2>
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed">{{ mission }}</p>
+    </div>
+</section>
+{% endif %}
+
+<!-- Governança -->
+{% set funders = constant('App\\Enum\\GovernanceGroup::FUNDERS') %}
+{% set coordination = constant('App\\Enum\\GovernanceGroup::COORDINATION') %}
+{% set project_management = constant('App\\Enum\\GovernanceGroup::PROJECT_MANAGEMENT') %}
+{% set executive_committee = constant('App\\Enum\\GovernanceGroup::EXECUTIVE_COMMITTEE') %}
+{% set administrative_committee = constant('App\\Enum\\GovernanceGroup::ADMINISTRATIVE_COMMITTEE') %}
+{% set sector_board = constant('App\\Enum\\GovernanceGroup::SECTOR_BOARD') %}
+{% set international_board = constant('App\\Enum\\GovernanceGroup::INTERNATIONAL_BOARD') %}
+<section id="governanca" class="scroll-mt-20">
+    <div class="bg-theme-gradient text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                {{ en ? 'Governance and Structure' : 'Governança e Estrutura' }}
+            </h2>
+            <p class="mt-4 text-lg text-white/80 leading-relaxed max-w-2xl">
+                {{ en ? 'Based at Esalq-USP in Piracicaba (SP), CPA Citros connects laboratories in Brazil and abroad in a collaborative research network.' : 'Sediado na Esalq-USP, em Piracicaba (SP), o CPA Citros conecta laboratórios do Brasil e do exterior numa rede colaborativa de pesquisa.' }}
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-slate-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+            <p class="mb-6 lg:mb-8 text-sm text-slate-500 text-center">
+                {{ en ? 'Click a box to see its members.' : 'Clique em um cartão para ver os integrantes.' }}
+            </p>
+            <div class="flex flex-col gap-3 lg:grid lg:grid-cols-6 lg:gap-0">
+                <div class="order-1 lg:order-none lg:col-start-2 lg:col-span-4 lg:px-3">
+                    <div class="rounded-2xl bg-brand-800 text-white text-center px-5 py-5 shadow-sm">
+                        <p class="font-bold leading-snug">{{ tagline }}</p>
+                        <p class="mt-1 text-xs text-white/75">Esalq / Fundecitrus / Fapesp</p>
+                    </div>
+                </div>
+                <div class="hidden lg:block lg:col-span-6 h-8" aria-hidden="true"><span class="block mx-auto w-px h-full bg-slate-300"></span></div>
+
+                <div class="order-2 lg:order-none lg:col-start-2 lg:col-span-4 lg:px-3">
+                    <div class="rounded-2xl bg-emerald-50 ring-1 ring-emerald-200 p-4 sm:p-5">
+                        <p class="font-semibold text-slate-900">{{ funders.label(app.request.locale) }}</p>
+                        {% if governance[funders.value] is not empty %}
+                            <ul class="mt-2 grid sm:grid-cols-2 gap-1">
+                                {% for member in governance[funders.value] %}
+                                    {{ macros.governance_member(member, en, true) }}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="hidden lg:block lg:col-span-6 h-8" aria-hidden="true"><span class="block mx-auto w-px h-full bg-slate-300"></span></div>
+
+                <div class="order-8 lg:order-none lg:col-start-1 lg:col-span-2 lg:px-3">
+                    {{ macros.governance_node(international_board, governance[international_board.value], en, false) }}
+                </div>
+                <div class="order-3 lg:order-none lg:col-start-3 lg:col-span-2 lg:px-3">
+                    {{ macros.governance_node(coordination, governance[coordination.value], en, true) }}
+                </div>
+                <div class="hidden lg:block lg:col-span-6 relative h-8" aria-hidden="true">
+                    <span class="absolute inset-y-0 left-[16.666%] border-l border-dashed border-slate-400"></span>
+                    <span class="absolute inset-y-0 left-1/2 w-px bg-slate-300"></span>
+                </div>
+
+                <div class="order-7 lg:order-none lg:col-start-1 lg:col-span-2 lg:px-3">
+                    {{ macros.governance_node(sector_board, governance[sector_board.value], en, false) }}
+                </div>
+                <div class="order-4 lg:order-none lg:col-start-3 lg:col-span-2 lg:px-3">
+                    {{ macros.governance_node(project_management, governance[project_management.value], en, false) }}
+                </div>
+                <div class="hidden lg:block lg:col-span-6 relative h-12" aria-hidden="true">
+                    <span class="absolute top-0 h-1/2 left-[16.666%] border-l border-dashed border-slate-400"></span>
+                    <span class="absolute top-0 h-1/2 left-1/2 w-px bg-slate-300"></span>
+                    <span class="absolute top-1/2 left-[16.666%] w-[16.667%] border-t border-dashed border-slate-400"></span>
+                    <span class="absolute top-1/2 left-[33.333%] w-[33.333%] h-px bg-slate-300"></span>
+                    <span class="absolute top-1/2 bottom-0 left-[33.333%] w-px bg-slate-300"></span>
+                    <span class="absolute top-1/2 bottom-0 left-[66.666%] w-px bg-slate-300"></span>
+                </div>
+
+                <div class="order-5 lg:order-none lg:col-start-2 lg:col-span-2 lg:px-3">
+                    {{ macros.governance_node(executive_committee, governance[executive_committee.value], en, false) }}
+                </div>
+                <div class="order-6 lg:order-none lg:col-start-4 lg:col-span-2 lg:px-3">
+                    {{ macros.governance_node(administrative_committee, governance[administrative_committee.value], en, false) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Equipe -->
+{% set institutions = [] %}
+{% set team_total = 0 %}
+{% for sections in team %}
+    {% for members in sections %}
+        {% set team_total = team_total + members|length %}
+        {% for member in members %}
+            {% if member.institution and member.institution not in institutions %}
+                {% set institutions = institutions|merge([member.institution]) %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endfor %}
+<section id="equipe" class="scroll-mt-20 py-16 sm:py-24 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <div class="max-w-2xl">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{{ en ? 'Team' : 'Equipe' }}</h2>
+                <p class="mt-3 text-slate-600">
+                    {{ en ? team_total ~ ' members from institutions in Brazil and abroad.' : team_total ~ ' integrantes de instituições do Brasil e do exterior.' }}
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
+                <label class="relative block">
+                    <span class="sr-only">{{ en ? 'Search by name' : 'Buscar por nome' }}</span>
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" aria-hidden="true"></i>
+                    <input type="search" id="team-search" placeholder="{{ en ? 'Search by name' : 'Buscar por nome' }}" class="w-full lg:w-64 h-11 pl-10 pr-3 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                </label>
+                <label class="block">
+                    <span class="sr-only">{{ en ? 'Institution' : 'Instituição' }}</span>
+                    <select id="team-institution" class="w-full lg:w-64 h-11 px-3 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        <option value="">{{ en ? 'All institutions' : 'Todas as instituições' }}</option>
+                        {% for institution in institutions|sort %}
+                            <option value="{{ institution }}">{{ institution }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        {% if team|length > 1 %}
+            <div class="mt-8 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar">
+                <div class="flex gap-2 w-max sm:w-auto" role="tablist" aria-label="{{ en ? 'Team categories' : 'Categorias da equipe' }}">
+                    {% for group, sections in team %}
+                        <button type="button" role="tab" id="team-tab-{{ group }}" data-team-tab="{{ group }}" aria-controls="team-panel-{{ group }}" aria-selected="{{ loop.first ? 'true' : 'false' }}" class="team-tab inline-flex items-center gap-2 h-10 px-4 rounded-full text-sm font-semibold ring-1 transition-colors {{ loop.first ? 'bg-brand-900 text-white ring-brand-900' : 'bg-white text-slate-700 ring-slate-200' }}">
+                            {{ enum('ResearcherCategory').groupLabel(group, app.request.locale) }}
+                            <span class="text-xs opacity-70">{{ sections|reduce((carry, members) => carry + members|length, 0) }}</span>
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% for group, sections in team %}
+            <div id="team-panel-{{ group }}" class="team-panel mt-8 {{ loop.first ? '' : 'hidden' }}" data-team-panel="{{ group }}" {% if team|length > 1 %}role="tabpanel" aria-labelledby="team-tab-{{ group }}"{% endif %}>
+                {% for members in sections %}
+                    <div class="team-section {{ not loop.first ? 'mt-10' }}">
+                        {% if group == 'bolsistas' %}
+                            <h3 class="text-lg font-bold text-brand-900 mb-4">{{ (members|first).category.label(app.request.locale) }}</h3>
+                        {% endif %}
+                        <ul role="list" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {% for member in members %}
+                                {% set area = member.area(app.request.locale) %}
+                                <li id="equipe-{{ member.id }}" class="team-card scroll-mt-28" data-name="{{ member.nome }}" data-institution="{{ member.institution }}">
+                                    <div class="team-card-inner h-full flex items-start gap-4 rounded-2xl ring-1 ring-slate-200 bg-white p-4 sm:p-5 transition-shadow">
+                                        {% if member.foto and member.foto.imageName %}
+                                            <img src="{{ asset('uploads/' ~ member.foto.imageName) }}" alt="" class="w-20 h-20 rounded-full object-cover flex-shrink-0" loading="lazy">
+                                        {% else %}
+                                            <span class="w-20 h-20 rounded-full bg-primary/10 text-primary-dark text-xl font-bold flex items-center justify-center flex-shrink-0" aria-hidden="true">{{ member.initials }}</span>
+                                        {% endif %}
+                                        <div class="min-w-0 flex-1">
+                                            <p class="font-bold text-slate-900 leading-snug">{{ member.nome }}</p>
+                                            {% if member.institution %}
+                                                <p class="text-sm text-slate-600 mt-0.5">{{ member.institution }}</p>
+                                            {% endif %}
+                                            {% if area %}
+                                                <p class="text-sm text-slate-500 mt-1 leading-snug">{{ area }}</p>
+                                            {% endif %}
+                                            {% if member.lattes %}
+                                                <a href="{{ member.lattes }}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center gap-1.5 rounded-full border border-primary/30 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary hover:bg-primary hover:text-white transition-colors">
+                                                    Lattes
+                                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="mt-8 text-slate-500">{{ en ? 'The team will be published soon.' : 'A equipe será publicada em breve.' }}</p>
+        {% endfor %}
+        <p id="team-empty" class="hidden mt-8 text-center text-slate-500">{{ en ? 'No member found.' : 'Nenhum integrante encontrado.' }}</p>
+    </div>
+</section>
+
 <!-- Rede de instituições parceiras -->
-<section id="parceiros" class="py-16 sm:py-24 bg-slate-50 relative border-t border-slate-200">
+<section id="parceiros" class="scroll-mt-20 py-16 sm:py-24 bg-slate-50 relative border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl">
             <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
@@ -50,19 +290,19 @@
             </p>
         </div>
 
-        <dl class="mt-8 grid grid-cols-3 gap-3 sm:gap-6 max-w-2xl">
-            <div class="rounded-2xl bg-white ring-1 ring-slate-200 px-3 py-4 sm:p-5">
-                <dt class="text-xs sm:text-sm text-slate-500">{{ en ? 'Institutions' : 'Instituições' }}</dt>
-                <dd class="text-2xl sm:text-4xl font-extrabold text-brand-800">{{ partners|length }}</dd>
-            </div>
-            <div class="rounded-2xl bg-white ring-1 ring-slate-200 px-3 py-4 sm:p-5">
-                <dt class="text-xs sm:text-sm text-slate-500">{{ en ? 'Countries' : 'Países' }}</dt>
-                <dd class="text-2xl sm:text-4xl font-extrabold text-brand-800">{{ countries|length }}</dd>
-            </div>
-            <div class="rounded-2xl bg-white ring-1 ring-slate-200 px-3 py-4 sm:p-5">
-                <dt class="text-xs sm:text-sm text-slate-500">{{ en ? 'Researchers' : 'Pesquisadores' }}</dt>
-                <dd class="text-2xl sm:text-4xl font-extrabold text-brand-800">{{ researcherCount }}</dd>
-            </div>
+        {% set stats = [
+            {value: '+25', pt: 'Instituições', en: 'Institutions'},
+            {value: '+77', pt: 'Pesquisadores', en: 'Researchers'},
+            {value: '+30', pt: 'Bolsistas', en: 'Fellows'},
+            {value: '7', pt: 'Países', en: 'Countries'},
+        ] %}
+        <dl class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 max-w-3xl">
+            {% for stat in stats %}
+                <div class="rounded-2xl bg-white ring-1 ring-slate-200 px-3 py-4 sm:p-5">
+                    <dt class="text-xs sm:text-sm text-slate-500">{{ en ? stat.en : stat.pt }}</dt>
+                    <dd class="text-2xl sm:text-4xl font-extrabold text-brand-800">{{ stat.value }}</dd>
+                </div>
+            {% endfor %}
         </dl>
 
         <div class="mt-8 grid gap-4 lg:gap-6 {{ brazilianCities is not empty ? 'lg:grid-cols-3' }}">
@@ -122,7 +362,7 @@
 
         <!-- Filtro por país -->
         <div id="lista-parceiros" class="mt-10 scroll-mt-28">
-            <div class="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar">
+            <div id="country-strip" class="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar">
                 <div class="flex gap-2 w-max sm:w-auto sm:flex-wrap pb-1" role="toolbar" aria-label="{{ en ? 'Filter by country' : 'Filtrar por país' }}">
                     <button type="button" data-filter="all" aria-pressed="true" class="country-chip inline-flex items-center gap-2 h-10 px-4 rounded-full text-sm font-semibold ring-1 ring-slate-200 bg-white text-slate-700 transition-colors">
                         {{ en ? 'All' : 'Todos' }}
@@ -180,27 +420,6 @@
         </div>
     </div>
 </section>
-
-<!-- Governança -->
-<section class="bg-theme-gradient text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid gap-10 lg:grid-cols-5 lg:items-center">
-        <div class="lg:col-span-3">
-            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                {{ en ? 'Governance and Structure' : 'Governança e Estrutura' }}
-            </h2>
-            <p class="mt-4 text-lg text-white/80 leading-relaxed max-w-2xl">
-                {{ en ? 'Based at Esalq-USP in Piracicaba (SP), CPA Citros connects laboratories in Brazil and abroad in a collaborative research network.' : 'Sediado na Esalq-USP, em Piracicaba (SP), o CPA Citros conecta laboratórios do Brasil e do exterior numa rede colaborativa de pesquisa.' }}
-            </p>
-        </div>
-        <div class="lg:col-span-2 rounded-2xl bg-white/10 ring-1 ring-white/15 p-5 sm:p-6">
-            <p class="text-xs uppercase tracking-wider text-white/60 font-semibold">{{ en ? 'Financial management' : 'Gestão financeira' }}</p>
-            <p class="mt-1 font-bold">Fealq — Fundação de Estudos Agrários Luiz de Queiroz</p>
-            <p class="mt-2 text-sm text-white/75 leading-relaxed">
-                {{ en ? 'Handles the financial administration of the projects, so researchers can focus on science.' : 'Responsável pela administração financeira dos projetos, para que os pesquisadores se dediquem à ciência.' }}
-            </p>
-        </div>
-    </div>
-</section>
 {% endblock %}
 
 {% block javascripts %}
@@ -212,6 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chips = [...document.querySelectorAll('.country-chip')];
     const groups = [...document.querySelectorAll('.country-group')];
     const listTop = document.getElementById('lista-parceiros');
+    const strip = document.getElementById('country-strip');
     const data = {
         {% for country in countries %}
         '{{ country.code }}': {
@@ -266,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const filter = (code, scroll) => {
+    const filter = (code, scroll, scrollList = false) => {
         chips.forEach((chip) => {
             const active = chip.dataset.filter === code;
             chip.setAttribute('aria-pressed', active ? 'true' : 'false');
@@ -277,13 +497,17 @@ document.addEventListener('DOMContentLoaded', () => {
             chip.classList.toggle('text-slate-700', !active);
             chip.querySelector('.chip-count').classList.toggle('bg-white/20', active);
             chip.querySelector('.chip-count').classList.toggle('bg-slate-100', !active);
-            if (active) chip.scrollIntoView({block: 'nearest', inline: 'center', behavior: 'smooth'});
+            if (active && scroll) {
+                const stripBox = strip.getBoundingClientRect();
+                const chipBox = chip.getBoundingClientRect();
+                strip.scrollTo({left: strip.scrollLeft + chipBox.left - stripBox.left - (stripBox.width - chipBox.width) / 2, behavior: 'smooth'});
+            }
         });
         groups.forEach((group) => group.classList.toggle('hidden', code !== 'all' && group.dataset.country !== code));
-        if (scroll) listTop.scrollIntoView({behavior: 'smooth', block: 'start'});
+        if (scrollList) listTop.scrollIntoView({behavior: 'smooth', block: 'start'});
     };
 
-    chips.forEach((chip) => chip.addEventListener('click', () => filter(chip.dataset.filter, false)));
+    chips.forEach((chip) => chip.addEventListener('click', () => filter(chip.dataset.filter, true)));
 
     const showTooltip = (code, event) => {
         const info = data[code];
@@ -315,13 +539,128 @@ document.addEventListener('DOMContentLoaded', () => {
     svg.addEventListener('mouseleave', () => { if (hovered) highlight(hovered, false); hovered = null; hideTooltip(); });
     svg.addEventListener('click', (event) => {
         const code = targetCode(event);
-        if (code) filter(code, true);
+        if (code) filter(code, true, true);
     });
     markers.forEach((m) => m.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); filter(m.dataset.country, true); }
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); filter(m.dataset.country, true, true); }
     }));
 
     filter('all', false);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const nodes = [...document.querySelectorAll('[data-gov-node]')];
+    const hoverMode = window.matchMedia('(hover: hover) and (min-width: 1024px)');
+    let pinned = null;
+
+    const setOpen = (node, open) => {
+        node.querySelector('.gov-panel').classList.toggle('hidden', !open);
+        node.querySelector('.gov-toggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+        node.querySelector('.gov-arrow').classList.toggle('rotate-180', open);
+    };
+    const closeAll = (except = null) => nodes.forEach((node) => node !== except && setOpen(node, false));
+
+    nodes.forEach((node) => {
+        node.querySelector('.gov-toggle').addEventListener('click', () => {
+            const open = pinned !== node;
+            closeAll();
+            pinned = open ? node : null;
+            setOpen(node, open);
+        });
+        node.addEventListener('mouseenter', () => {
+            if (!hoverMode.matches) return;
+            pinned = null;
+            closeAll(node);
+            setOpen(node, true);
+        });
+        node.addEventListener('mouseleave', () => {
+            if (hoverMode.matches && pinned !== node) setOpen(node, false);
+        });
+    });
+    document.addEventListener('click', (event) => {
+        if (pinned && hoverMode.matches && !pinned.contains(event.target)) {
+            setOpen(pinned, false);
+            pinned = null;
+        }
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && pinned) {
+            setOpen(pinned, false);
+            pinned.querySelector('.gov-toggle').focus();
+            pinned = null;
+        }
+    });
+
+    const tabs = [...document.querySelectorAll('.team-tab')];
+    const panels = [...document.querySelectorAll('.team-panel')];
+    const search = document.getElementById('team-search');
+    const institution = document.getElementById('team-institution');
+    const empty = document.getElementById('team-empty');
+    const normalize = (text) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    let activeGroup = panels[0]?.dataset.teamPanel;
+
+    const applyFilter = () => {
+        const term = normalize(search.value.trim());
+        const inst = institution.value;
+        let visible = 0;
+        panels.forEach((panel) => {
+            const isActive = panel.dataset.teamPanel === activeGroup;
+            panel.classList.toggle('hidden', !isActive);
+            panel.querySelectorAll('.team-section').forEach((section) => {
+                let shown = 0;
+                section.querySelectorAll('.team-card').forEach((card) => {
+                    const show = (!term || normalize(card.dataset.name).includes(term)) && (!inst || card.dataset.institution === inst);
+                    card.classList.toggle('hidden', !show);
+                    if (show) shown++;
+                });
+                section.classList.toggle('hidden', shown === 0);
+                if (isActive) visible += shown;
+            });
+        });
+        empty.classList.toggle('hidden', visible > 0 || panels.length === 0);
+    };
+
+    const selectTab = (group) => {
+        activeGroup = group;
+        tabs.forEach((tab) => {
+            const active = tab.dataset.teamTab === group;
+            tab.setAttribute('aria-selected', active ? 'true' : 'false');
+            tab.classList.toggle('bg-brand-900', active);
+            tab.classList.toggle('text-white', active);
+            tab.classList.toggle('ring-brand-900', active);
+            tab.classList.toggle('bg-white', !active);
+            tab.classList.toggle('text-slate-700', !active);
+            tab.classList.toggle('ring-slate-200', !active);
+        });
+        applyFilter();
+    };
+
+    tabs.forEach((tab) => tab.addEventListener('click', () => selectTab(tab.dataset.teamTab)));
+    search?.addEventListener('input', applyFilter);
+    institution?.addEventListener('change', applyFilter);
+
+    const focusMember = () => {
+        const match = location.hash.match(/^#equipe-(\d+)$/);
+        const card = match && document.getElementById('equipe-' + match[1]);
+        if (!card) return;
+        search.value = '';
+        institution.value = '';
+        selectTab(card.closest('.team-panel').dataset.teamPanel);
+        const scrollToCard = () => card.scrollIntoView({behavior: 'instant', block: 'center'});
+        scrollToCard();
+        if (document.readyState !== 'complete') window.addEventListener('load', scrollToCard, {once: true});
+        const inner = card.querySelector('.team-card-inner');
+        const highlight = ['ring-2', 'ring-citrus', 'shadow-lg'];
+        inner.classList.remove('ring-1', 'ring-slate-200');
+        inner.classList.add(...highlight);
+        setTimeout(() => {
+            inner.classList.remove(...highlight);
+            inner.classList.add('ring-1', 'ring-slate-200');
+        }, 4000);
+    };
+    window.addEventListener('hashchange', focusMember);
+    focusMember();
 });
 </script>
 {% endblock %}

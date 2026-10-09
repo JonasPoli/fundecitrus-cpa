@@ -1,0 +1,73 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-sitemap admin-page-title-icon" aria-hidden="true"></i>
+            Governança
+        </h1>
+        <p class="page-subtitle">Itens de cada grupo do fluxograma da página “Sobre”. Os grupos são fixos; arraste para mudar a ordem dentro de cada grupo. No site aparecem só os campos preenchidos (imagem, título e descrição).</p>
+    </div>
+    <a href="{{ path('admin_governance_member_new') }}" class="btn-primary">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        Adicionar item
+    </a>
+</div>
+
+{% for group in groups %}
+    <div class="admin-card mb-6" id="grupo-{{ group.value }}">
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <h2 class="admin-card-title !mb-0">{{ group.label }}</h2>
+            <a href="{{ path('admin_governance_member_new', {group: group.value}) }}" class="btn-secondary text-sm">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                Adicionar neste grupo
+            </a>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Imagem</th>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="governance-sortable-{{ group.value }}">
+                {% for member in members[group.value] %}
+                    <tr class="sortable-row" data-id="{{ member.id }}">
+                        <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                        <td>
+                            {% if member.image and member.image.imageName %}
+                                <img src="{{ asset('uploads/' ~ member.image.imageName) }}" alt="{{ member.titlePt }}" class="h-10 w-10 object-contain bg-white rounded border border-slate-200">
+                            {% else %}
+                                <span class="text-slate-400 text-xs">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="font-semibold">{{ member.titlePt }}</td>
+                        <td class="text-sm">{{ member.descriptionPt ?: '—' }}</td>
+                        <td>
+                            <a href="{{ path('admin_governance_member_edit', {id: member.id}) }}" class="btn-secondary">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                Editar
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5">Nenhum item neste grupo.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {% for group in groups %}
+        {{ include('admin/_sortable_script.html.twig', {
+            tbody_id: 'governance-sortable-' ~ group.value,
+            reorder_url: path('app_admin_reorder', { entityName: 'GovernanceMember' })
+        }) }}
+    {% endfor %}
+{% endblock %}

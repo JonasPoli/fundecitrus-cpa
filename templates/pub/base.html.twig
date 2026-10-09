@@ -2,8 +2,16 @@
 {% set tagline = en ? 'Applied Research Center for Innovation and Sustainability in Citriculture' : 'Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura' %}
 {% set main_menu = [
 	{route: 'app_home', pt: 'Início', en: 'Home'},
-	{route: 'app_sobre', pt: 'Sobre', en: 'About'},
-	{route: 'app_pesquisa', pt: 'Pesquisa', en: 'Research'},
+	{route: 'app_sobre', pt: 'Sobre', en: 'About', children: [
+		{anchor: 'quem-somos', pt: 'Quem somos', en: 'Who we are'},
+		{anchor: 'governanca', pt: 'Governança', en: 'Governance'},
+		{anchor: 'equipe', pt: 'Equipe', en: 'Team'},
+		{anchor: 'parceiros', pt: 'Instituições parceiras', en: 'Partner institutions'},
+	]},
+	{route: 'app_pesquisa', pt: 'Pesquisa', en: 'Research', children: [
+		{anchor: 'linhas', pt: 'Linhas de pesquisa', en: 'Research lines'},
+		{anchor: 'documentos', pt: 'Documentos de projetos', en: 'Project documents'},
+	]},
 	{route: 'app_comunicacao', pt: 'Comunicação', en: 'Communication'},
 	{route: 'app_eventos', pt: 'Eventos', en: 'Events'},
 	{route: 'app_oportunidades', pt: 'Oportunidades', en: 'Opportunities'},
@@ -14,7 +22,6 @@
 	app_evento_detalhe: 'app_eventos',
 	app_oportunidade_detalhe: 'app_oportunidades',
 	app_projeto_detalhe: 'app_pesquisa',
-	app_pesquisador_detalhe: 'app_pesquisa',
 } %}
 {% set current_section = active_routes[app.current_route] ?? app.current_route %}
 <!DOCTYPE html>
@@ -154,7 +161,7 @@
 			<div class="header-row max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4 h-20 lg:h-24 transition-all duration-300">
 				<a href="{{ path('app_home', {_locale: app.request.locale}) }}" class="flex items-center gap-3 min-w-0 group" aria-label="CPA Citros — {{ tagline }}">
 					<img src="{{ asset('images/logo.png') }}" alt="CPA Citros" width="595" height="595" class="brand-logo h-14 lg:h-[4.5rem] w-auto flex-shrink-0"/>
-					<span class="brand-tagline block border-l border-slate-300 pl-3 text-[10.5px] sm:text-[11px] lg:text-xs leading-snug font-medium text-slate-600 max-w-[168px] sm:max-w-[210px] lg:max-w-[230px]">
+					<span class="brand-tagline block border-l border-slate-300 pl-3 text-[10.5px] sm:text-[11px] lg:text-xs leading-snug font-bold text-slate-700 max-w-[168px] sm:max-w-[210px] lg:max-w-[230px]">
 						{{ tagline }}
 					</span>
 				</a>
@@ -164,6 +171,22 @@
 						{% set active = current_section == item.route %}
 						{% if loop.last %}
 							<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="ml-3 bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-colors shadow-sm" {{ active ? 'aria-current="page"' }}>{{ en ? item.en : item.pt }}</a>
+						{% elseif item.children is defined %}
+							<div class="relative group/submenu">
+								<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors {{ active ? 'text-primary bg-primary/10' : 'text-slate-600 hover:text-primary hover:bg-primary/5' }}" {{ active ? 'aria-current="page"' }}>
+									{{ en ? item.en : item.pt }}
+									<i class="fa-solid fa-chevron-down text-[9px] opacity-60 transition-transform group-hover/submenu:rotate-180" aria-hidden="true"></i>
+								</a>
+								<div class="absolute left-0 top-full pt-2 hidden group-hover/submenu:block group-focus-within/submenu:block">
+									<ul class="min-w-[240px] rounded-2xl bg-white shadow-xl ring-1 ring-slate-900/5 border-t-2 border-citrus p-2">
+										{% for child in item.children %}
+											<li>
+												<a href="{{ path(item.route, {_locale: app.request.locale}) }}#{{ child.anchor }}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-primary/5 hover:text-primary">{{ en ? child.en : child.pt }}</a>
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
 						{% else %}
 							<a href="{{ path(item.route, {_locale: app.request.locale}) }}" class="px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors {{ active ? 'text-primary bg-primary/10' : 'text-slate-600 hover:text-primary hover:bg-primary/5' }}" {{ active ? 'aria-current="page"' }}>{{ en ? item.en : item.pt }}</a>
 						{% endif %}
@@ -186,6 +209,9 @@
 								{{ en ? item.en : item.pt }}
 								<i class="fa-solid fa-chevron-right text-xs opacity-40" aria-hidden="true"></i>
 							</a>
+							{% for child in item.children ?? [] %}
+								<a href="{{ path(item.route, {_locale: app.request.locale}) }}#{{ child.anchor }}" class="ml-4 px-4 py-2.5 border-l-2 border-slate-200 text-sm font-medium text-slate-600 active:bg-slate-100">{{ en ? child.en : child.pt }}</a>
+							{% endfor %}
 						{% endif %}
 					{% endfor %}
 				</nav>
@@ -210,7 +236,8 @@
 
 		<!-- Rodapé -->
 		{% set footer_categories = get_footer_categories() %}
-		{% set logo_heights = {lg: 'h-14', md: 'h-12', sm: 'h-9'} %}
+		{% set logo_heights = {lg: 'h-14', md: 'h-12', sm: 'h-10'} %}
+		{% set logo_widths = {lg: 'max-w-[140px]', md: 'max-w-[120px]', sm: 'max-w-[100px]'} %}
 		<footer class="mt-auto bg-white border-t border-slate-200">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-14">
 				<div class="grid gap-10 lg:grid-cols-12 lg:items-end">
@@ -220,10 +247,11 @@
 					</div>
 
 					{% if footer_categories is not empty %}
-						<div class="lg:col-span-8 flex flex-wrap gap-x-10 gap-y-8">
+						<div class="lg:col-span-8 flex flex-wrap justify-between gap-x-12 gap-y-8">
 							{% for group in footer_categories %}
 								{% set height = logo_heights[group.category.logoSize] ?? 'h-12' %}
-								<div class="min-w-0 w-full sm:w-auto" style="flex: {{ group.companies|length }} 1 auto;">
+								{% set max_width = logo_widths[group.category.logoSize] ?? 'max-w-[120px]' %}
+								<div class="min-w-0 w-full sm:w-auto sm:flex-none">
 									<h2 class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 mb-4 border-b border-slate-300">{{ group.category.name(app.request.locale) }}</h2>
 									<ul class="flex flex-wrap items-center gap-x-8 gap-y-4">
 										{% for company in group.companies %}
@@ -231,7 +259,7 @@
 											<li>
 												<{{ url ? 'a' : 'span' }} {% if url %}href="{{ url }}" {% if company.newTab %}target="_blank" rel="noopener noreferrer"{% endif %}{% endif %} class="inline-flex items-center justify-center rounded-lg transition-opacity {{ url ? 'hover:opacity-80' }}" title="{{ company.name }}">
 													{% if company.logo and company.logo.imageName %}
-														<img src="{{ asset('uploads/' ~ company.logo.imageName) }}" alt="{{ company.name }}" class="{{ height }} w-auto max-w-[160px] object-contain" loading="lazy">
+														<img src="{{ asset('uploads/' ~ company.logo.imageName) }}" alt="{{ company.name }}" class="{{ height }} {{ max_width }} w-auto object-contain" loading="lazy">
 													{% else %}
 														<span class="{{ height }} inline-flex items-center px-3 rounded-lg border border-slate-200 text-slate-700 font-extrabold tracking-tight text-sm whitespace-nowrap">{{ company.name }}</span>
 													{% endif %}
@@ -300,6 +328,11 @@
 				};
 				bindToggle('mobile-menu-toggle', 'mobile-menu');
 				bindToggle('researcher-toggle', 'researcher-login');
+
+				const mobileMenu = document.getElementById('mobile-menu');
+				mobileMenu?.querySelectorAll('a[href*="#"]').forEach((link) => link.addEventListener('click', () => {
+					if (!mobileMenu.classList.contains('hidden')) document.getElementById('mobile-menu-toggle').click();
+				}));
 			});
 		</script>
 

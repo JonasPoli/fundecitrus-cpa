@@ -6,9 +6,9 @@
     <div>
         <h1 class="page-title">
             <i class="fa-solid fa-user-tie admin-page-title-icon" aria-hidden="true"></i>
-            Pesquisadores
+            Equipe
         </h1>
-        <p class="page-subtitle">Gerencie o corpo de pesquisadores científicos do CPA Citros.</p>
+        <p class="page-subtitle">Pesquisadores, bolsistas e apoio técnico exibidos na seção “Equipe” da página “Sobre”.</p>
     </div>
     <div>
         <a href="{{ path('app_admin_researcher_new') }}" class="btn-primary">
@@ -25,8 +25,9 @@
                 <th></th>
                 <th>Foto</th>
                 <th>Nome</th>
+                <th>Categoria</th>
                 <th>Instituição</th>
-                <th>Área de Atuação</th>
+                <th>Especialidade</th>
                 <th>Currículo Lattes</th>
                 <th>Ações</th>
             </tr>
@@ -43,6 +44,7 @@
                         {% endif %}
                     </td>
                     <td class="font-semibold">{{ researcher.nome }}</td>
+                    <td class="text-sm">{{ researcher.category.adminLabel }}</td>
                     <td>{{ researcher.institution ?: '—' }}</td>
                     <td>{{ researcher.areaPt ?: '—' }}</td>
                     <td>
@@ -63,7 +65,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7">Nenhum pesquisador cadastrado.</td>
+                    <td colspan="8">Nenhum integrante cadastrado.</td>
                 </tr>
             {% endfor %}
         </tbody>

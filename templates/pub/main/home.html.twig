@@ -26,23 +26,14 @@
                     {% endif %}
                 {% endif %}
 
-                <div class="mt-7 sm:mt-9 flex flex-wrap gap-3">
-                    {% if banner.buttonLink %}
-                        <a href="{{ banner.buttonLink }}" class="inline-flex items-center gap-2 bg-citrus hover:bg-secondary-dark text-brand-900 font-bold px-6 py-3.5 rounded-xl transition-colors">
+                {% if banner.buttonLink %}
+                    {% set link = en and banner.buttonLink starts with '/pt/' ? '/en/' ~ banner.buttonLink|slice(4) : banner.buttonLink %}
+                    <div class="mt-7 sm:mt-9">
+                        <a href="{{ link }}" class="inline-flex items-center bg-citrus hover:bg-secondary-dark text-brand-900 font-bold px-6 py-3.5 rounded-xl transition-colors">
                             {{ en ? (banner.buttonTextEn ?: 'Learn more') : (banner.buttonTextPt ?: 'Saiba mais') }}
-                            <i class="fa-solid fa-arrow-right text-sm" aria-hidden="true"></i>
                         </a>
-                    {% endif %}
-                    {% if loop.first %}
-                        <a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur-md text-white font-semibold px-6 py-3.5 rounded-xl transition-colors">
-                            {{ en ? 'About CPA Citros' : 'Conheça o CPA' }}
-                        </a>
-                    {% else %}
-                        <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur-md text-white font-semibold px-6 py-3.5 rounded-xl transition-colors">
-                            {{ en ? 'Our research' : 'Nossa pesquisa' }}
-                        </a>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     {% endfor %}
@@ -69,97 +60,69 @@
 </section>
 {% endif %}
 
-<!-- Bento Grid Moderno: Institucional / HLB -->
-<section class="py-16 sm:py-24 lg:py-32 bg-white relative">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-2xl mx-auto mb-10 lg:mb-16">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                {{ app.request.locale == 'en' ? 'Network Infrastructure for a Global Challenge' : 'Infraestrutura em Rede para um Desafio Global' }}
-            </h2>
-        </div>
-
-        <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Bento Box 1: Sobre -->
-            <div class="col-span-1 lg:col-span-2 bg-slate-50 rounded-3xl p-8 lg:p-12 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
-                <div class="relative z-10 md:w-2/3">
-                    <h4 class="text-2xl font-bold text-slate-900 mb-4">
-                        {{ app.request.locale == 'en' ? 'Cutting-Edge Structure' : 'Estrutura de Ponta' }}
-                    </h4>
-                    <p class="text-slate-600 mb-8 leading-relaxed">
-                        {{ app.request.locale == 'en' ? 'Our activities involve scientists from 17 research institutions in Brazil and global partners, connecting biology and management in real time.' : 'As atividades envolvem cientistas de 17 instituições de pesquisa no Brasil e de outros centros mundiais, conectando as descobertas botânicas, vetores e biologia molecular em tempo real.' }}
-                    </p>
-                    <a href="{{ path('app_sobre', {_locale: app.request.locale}) }}" class="inline-flex items-center font-semibold text-primary group-hover:text-primary-dark transition-colors">
-                        {{ app.request.locale == 'en' ? 'Learn more about governance' : 'Saiba mais sobre a governança' }}
-                        <span class="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </a>
-                </div>
-                <img src="{{ asset('images/sobre.jpg') }}" class="mt-8 md:absolute md:right-8 md:bottom-8 md:w-1/3 rounded-2xl shadow-lg ring-1 ring-slate-900/5 group-hover:-translate-y-2 transition-transform duration-500" alt="Laboratório">
-            </div>
-
-            <!-- Bento Box 2: HLB -->
-            <div class="col-span-1 bg-theme-gradient text-white border-0 rounded-3xl p-8 lg:p-12 border border-slate-800 shadow-2xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-500">
-                <img src="{{ asset('images/hlb.jpg') }}" class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700">
-                <div class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/80 to-transparent"></div>
-                <div class="relative z-10 flex flex-col h-full justify-end">
-                    <h4 class="text-2xl font-bold text-white mb-2">
-                        {{ app.request.locale == 'en' ? 'The HLB Crisis' : 'A Crise do HLB' }}
-                    </h4>
-                    <p class="text-slate-300 text-sm mb-6 leading-relaxed">
-                        {{ app.request.locale == 'en' ? 'Greening is caused by the Candidatus Liberibacter bacterium, spread by the psyllid insect vector.' : 'O Greening é causado pela bactéria Candidatus Liberibacter, propagada pelo inseto vetor psilídeo.' }}
-                    </p>
-                    <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold backdrop-blur text-sm text-center transition-colors border border-white/5">
-                        {{ app.request.locale == 'en' ? 'Research Details' : 'Detalhes da Pesquisa' }}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Magazine Feed Notícias -->
+<!-- Últimas atualizações: notícia, evento e oportunidade mais recentes -->
+{% set updates = [] %}
+{% if latestNews %}
+    {% set updates = updates|merge([{
+        label: en ? 'News' : 'Notícias',
+        title: en ? latestNews.titleEn : latestNews.titlePt,
+        summary: en ? latestNews.summaryEn : latestNews.summaryPt,
+        meta: latestNews.date|date(en ? 'M d, Y' : 'd/m/Y'),
+        image: latestNews.image and latestNews.image.imageName ? asset('uploads/' ~ latestNews.image.imageName) : asset('images/news1.jpg'),
+        url: path('app_noticia_detalhe', {slug: en ? latestNews.slugEn : latestNews.slugPt, _locale: app.request.locale}),
+    }]) %}
+{% endif %}
+{% if latestEvent %}
+    {% set updates = updates|merge([{
+        label: en ? 'Events' : 'Eventos',
+        title: en ? latestEvent.titleEn : latestEvent.titlePt,
+        summary: null,
+        meta: en ? latestEvent.dateEn : latestEvent.datePt,
+        image: latestEvent.image and latestEvent.image.imageName ? asset('uploads/' ~ latestEvent.image.imageName) : asset('images/workshop_biologico_banner.png'),
+        url: path('app_evento_detalhe', {slug: en ? latestEvent.slugEn : latestEvent.slugPt, _locale: app.request.locale}),
+    }]) %}
+{% endif %}
+{% if latestOpportunity %}
+    {% set updates = updates|merge([{
+        label: en ? 'Opportunities' : 'Oportunidades',
+        title: en ? latestOpportunity.titleEn : latestOpportunity.titlePt,
+        summary: en ? latestOpportunity.summaryEn : latestOpportunity.summaryPt,
+        meta: en ? latestOpportunity.statusEn : latestOpportunity.statusPt,
+        image: latestOpportunity.image and latestOpportunity.image.imageName ? asset('uploads/' ~ latestOpportunity.image.imageName) : asset('images/vagas_banner.png'),
+        url: path('app_oportunidade_detalhe', {slug: en ? latestOpportunity.slugEn : latestOpportunity.slugPt, _locale: app.request.locale}),
+    }]) %}
+{% endif %}
 <section class="py-16 sm:py-24 lg:py-32 bg-slate-50 border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row justify-between md:items-end mb-10 lg:mb-16 gap-4 md:gap-6">
-            <div>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                    {{ app.request.locale == 'en' ? 'Latest Updates' : 'Últimas Atualizações' }}
-                </h2>
-            </div>
-            <a href="{{ path('app_comunicacao', {_locale: app.request.locale}) }}" class="self-start md:self-auto rounded-full px-6 py-3 bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-100 transition-colors shadow-sm text-sm">
-                {{ app.request.locale == 'en' ? 'View all news' : 'Ver todas as notícias' }}
-            </a>
-        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-10 lg:mb-16">
+            {{ en ? 'Latest Updates' : 'Últimas Atualizações' }}
+        </h2>
 
         <div class="grid md:grid-cols-3 gap-8">
-            {% for item in news %}
-            {% set title = app.request.locale == 'en' ? item.titleEn : item.titlePt %}
-            {% set summary = app.request.locale == 'en' ? item.summaryEn : item.summaryPt %}
-            {% set slug = app.request.locale == 'en' ? item.slugEn : item.slugPt %}
-            <article class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 group flex flex-col hover:-translate-y-2">
+            {% for update in updates %}
+            <article class="relative bg-white rounded-3xl p-4 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 group flex flex-col hover:-translate-y-2">
                 <div class="aspect-video rounded-2xl overflow-hidden mb-6 relative ring-1 ring-slate-900/5">
-                    {% if item.image and item.image.imageName %}
-                        <img src="{{ asset('uploads/' ~ item.image.imageName) }}" alt="{{ title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                    {% else %}
-                        <img src="{{ asset('images/news1.jpg') }}" alt="{{ title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
-                    {% endif %}
-                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                        {{ item.date|date('d M Y') }}
-                    </div>
+                    <img src="{{ update.image }}" alt="" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out" loading="lazy">
+                    <span class="absolute top-4 left-4 bg-citrus text-brand-900 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-sm">{{ update.label }}</span>
                 </div>
                 <div class="px-4 pb-4 flex-1 flex flex-col">
+                    {% if update.meta %}
+                        <p class="text-xs font-semibold text-slate-500 mb-2">{{ update.meta }}</p>
+                    {% endif %}
                     <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary transition-colors leading-snug">
-                        {{ title }}
+                        <a href="{{ update.url }}" class="after:absolute after:inset-0">{{ update.title }}</a>
                     </h3>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-1">{{ summary }}</p>
-                    <a href="{{ path('app_noticia_detalhe', {slug: slug, _locale: app.request.locale}) }}" class="text-primary font-bold text-sm">
-                        {{ app.request.locale == 'en' ? 'Read more' : 'Leia mais' }} <span class="inline-block group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </a>
+                    {% if update.summary %}
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6">{{ update.summary }}</p>
+                    {% endif %}
+                    <span class="mt-auto text-primary font-bold text-sm" aria-hidden="true">
+                        {{ en ? 'Read more' : 'Leia mais' }} <span class="inline-block group-hover:translate-x-1 transition-transform">&rarr;</span>
+                    </span>
                 </div>
             </article>
             {% else %}
                 <div class="col-span-3 text-center text-slate-500 py-12">
-                    {{ app.request.locale == 'en' ? 'No news found.' : 'Nenhuma notícia cadastrada.' }}
+                    {{ en ? 'No updates yet.' : 'Nenhuma atualização publicada.' }}
                 </div>
             {% endfor %}
         </div>

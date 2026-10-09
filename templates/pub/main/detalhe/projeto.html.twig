@@ -12,7 +12,7 @@
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
         
         <div class="mb-10">
-            <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}" class="text-slate-400 hover:text-primary transition-colors inline-flex items-center gap-3">
+            <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}#linhas" class="text-slate-400 hover:text-primary transition-colors inline-flex items-center gap-3">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
                 <span class="text-sm font-bold text-slate-400 uppercase tracking-widest hover:text-primary transition-colors">
                     {{ app.request.locale == 'en' ? 'Scientific Project Details' : 'Detalhe do Projeto Científico' }}
@@ -35,12 +35,16 @@
                     <!-- Avatar Responsável -->
                     <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 ring-1 ring-white/20 text-center min-w-[200px] flex-shrink-0">
                         <div class="w-16 h-16 rounded-full bg-secondary mx-auto flex items-center justify-center text-slate-900 font-bold text-xl mb-3 shadow-inner">
-                            {{ item.pesquisador ? item.pesquisador.nome|slice(3, 1) : 'C' }}
+                            {{ item.pesquisador ? item.pesquisador.initials : 'C' }}
                         </div>
                         <p class="text-xs text-slate-200 font-medium uppercase tracking-widest mb-1">
-                            {{ app.request.locale == 'en' ? 'Coordinating' : 'Coordenação' }}
+                            {{ app.request.locale == 'en' ? 'Lead researcher' : 'Pesquisador responsável' }}
                         </p>
-                        <p class="font-bold text-white">{{ item.pesquisador ? item.pesquisador.nome : 'CPA Citros' }}</p>
+                        {% if item.pesquisador %}
+                            <a href="{{ path('app_sobre', {_locale: app.request.locale}) }}#equipe-{{ item.pesquisador.id }}" class="font-bold text-white underline-offset-4 hover:underline">{{ item.pesquisador.nome }}</a>
+                        {% else %}
+                            <p class="font-bold text-white">CPA Citros</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

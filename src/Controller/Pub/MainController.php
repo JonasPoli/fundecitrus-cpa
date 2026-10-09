@@ -25,7 +25,8 @@ use App\Entity\ProjectDocument;
 use App\Entity\YoutubeMedia;
 use App\Entity\EventRegistration;
 use App\Form\EventRegistrationType;
-use App\Repository\ResearchAreaRepository;
+use App\Repository\GovernanceMemberRepository;
+use App\Repository\ResearchLineRepository;
 use App\Service\PartnerNetwork;
 
 class MainController extends AbstractController
@@ -39,57 +40,47 @@ class MainController extends AbstractController
     #[Route('/{_locale}', name: 'app_home', requirements: ['_locale' => 'pt|en'])]
     public function home(
         HomeBannerRepository $bannerRepo,
-        PartnerRepository $partnerRepo,
-        NewsRepository $newsRepo
+        NewsRepository $newsRepo,
+        EventRepository $eventRepo,
+        JobOpportunityRepository $jobRepo
     ): Response {
         return $this->render('pub/main/home.html.twig', [
             'banners' => $bannerRepo->findBy(['isActive' => true], ['position' => 'ASC']),
-            'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
-            'news' => $newsRepo->findBy([], ['date' => 'DESC'], 3),
+            'latestNews' => $newsRepo->findOneBy([], ['date' => 'DESC', 'id' => 'DESC']),
+            'latestEvent' => $eventRepo->findOneBy([], ['id' => 'DESC']),
+            'latestOpportunity' => $jobRepo->findOneBy([], ['id' => 'DESC']),
         ]);
     }
 
     #[Route('/{_locale}/sobre', name: 'app_sobre', requirements: ['_locale' => 'pt|en'])]
-    public function sobre(Request $request, PartnerRepository $partnerRepo, ResearcherRepository $researcherRepo, PartnerNetwork $partnerNetwork): Response
-    {
+    public function sobre(
+        Request $request,
+        PartnerRepository $partnerRepo,
+        ResearcherRepository $researcherRepo,
+        GovernanceMemberRepository $governanceMemberRepo,
+        PartnerNetwork $partnerNetwork
+    ): Response {
         $partners = $partnerRepo->findBy([], ['position' => 'ASC', 'name' => 'ASC']);
 
         return $this->render('pub/main/sobre.html.twig', [
             'partners' => $partners,
             'countries' => $partnerNetwork->byCountry($partners, $request->getLocale()),
             'brazilianCities' => $partnerNetwork->brazilianCities($partners),
-            'researcherCount' => $researcherRepo->count([]),
+            'team' => $researcherRepo->findTeamGrouped(),
+            'governance' => $governanceMemberRepo->findGrouped(),
         ]);
     }
 
     #[Route('/{_locale}/pesquisa', name: 'app_pesquisa', requirements: ['_locale' => 'pt|en'])]
     public function pesquisa(
-        Request $request,
-        ResearcherRepository $researcherRepo,
+        ResearchLineRepository $researchLineRepo,
         ProjectRepository $projectRepo,
-        PartnerRepository $partnerRepo,
-        ResearchAreaRepository $researchAreaRepo,
         EntityManagerInterface $entityManager
     ): Response {
-        $search = $request->query->get('search', '');
-        $projetos = $projectRepo->findAll();
-        $areas = $researchAreaRepo->createQueryBuilder('a')
-            ->leftJoin('a.lines', 'l')->addSelect('l')
-            ->leftJoin('l.modules', 'm')->addSelect('m')
-            ->orderBy('a.position', 'ASC')
-            ->addOrderBy('l.position', 'ASC')
-            ->addOrderBy('m.position', 'ASC')
-            ->getQuery()
-            ->getResult();
-        $projectDocuments = $entityManager->getRepository(ProjectDocument::class)->findBy([], ['year' => 'DESC', 'id' => 'DESC']);
-
         return $this->render('pub/main/pesquisa.html.twig', [
-            'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
-            'pesquisadores' => $researcherRepo->findBy([], ['position' => 'ASC', 'nome' => 'ASC']),
-            'projetos' => $projetos,
-            'areas' => $areas,
-            'projectDocuments' => $projectDocuments,
-            'search' => $search,
+            'lines' => $researchLineRepo->findForPage(),
+            'projects' => $projectRepo->findGroupedByModuleAndLine(),
+            'projectDocuments' => $entityManager->getRepository(ProjectDocument::class)->findBy([], ['year' => 'DESC', 'id' => 'DESC']),
         ]);
     }
 
@@ -290,22 +281,12 @@ class MainController extends AbstractController
     }
 
     #[Route('/{_locale}/pesquisador/{id}', name: 'app_pesquisador_detalhe', requirements: ['_locale' => 'pt|en', 'id' => '\d+'])]
-    public function pesquisadorDetalhe(int $id, ResearcherRepository $researcherRepository, PartnerRepository $partnerRepo): Response
+    public function pesquisadorDetalhe(int $id, Request $request): Response
     {
-        $item = $researcherRepository->find($id);
-        if (!$item) {
-            throw $this->createNotFoundException('Pesquisador não encontrado');
-        }
-
-        // Must have curriculum filled in either language to show detail page
-        if (empty($item->getCurriculoPt()) && empty($item->getCurriculoEn())) {
-            throw $this->createNotFoundException('Pesquisador sem currículo cadastrado');
-        }
-
-        return $this->render('pub/main/detalhe/pesquisador.html.twig', [
-            'partners' => $partnerRepo->findBy([], ['position' => 'ASC']),
-            'item' => $item,
-        ]);
+        return $this->redirect(
+            $this->generateUrl('app_sobre', ['_locale' => $request->getLocale()]) . '#equipe-' . $id,
+            Response::HTTP_MOVED_PERMANENTLY
+        );
     }
 
     #[Route('/{_locale}/area-restrita', name: 'app_area_restrita', requirements: ['_locale' => 'pt|en'])]

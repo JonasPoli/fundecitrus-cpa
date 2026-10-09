@@ -7,7 +7,7 @@
             <i class="fa-solid fa-lemon admin-page-title-icon" aria-hidden="true"></i>
             Linhas de Pesquisa e Módulos
         </h1>
-        <p class="page-subtitle">Cada linha é uma laranja da árvore na página “Pesquisa”; ao clicar nela aparecem os módulos. Arraste para ordenar.</p>
+        <p class="page-subtitle">Cada linha é uma caixa com imagem na página “Pesquisa”; ao clicar nela aparecem os módulos e, em cada módulo, os projetos. Arraste para ordenar.</p>
     </div>
     <a href="{{ path('app_admin_research_line_new') }}" class="btn-primary">
         <i class="fa-solid fa-plus" aria-hidden="true"></i>
@@ -20,8 +20,8 @@
         <thead>
             <tr>
                 <th></th>
+                <th>Imagem</th>
                 <th>Linha</th>
-                <th>Grande Área</th>
                 <th>Módulos</th>
                 <th>Ações</th>
             </tr>
@@ -30,8 +30,14 @@
             {% for line in lines %}
                 <tr class="sortable-row" data-id="{{ line.id }}">
                     <td class="admin-table-grip-td"><i class="fa-solid fa-grip-vertical admin-table-grip-icon" aria-hidden="true"></i></td>
+                    <td>
+                        {% if line.image and line.image.imageName %}
+                            <img src="{{ asset('uploads/' ~ line.image.imageName) }}" alt="" class="h-12 w-12 object-cover rounded border border-slate-200">
+                        {% else %}
+                            <span class="text-amber-600 text-xs">sem imagem</span>
+                        {% endif %}
+                    </td>
                     <td class="font-semibold">{{ line.namePt }}</td>
-                    <td class="text-sm">{{ line.area.namePt }}</td>
                     <td class="text-sm">
                         {% for module in line.modules %}
                             <span class="badge badge-neutral mb-1">{{ module.namePt }}</span>

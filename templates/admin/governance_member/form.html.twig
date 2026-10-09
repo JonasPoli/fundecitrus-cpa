@@ -1,0 +1,54 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="fa-solid fa-sitemap admin-page-title-icon" aria-hidden="true"></i>
+            {{ member.id ? 'Editar' : 'Adicionar' }} Item da Governança
+        </h1>
+    </div>
+    <a href="{{ path('admin_governance_member_index') }}" class="btn-secondary">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        Voltar
+    </a>
+</div>
+
+{{ form_start(form) }}
+    <div class="admin-card space-y-6">
+        {{ form_row(form.governanceGroup) }}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.titlePt) }}
+            {{ form_row(form.titleEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.descriptionPt) }}
+            {{ form_row(form.descriptionEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                {{ form_row(form.image) }}
+                {% if member.image and member.image.imageName %}
+                    <img src="{{ asset('uploads/' ~ member.image.imageName) }}" alt="" class="mt-2 h-24 w-24 object-contain bg-white rounded border border-slate-200">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="w-full text-right mt-6">
+        <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            Salvar
+        </button>
+    </div>
+{{ form_end(form) }}
+
+{% if member.id %}
+    <form method="post" action="{{ path('admin_governance_member_delete', {id: member.id}) }}" onsubmit="return confirm('Excluir este item da governança?');" class="text-right mt-6">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ member.id) }}">
+        <button type="submit" class="btn-danger">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+            Excluir
+        </button>
+    </form>
+{% endif %}
+{% endblock %}

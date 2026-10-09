@@ -18,13 +18,7 @@ final class ResearchLineController extends AbstractController
     public function index(ResearchLineRepository $researchLineRepository): Response
     {
         return $this->render('admin/research_line/index.html.twig', [
-            'lines' => $researchLineRepository->createQueryBuilder('l')
-                ->leftJoin('l.area', 'a')->addSelect('a')
-                ->leftJoin('l.modules', 'm')->addSelect('m')
-                ->orderBy('a.position', 'ASC')
-                ->addOrderBy('l.position', 'ASC')
-                ->getQuery()
-                ->getResult(),
+            'lines' => $researchLineRepository->findForPage(),
         ]);
     }
 

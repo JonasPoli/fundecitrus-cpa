@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ResearcherCategory;
 use App\Repository\ResearcherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,6 +22,9 @@ class Researcher
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $institution = null;
+
+    #[ORM\Column(length: 30, enumType: ResearcherCategory::class, options: ['default' => 'pesquisador'])]
+    private ResearcherCategory $category = ResearcherCategory::RESEARCHER;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $areaPt = null;
@@ -85,6 +89,22 @@ class Researcher
         return $this;
     }
 
+    public function getCategory(): ResearcherCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(ResearcherCategory $category): static
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    public function getArea(string $locale): ?string
+    {
+        return $locale === 'en' && $this->areaEn ? $this->areaEn : $this->areaPt;
+    }
+
     public function getInitials(): string
     {
         $parts = preg_split('/\s+/', trim((string) $this->nome));
@@ -92,11 +112,6 @@ class Researcher
         $last = count($parts) > 1 ? end($parts) : '';
 
         return mb_strtoupper(mb_substr($first, 0, 1) . mb_substr($last, 0, 1));
-    }
-
-    public function hasCurriculum(): bool
-    {
-        return !empty($this->curriculoPt) || !empty($this->curriculoEn);
     }
 
     public function getAreaPt(): ?string

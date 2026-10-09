@@ -17,8 +17,12 @@ class ResearchLine
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'lines')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?ResearchArea $area = null;
+
+    #[ORM\ManyToOne(cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Image $image = null;
 
     #[ORM\Column(length: 255)]
     private ?string $namePt = null;
@@ -68,6 +72,17 @@ class ResearchLine
     public function setArea(?ResearchArea $area): static
     {
         $this->area = $area;
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): static
+    {
+        $this->image = $image;
         return $this;
     }
 

@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Researcher;
+use App\Enum\ResearcherCategory;
 use App\Form\ImageType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,12 +23,17 @@ class ResearcherType extends AbstractType
                 'label' => 'Instituição (ex: Esalq/USP)',
                 'required' => false,
             ])
+            ->add('category', EnumType::class, [
+                'class' => ResearcherCategory::class,
+                'choice_label' => fn (ResearcherCategory $category) => $category->adminLabel(),
+                'label' => 'Categoria na Equipe',
+            ])
             ->add('areaPt', null, [
-                'label' => 'Área de Atuação (Português)',
+                'label' => 'Especialidade de pesquisa (Português)',
                 'required' => false,
             ])
             ->add('areaEn', null, [
-                'label' => 'Área de Atuação (Inglês)',
+                'label' => 'Especialidade de pesquisa (Inglês)',
                 'required' => false,
             ])
             ->add('lattes', null, [
