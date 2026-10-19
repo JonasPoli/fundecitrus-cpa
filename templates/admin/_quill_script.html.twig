@@ -47,13 +47,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         quill.root.innerHTML = textarea.value;
-        
-        var form = textarea.closest('form');
-        if (form) {
-            form.addEventListener('submit', () => {
-                textarea.value = quill.root.innerHTML;
-            });
-        }
+
+        let error = null;
+        const sync = () => {
+            const isEmpty = quill.getText().trim() === '' && !quill.root.querySelector('iframe');
+            textarea.value = isEmpty ? '' : quill.root.innerHTML;
+            if (error && !isEmpty) {
+                error.remove();
+                error = null;
+            }
+        };
+        sync();
+        quill.on('text-change', sync);
+
+        textarea.addEventListener('invalid', (event) => {
+            event.preventDefault();
+            if (!error) {
+                error = document.createElement('div');
+                error.className = 'wab-error';
+                error.setAttribute('role', 'alert');
+                error.innerHTML = '<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>';
+                error.append(textarea.validationMessage);
+                textarea.after(error);
+            }
+            if (textarea.form.querySelector('input:invalid, select:invalid, textarea:invalid') === textarea) {
+                quill.focus();
+            }
+        });
     });
 });
 </script>
