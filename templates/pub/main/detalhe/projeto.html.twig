@@ -2,10 +2,11 @@
 {% set nome = app.request.locale == 'en' ? item.nomeEn : item.nomePt %}
 {% set objetivo = app.request.locale == 'en' ? item.objetivoEn : item.objetivoPt %}
 {% set descricao = app.request.locale == 'en' ? item.descricaoEn : item.descricaoPt %}
+{% set tem_descricao = descricao|striptags('<img><iframe>')|trim is not empty %}
 {% set modulo = item.moduleLabel(app.request.locale) %}
 
 {% block title %}{{ nome }} | CPA Citros{% endblock %}
-{% block meta_description %}{{ objetivo }}{% endblock %}
+{% block meta_description %}{{ objetivo ?: parent() }}{% endblock %}
 {% block body %}
 <!-- Detalhe do Pesquisa: Tech UI Layout -->
 <div class="bg-slate-50 py-12 pb-24 sm:py-20 sm:pb-40 lg:py-24 lg:pb-48">
@@ -29,7 +30,9 @@
                     <div>
                         <div class="inline-flex items-center px-3 py-1 rounded bg-secondary text-slate-900 font-bold text-xs uppercase mb-6">{{ modulo }}</div>
                         <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{{ nome }}</h1>
-                        <p class="text-slate-100 text-lg max-w-xl leading-relaxed">{{ objetivo }}</p>
+                        {% if objetivo %}
+                            <p class="text-slate-100 text-lg max-w-xl leading-relaxed">{{ objetivo }}</p>
+                        {% endif %}
                     </div>
                     
                     <!-- Avatar Responsável -->
@@ -51,14 +54,16 @@
             
             <!-- Descrição e Métricas -->
             <div class="p-12 lg:p-16 bg-white">
-                <h3 class="text-2xl font-bold text-slate-900 mb-6">
-                    {{ app.request.locale == 'en' ? 'Executive Summary' : 'Resumo Executivo' }}
-                </h3>
-                <div class="prose prose-slate prose-lg max-w-none">
-                    {{ descricao|raw }}
-                </div>
-                
-                <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-slate-100 pt-10">
+                {% if tem_descricao %}
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6">
+                        {{ app.request.locale == 'en' ? 'Executive Summary' : 'Resumo Executivo' }}
+                    </h3>
+                    <div class="prose prose-slate prose-lg max-w-none">
+                        {{ descricao|raw }}
+                    </div>
+                {% endif %}
+
+                <div class="{{ tem_descricao ? 'mt-16 border-t border-slate-100 pt-10' }} grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div>
                         <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Status</p>
                         <p class="font-bold text-slate-900 flex items-center gap-2">

@@ -23,16 +23,22 @@ class ProjectType extends AbstractType
             ->add('nomeEn', null, [
                 'label' => 'Nome (Inglês)'])
             ->add('objetivoPt', null, [
-                'label' => 'Objetivo (Português)'])
+                'label' => 'Objetivo (Português) — opcional',
+                'required' => false,
+            ])
             ->add('objetivoEn', null, [
-                'label' => 'Objetivo (Inglês)'])
+                'label' => 'Objetivo (Inglês) — opcional',
+                'required' => false,
+            ])
             ->add('descricaoPt', TextareaType::class, [
-                'label' => 'Descrição (Português)',
+                'label' => 'Descrição (Português) — opcional',
                 'attr' => ['class' => 'quill-textarea'],
+                'required' => false,
             ])
             ->add('descricaoEn', TextareaType::class, [
-                'label' => 'Descrição (Inglês)',
+                'label' => 'Descrição (Inglês) — opcional',
                 'attr' => ['class' => 'quill-textarea'],
+                'required' => false,
             ])
             ->add('researchLine', EntityType::class, [
                 'class' => ResearchLine::class,

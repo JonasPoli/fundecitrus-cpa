@@ -30,16 +30,16 @@ class Project
     #[ORM\Column(length: 255)]
     private ?string $nomeEn = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $objetivoPt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $objetivoEn = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $descricaoPt = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $descricaoEn = null;
 
     #[ORM\ManyToOne(inversedBy: 'projects')]
@@ -92,7 +92,7 @@ class Project
         return $this->objetivoPt;
     }
 
-    public function setObjetivoPt(string $objetivoPt): static
+    public function setObjetivoPt(?string $objetivoPt): static
     {
         $this->objetivoPt = $objetivoPt;
         return $this;
@@ -103,7 +103,7 @@ class Project
         return $this->objetivoEn;
     }
 
-    public function setObjetivoEn(string $objetivoEn): static
+    public function setObjetivoEn(?string $objetivoEn): static
     {
         $this->objetivoEn = $objetivoEn;
         return $this;
@@ -114,7 +114,7 @@ class Project
         return $this->descricaoPt;
     }
 
-    public function setDescricaoPt(string $descricaoPt): static
+    public function setDescricaoPt(?string $descricaoPt): static
     {
         $this->descricaoPt = $descricaoPt;
         return $this;
@@ -125,7 +125,7 @@ class Project
         return $this->descricaoEn;
     }
 
-    public function setDescricaoEn(string $descricaoEn): static
+    public function setDescricaoEn(?string $descricaoEn): static
     {
         $this->descricaoEn = $descricaoEn;
         return $this;
