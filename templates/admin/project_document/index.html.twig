@@ -45,7 +45,7 @@
                             {% endif %}
                         </div>
                     </td>
-                    <td>{{ item.project.nomePt }}</td>
+                    <td>{{ item.project.nomePt|striptags('<em>')|raw }}</td>
                     <td class="font-mono text-sm">{{ item.year }}</td>
                     <td class="text-sm text-slate-600">{{ item.researcher }}</td>
                     <td>

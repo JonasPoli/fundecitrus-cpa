@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
@@ -25,9 +26,13 @@ class Project
     }
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255, maxMessage: 'O nome (com a formatação em itálico) pode ter no máximo {{ limit }} caracteres.')]
     private ?string $nomePt = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255, maxMessage: 'O nome (com a formatação em itálico) pode ter no máximo {{ limit }} caracteres.')]
     private ?string $nomeEn = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -85,6 +90,13 @@ class Project
     {
         $this->nomeEn = $nomeEn;
         return $this;
+    }
+
+    public function getNomeText(string $locale = 'pt'): string
+    {
+        $nome = $locale === 'en' ? $this->nomeEn : $this->nomePt;
+
+        return html_entity_decode(strip_tags((string) $nome), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 
     public function getObjetivoPt(): ?string

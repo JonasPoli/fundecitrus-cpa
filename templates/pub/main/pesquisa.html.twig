@@ -42,7 +42,7 @@
                     <span class="w-9 h-9 flex-shrink-0 rounded-full bg-brand-800 text-white text-xs font-bold flex items-center justify-center">{{ '%02d'|format(loop.index) }}</span>
                     <div class="min-w-0">
                         <h5 class="text-lg font-bold text-slate-900 leading-snug">
-                            <a href="{{ path('app_projeto_detalhe', {slug: en ? project.slugEn : project.slugPt, _locale: locale}) }}" class="hover:text-primary">{{ en ? project.nomeEn : project.nomePt }}</a>
+                            <a href="{{ path('app_projeto_detalhe', {slug: en ? project.slugEn : project.slugPt, _locale: locale}) }}" class="hover:text-primary">{{ (en ? project.nomeEn : project.nomePt)|striptags('<em>')|raw }}</a>
                         </h5>
                         {% if project.pesquisador %}
                             <p class="mt-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">{{ en ? 'Lead researcher' : 'Pesquisador responsável' }}</p>
@@ -262,7 +262,7 @@
                             {{ item.title }}
                         </td>
                         <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500">
-                            {{ app.request.locale == 'en' ? item.project.nomeEn : item.project.nomePt }}
+                            {{ (app.request.locale == 'en' ? item.project.nomeEn : item.project.nomePt)|striptags('<em>')|raw }}
                         </td>
                         <td class="px-3 py-5 text-sm text-slate-500 font-medium">
                             <span class="type-val" style="display:none">{{ item.type }}</span>

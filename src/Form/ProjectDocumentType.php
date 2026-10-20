@@ -18,7 +18,7 @@ class ProjectDocumentType extends AbstractType
         $builder
             ->add('project', EntityType::class, [
                 'class' => Project::class,
-                'choice_label' => 'nomePt',
+                'choice_label' => 'nomeText',
                 'label' => 'Projeto Científico Relacionado',
             ])
             ->add('title', null, [

@@ -18,10 +18,14 @@ class ProjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nomePt', null, [
-                'label' => 'Nome (Português)'])
-            ->add('nomeEn', null, [
-                'label' => 'Nome (Inglês)'])
+            ->add('nomePt', TextareaType::class, [
+                'label' => 'Nome (Português)',
+                'attr' => ['class' => 'quill-inline'],
+            ])
+            ->add('nomeEn', TextareaType::class, [
+                'label' => 'Nome (Inglês)',
+                'attr' => ['class' => 'quill-inline'],
+            ])
             ->add('objetivoPt', null, [
                 'label' => 'Objetivo (Português) — opcional',
                 'required' => false,

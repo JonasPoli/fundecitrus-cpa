@@ -5,7 +5,7 @@
 {% set tem_descricao = descricao|striptags('<img><iframe>')|trim is not empty %}
 {% set modulo = item.moduleLabel(app.request.locale) %}
 
-{% block title %}{{ nome }} | CPA Citros{% endblock %}
+{% block title %}{{ item.nomeText(app.request.locale) }} | CPA Citros{% endblock %}
 {% block meta_description %}{{ objetivo ?: parent() }}{% endblock %}
 {% block body %}
 <!-- Detalhe do Pesquisa: Tech UI Layout -->
@@ -29,7 +29,7 @@
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start gap-8">
                     <div>
                         <div class="inline-flex items-center px-3 py-1 rounded bg-secondary text-slate-900 font-bold text-xs uppercase mb-6">{{ modulo }}</div>
-                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{{ nome }}</h1>
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{{ nome|striptags('<em>')|raw }}</h1>
                         {% if objetivo %}
                             <p class="text-slate-100 text-lg max-w-xl leading-relaxed">{{ objetivo }}</p>
                         {% endif %}

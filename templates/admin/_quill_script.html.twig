@@ -26,33 +26,57 @@
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const textareas = document.querySelectorAll('.quill-textarea');
+    const fullOptions = {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'video', 'clean']
+            ]
+        }
+    };
+    const inlineOptions = {
+        theme: 'snow',
+        formats: ['italic'],
+        modules: {
+            toolbar: [['italic']],
+            keyboard: {
+                bindings: {
+                    singleLine: { key: 13, shiftKey: null, handler: () => false }
+                }
+            }
+        }
+    };
+    const escapeHtml = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const inlineHtml = (quill) => quill.getContents().ops
+        .filter((op) => typeof op.insert === 'string')
+        .map((op) => {
+            const text = escapeHtml(op.insert.replace(/\s*\n\s*/g, ' '));
+            return op.attributes && op.attributes.italic ? '<em>' + text + '</em>' : text;
+        })
+        .join('')
+        .trim();
+
+    const textareas = document.querySelectorAll('.quill-textarea, .quill-inline');
     textareas.forEach((textarea, index) => {
+        const inline = textarea.classList.contains('quill-inline');
         var editorDiv = document.createElement('div');
         editorDiv.id = 'quill-editor-' + index;
-        editorDiv.className = 'border border-slate-300 dark:border-slate-700 rounded-b';
+        editorDiv.className = 'border border-slate-300 dark:border-slate-700 rounded-b' + (inline ? ' quill-inline-editor' : '');
         
         textarea.parentNode.insertBefore(editorDiv, textarea);
         textarea.style.display = 'none';
         
-        var quill = new Quill('#' + editorDiv.id, {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['link', 'video', 'clean']
-                ]
-            }
-        });
+        var quill = new Quill('#' + editorDiv.id, inline ? inlineOptions : fullOptions);
         
         quill.root.innerHTML = textarea.value;
 
         let error = null;
         const sync = () => {
             const isEmpty = quill.getText().trim() === '' && !quill.root.querySelector('iframe');
-            textarea.value = isEmpty ? '' : quill.root.innerHTML;
+            textarea.value = isEmpty ? '' : (inline ? inlineHtml(quill) : quill.root.innerHTML);
             if (error && !isEmpty) {
                 error.remove();
                 error = null;

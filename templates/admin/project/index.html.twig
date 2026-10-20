@@ -32,8 +32,8 @@
         <tbody>
             {% for project in projects %}
                 <tr>
-                    <td class="font-semibold">{{ project.nomePt }}</td>
-                    <td>{{ project.nomeEn }}</td>
+                    <td class="font-semibold">{{ project.nomePt|striptags('<em>')|raw }}</td>
+                    <td>{{ project.nomeEn|striptags('<em>')|raw }}</td>
                     <td><span class="badge badge-neutral">{{ project.moduleLabel('pt') ?: '—' }}</span></td>
                     <td>{{ project.pesquisador ? project.pesquisador.nome : '—' }}</td>
                     <td>
