@@ -2,6 +2,7 @@
 
 namespace App\Controller\Pub;
 
+use App\Repository\AboutSectionRepository;
 use App\Repository\ClippingRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\EventRepository;
@@ -46,15 +47,16 @@ class MainController extends AbstractController
     ): Response {
         return $this->render('pub/main/home.html.twig', [
             'banners' => $bannerRepo->findBy(['isActive' => true], ['position' => 'ASC']),
-            'latestNews' => $newsRepo->findOneBy([], ['date' => 'DESC', 'id' => 'DESC']),
-            'latestEvent' => $eventRepo->findOneBy([], ['id' => 'DESC']),
-            'latestOpportunity' => $jobRepo->findOneBy([], ['id' => 'DESC']),
+            'latestNews' => $newsRepo->findOneBy([], ['highlighted' => 'DESC', 'date' => 'DESC', 'id' => 'DESC']),
+            'latestEvent' => $eventRepo->findOneBy([], ['highlighted' => 'DESC', 'id' => 'DESC']),
+            'latestOpportunity' => $jobRepo->findOneBy([], ['highlighted' => 'DESC', 'id' => 'DESC']),
         ]);
     }
 
     #[Route('/{_locale}/sobre', name: 'app_sobre', requirements: ['_locale' => 'pt|en'])]
     public function sobre(
         Request $request,
+        AboutSectionRepository $aboutSectionRepo,
         PartnerRepository $partnerRepo,
         ResearcherRepository $researcherRepo,
         GovernanceMemberRepository $governanceMemberRepo,
@@ -63,6 +65,7 @@ class MainController extends AbstractController
         $partners = $partnerRepo->findBy([], ['position' => 'ASC', 'name' => 'ASC']);
 
         return $this->render('pub/main/sobre.html.twig', [
+            'about' => $aboutSectionRepo->findCurrent(),
             'partners' => $partners,
             'countries' => $partnerNetwork->byCountry($partners, $request->getLocale()),
             'brazilianCities' => $partnerNetwork->brazilianCities($partners),

@@ -39,7 +39,7 @@
                             <span class="text-slate-400 text-xs">—</span>
                         {% endif %}
                     </td>
-                    <td class="font-semibold">{{ job.titlePt }}</td>
+                    <td class="font-semibold">{{ job.titlePt }}{% if job.highlighted %}<span class="badge badge-warning ml-2"><i class="fa-solid fa-star" aria-hidden="true"></i> Destaque</span>{% endif %}</td>
                     <td>
                         {% if job.statusPt == 'Aberto' or job.statusPt == 'Aberta' or job.statusEn == 'Open' %}
                             <span class="badge badge-success">{{ job.statusPt }}</span>

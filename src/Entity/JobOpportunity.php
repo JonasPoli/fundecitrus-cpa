@@ -175,6 +175,9 @@ class JobOpportunity
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $highlighted = false;
+
     public function getImage(): ?Image
     {
         return $this->image;
@@ -218,6 +221,17 @@ class JobOpportunity
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function isHighlighted(): bool
+    {
+        return $this->highlighted;
+    }
+
+    public function setHighlighted(bool $highlighted): static
+    {
+        $this->highlighted = $highlighted;
         return $this;
     }
 }

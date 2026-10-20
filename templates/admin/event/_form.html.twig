@@ -16,6 +16,9 @@
             {{ form_row(form.slugPt) }}
             {{ form_row(form.slugEn) }}
         </div>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+            {{ form_row(form.highlighted) }}
+        </div>
         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-2">
             {{ form_row(form.registrationOpen) }}
             <p class="text-xs text-slate-500">Marque para exibir o formulário de inscrição (nome, instituição, função, cidade, e-mail, telefone e arquivo) na página do evento. Se preferir um sistema externo, deixe desmarcado e preencha o link abaixo.</p>

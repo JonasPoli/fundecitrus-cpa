@@ -85,7 +85,8 @@ class NewsType extends AbstractType
                 ],
             ])
             ->add('highlighted', CheckboxType::class, [
-                'label' => 'Notícia em Destaque',
+                'label' => 'Destaque na home (Últimas Atualizações)',
+                'help' => 'Sem nenhuma marcada, aparece a mais recente. Com mais de uma, vale a mais recente entre as marcadas.',
                 'required' => false,
             ])
         ;

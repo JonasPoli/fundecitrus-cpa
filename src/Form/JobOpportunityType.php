@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use App\Form\ImageType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 use Vich\UploaderBundle\Form\Type\VichFileType;
@@ -53,6 +54,11 @@ class JobOpportunityType extends AbstractType
             ])
             ->add('image', ImageType::class, [
                 'label' => 'Imagem de Destaque',
+            ])
+            ->add('highlighted', CheckboxType::class, [
+                'label' => 'Destaque na home (Últimas Atualizações)',
+                'help' => 'Sem nenhuma marcada, aparece a mais recente. Com mais de uma, vale a mais recente entre as marcadas.',
+                'required' => false,
             ])
         ;
     }

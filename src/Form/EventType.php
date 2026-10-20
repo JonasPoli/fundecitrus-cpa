@@ -49,6 +49,11 @@ class EventType extends AbstractType
             ->add('image', ImageType::class, [
                 'label' => 'Imagem de Destaque',
             ])
+            ->add('highlighted', CheckboxType::class, [
+                'label' => 'Destaque na home (Últimas Atualizações)',
+                'help' => 'Sem nenhum marcado, aparece o mais recente. Com mais de um, vale o mais recente entre os marcados.',
+                'required' => false,
+            ])
         ;
     }
 

@@ -52,33 +52,28 @@
 {% set tagline = en ? 'Applied Research Center for Innovation and Sustainability in Citriculture' : 'Centro de Pesquisa Aplicada em Inovação e Sustentabilidade da Citricultura' %}
 
 <!-- Quem somos -->
+{% set about_image = about and about.image and about.image.imageName ? asset('uploads/' ~ about.image.imageName) : null %}
 <section id="quem-somos" class="scroll-mt-20 py-14 sm:py-20 lg:py-24 bg-white overflow-hidden isolate relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-10 lg:gap-20 lg:items-stretch">
-            <div class="relative z-10">
+        <div class="grid {{ about_image ? 'lg:grid-cols-2' }} gap-10 lg:gap-20 lg:items-stretch">
+            <div class="relative z-10 {{ about_image ? '' : 'max-w-4xl' }}">
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
-                    {{ en ? 'Who we are' : 'Quem somos' }}
+                    {{ about ? about.title(app.request.locale) : (en ? 'Who we are' : 'Quem somos') }}
                 </h1>
-                <div class="space-y-5 text-base sm:text-lg text-slate-600 leading-relaxed">
-                    {% if en %}
-                        <p>CPA Citros is a research center created through a strategic partnership between Esalq/USP, Fundecitrus and FAPESP, with the purpose of developing scientific and technological solutions to the main challenges facing Brazilian citriculture. The initiative brings together specialists from several institutions and nationalities, consolidating the largest intelligence network ever formed to tackle HLB, the most destructive citrus disease in the world.</p>
-                        <p>Coordinated by Esalq/USP, CPA Citros is a network of research laboratories without a physical headquarters, integrating researchers from different fields — such as crop science, plant pathology, plant breeding, biotechnology, microbiology, entomology and data science — in a collaborative and continuous effort. Its goal is to accelerate discoveries, generate innovation applied to the field and strengthen the sustainability of the citrus chain.</p>
-                        <p>Currently, the center's main focus is on investigating the interaction between the plant, <i>Candidatus</i> Liberibacter asiaticus and <i>Diaphorina citri</i>, on developing more effective management strategies to fight HLB and on mitigating the damage caused by the disease. It also promotes knowledge dissemination and technology transfer to the sector, helping keep Brazilian citriculture competitive and prepared for future challenges.</p>
-                        <p>With long-term investments and an international collaboration network, CPA Citros represents a milestone in applied agribusiness research, reinforcing Brazil's commitment to innovation, sustainability and world leadership in the production of citrus and citrus products.</p>
-                    {% else %}
-                        <p>O <strong class="text-slate-900 font-semibold">CPA Citros</strong> é um centro de pesquisa criado por meio de uma parceria estratégica entre a Esalq/USP, o Fundecitrus e a FAPESP, com o propósito de desenvolver soluções científicas e tecnológicas para os principais desafios da citricultura brasileira. A iniciativa reúne especialistas de diversas instituições e nacionalidades, consolidando a maior rede de inteligência já formada para o enfrentamento do HLB, a doença mais destrutiva dos citros no mundo.</p>
-                        <p>Coordenado pela Esalq/USP, o CPA Citros é uma rede de laboratórios de pesquisa sem uma sede física, que integra pesquisadores de diferentes áreas — como fitotecnia, fitopatologia, melhoramento genético, biotecnologia, microbiologia, entomologia e ciência de dados —, promovendo uma atuação colaborativa e contínua. Seu objetivo é acelerar descobertas, gerar inovação aplicada ao campo e fortalecer a sustentabilidade da cadeia citrícola.</p>
-                        <p>Atualmente, a principal atuação do centro está voltada à investigação da interação entre planta, <i>Candidatus</i> Liberibacter asiaticus e <i>Diaphorina citri</i>, no desenvolvimento de estratégias de manejo mais eficazes para combate ao HLB e na mitigação dos danos causados pela doença. Além disso, promove a difusão de conhecimento e a transferência de tecnologia para o setor, contribuindo para manter a citricultura brasileira competitiva e preparada para desafios futuros.</p>
-                        <p>Com investimentos de longo prazo e uma rede internacional de colaboração, o CPA Citros representa um marco na pesquisa aplicada ao agronegócio, reforçando o compromisso do Brasil com a inovação, a sustentabilidade e a liderança mundial na produção de citros e derivados.</p>
-                    {% endif %}
-                </div>
+                {% if about %}
+                    <div class="prose prose-slate sm:prose-lg max-w-none text-slate-600">
+                        {{ about.content(app.request.locale)|raw }}
+                    </div>
+                {% endif %}
             </div>
 
-            <div class="relative w-full min-h-[260px] sm:min-h-[400px] lg:min-h-0 lg:h-full rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group">
-                <div class="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-700"></div>
-                <img src="{{ asset('images/sobre.jpg') }}" alt="{{ en ? 'CPA Citros laboratory' : 'Laboratório CPA Citros' }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
-                <div class="absolute inset-0 border-4 border-white/20 rounded-3xl lg:rounded-[2.5rem] pointer-events-none z-20"></div>
-            </div>
+            {% if about_image %}
+                <div class="relative w-full min-h-[260px] sm:min-h-[400px] lg:min-h-0 lg:h-full rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-slate-900/5 group">
+                    <div class="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-700"></div>
+                    <img src="{{ about_image }}" alt="{{ en ? 'CPA Citros laboratory' : 'Laboratório CPA Citros' }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out">
+                    <div class="absolute inset-0 border-4 border-white/20 rounded-3xl lg:rounded-[2.5rem] pointer-events-none z-20"></div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </section>

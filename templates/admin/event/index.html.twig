@@ -39,7 +39,7 @@
                             <span class="text-slate-400 text-xs">—</span>
                         {% endif %}
                     </td>
-                    <td class="font-semibold">{{ event.titlePt }}</td>
+                    <td class="font-semibold">{{ event.titlePt }}{% if event.highlighted %}<span class="badge badge-warning ml-2"><i class="fa-solid fa-star" aria-hidden="true"></i> Destaque</span>{% endif %}</td>
                     <td>{{ event.titleEn }}</td>
                     <td>{{ event.datePt }}</td>
                     <td>

@@ -143,6 +143,9 @@ class Event
     #[ORM\Column(options: ['default' => false])]
     private bool $registrationOpen = false;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $highlighted = false;
+
     /** @var Collection<int, EventRegistration> */
     #[ORM\OneToMany(targetEntity: EventRegistration::class, mappedBy: 'event')]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
@@ -161,6 +164,17 @@ class Event
     public function setRegistrationOpen(bool $registrationOpen): static
     {
         $this->registrationOpen = $registrationOpen;
+        return $this;
+    }
+
+    public function isHighlighted(): bool
+    {
+        return $this->highlighted;
+    }
+
+    public function setHighlighted(bool $highlighted): static
+    {
+        $this->highlighted = $highlighted;
         return $this;
     }
 
