@@ -37,13 +37,13 @@
                     
                     <!-- Avatar Responsável -->
                     <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 ring-1 ring-white/20 text-center min-w-[200px] flex-shrink-0">
-                        {% if item.pesquisador.foto and item.pesquisador.foto.imageName %}
+                        {% if item.pesquisador and item.pesquisador.foto and item.pesquisador.foto.imageName %}
                             <img src="{{ asset('uploads/' ~ item.pesquisador.foto.imageName) }}" alt="" class="w-16 h-16 rounded-full object-cover flex-shrink-0 mb-3 mx-auto" loading="lazy">
                         {% else %}
                             <div class="w-16 h-16 rounded-full bg-secondary mx-auto flex items-center justify-center text-slate-900 font-bold text-xl mb-3 shadow-inner">
                                 {{ item.pesquisador ? item.pesquisador.initials : 'C' }}
                             </div>
-                        {%endif %}
+                        {% endif %}
                         <p class="text-xs text-slate-200 font-medium uppercase tracking-widest mb-1">
                             {{ app.request.locale == 'en' ? 'Lead researcher' : 'Pesquisador responsável' }}
                         </p>
@@ -54,6 +54,35 @@
                         {% endif %}
                     </div>
                 </div>
+
+                {% set pesquisadores = item.todosPesquisadores %}
+                {% if item.outrosPesquisadores is not empty %}
+                    <div class="relative z-10 mt-8 pt-6 border-t border-white/15">
+                        <p class="text-xs text-slate-200 font-medium uppercase tracking-widest mb-3">
+                            {% if pesquisadores|length == 1 %}
+                                {{ app.request.locale == 'en' ? 'Researcher' : 'Pesquisador' }}
+                            {% else %}
+                                {{ app.request.locale == 'en' ? 'Researchers' : 'Pesquisadores' }}
+                            {% endif %}
+                        </p>
+                        <ul role="list" class="flex flex-wrap gap-3">
+                            {% for researcher in pesquisadores %}
+                                <li>
+                                    <a href="{{ path('app_sobre', {_locale: app.request.locale}) }}#equipe-{{ researcher.id }}" class="group inline-flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl px-3.5 py-2.5 ring-1 ring-white/20 hover:bg-white/15 transition-colors">
+                                        {% if researcher.foto and researcher.foto.imageName %}
+                                            <img src="{{ asset('uploads/' ~ researcher.foto.imageName) }}" alt="" class="w-9 h-9 rounded-full object-cover flex-shrink-0" loading="lazy">
+                                        {% else %}
+                                            <div class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-slate-900 font-bold text-xs flex-shrink-0 shadow-inner">
+                                                {{ researcher.initials }}
+                                            </div>
+                                        {% endif %}
+                                        <span class="text-sm font-bold text-white underline-offset-4 group-hover:underline">{{ researcher.nome }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
             
             <!-- Descrição e Métricas -->
