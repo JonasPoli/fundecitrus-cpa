@@ -11,6 +11,7 @@ use App\Repository\JobOpportunityRepository;
 use App\Repository\NewsRepository;
 use App\Repository\PartnerRepository;
 use App\Repository\PageContentRepository;
+use App\Repository\ProjectDocumentRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\ResearcherRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +23,6 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\ProjectDocument;
 use App\Entity\YoutubeMedia;
 use App\Entity\EventRegistration;
 use App\Form\EventRegistrationType;
@@ -78,12 +78,12 @@ class MainController extends AbstractController
     public function pesquisa(
         ResearchLineRepository $researchLineRepo,
         ProjectRepository $projectRepo,
-        EntityManagerInterface $entityManager
+        ProjectDocumentRepository $projectDocumentRepo
     ): Response {
         return $this->render('pub/main/pesquisa.html.twig', [
             'lines' => $researchLineRepo->findForPage(),
             'projects' => $projectRepo->findGroupedByModuleAndLine(),
-            'projectDocuments' => $entityManager->getRepository(ProjectDocument::class)->findBy([], ['year' => 'DESC', 'id' => 'DESC']),
+            'projectDocuments' => $projectDocumentRepo->findForPage(),
         ]);
     }
 
@@ -101,10 +101,11 @@ class MainController extends AbstractController
                 ->where('n.titlePt LIKE :search OR n.titleEn LIKE :search OR n.summaryPt LIKE :search OR n.summaryEn LIKE :search OR n.contentPt LIKE :search OR n.contentEn LIKE :search')
                 ->setParameter('search', '%' . $search . '%')
                 ->orderBy('n.date', 'DESC')
+                ->addOrderBy('n.id', 'DESC')
                 ->getQuery()
                 ->getResult();
         } else {
-            $noticias = $newsRepo->findBy([], ['date' => 'DESC']);
+            $noticias = $newsRepo->findBy([], ['date' => 'DESC', 'id' => 'DESC']);
         }
 
         $medias = $entityManager->getRepository(YoutubeMedia::class)->findBy([], ['position' => 'ASC', 'id' => 'DESC']);

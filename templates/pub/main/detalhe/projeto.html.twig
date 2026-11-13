@@ -13,7 +13,7 @@
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
         
         <div class="mb-10">
-            <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}#linhas" class="text-slate-400 hover:text-primary transition-colors inline-flex items-center gap-3">
+            <a href="{{ path('app_pesquisa', {_locale: app.request.locale}) }}#eixos" class="text-slate-400 hover:text-primary transition-colors inline-flex items-center gap-3">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
                 <span class="text-sm font-bold text-slate-400 uppercase tracking-widest hover:text-primary transition-colors">
                     {{ app.request.locale == 'en' ? 'Scientific Project Details' : 'Detalhe do Projeto Científico' }}
@@ -37,9 +37,13 @@
                     
                     <!-- Avatar Responsável -->
                     <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 ring-1 ring-white/20 text-center min-w-[200px] flex-shrink-0">
-                        <div class="w-16 h-16 rounded-full bg-secondary mx-auto flex items-center justify-center text-slate-900 font-bold text-xl mb-3 shadow-inner">
-                            {{ item.pesquisador ? item.pesquisador.initials : 'C' }}
-                        </div>
+                        {% if item.pesquisador.foto and item.pesquisador.foto.imageName %}
+                            <img src="{{ asset('uploads/' ~ item.pesquisador.foto.imageName) }}" alt="" class="w-16 h-16 rounded-full object-cover flex-shrink-0 mb-3 mx-auto" loading="lazy">
+                        {% else %}
+                            <div class="w-16 h-16 rounded-full bg-secondary mx-auto flex items-center justify-center text-slate-900 font-bold text-xl mb-3 shadow-inner">
+                                {{ item.pesquisador ? item.pesquisador.initials : 'C' }}
+                            </div>
+                        {%endif %}
                         <p class="text-xs text-slate-200 font-medium uppercase tracking-widest mb-1">
                             {{ app.request.locale == 'en' ? 'Lead researcher' : 'Pesquisador responsável' }}
                         </p>
@@ -71,18 +75,97 @@
                             {{ app.request.locale == 'en' ? 'Active / In progress' : 'Ativo / Em andamento' }}
                         </p>
                     </div>
-                    <div>
+
+                    {# <div>
                         <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">
                             {{ app.request.locale == 'en' ? 'Funding' : 'Financiamento' }}
                         </p>
                         <p class="font-bold text-slate-900">
                             {{ app.request.locale == 'en' ? 'Joint Venture (Global)' : 'Misto / Parcerias' }}
                         </p>
-                    </div>
+                    </div> #}
                 </div>
             </div>
             
         </div>
+
+        {% if item.documents is not empty %}
+            <div class="mt-12 bg-white rounded-3xl lg:rounded-[2rem] shadow-xl ring-1 ring-slate-900/5 overflow-hidden p-8 sm:p-12 lg:p-16">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">
+                        {{ app.request.locale == 'en' ? 'Main results' : 'Principais resultados' }}
+                    </h2>
+                    {# <p class="mt-1 text-slate-500 text-sm">
+                        {{ app.request.locale == 'en' ? 'Scientific articles, abstracts and dissertations related to this project.' : 'Artigos científicos, abstracts e dissertações relacionados a este projeto.' }}
+                    </p> #}
+                </div>
+
+                <div class="divide-y divide-slate-100">
+                    {% for doc in item.documents|sort((a, b) => (b.year ?? 0) <=> (a.year ?? 0)) %}
+                        <div class="py-5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-lg flex-shrink-0 mt-0.5">
+                                    <i class="fa-solid {{ doc.fileName ? 'fa-file-pdf' : 'fa-link' }}" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 leading-snug">
+                                        {{ doc.title }}
+                                    </h3>
+                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                        {% if doc.type == 'artigo' %}
+                                            <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                                                {{ app.request.locale == 'en' ? 'Article' : 'Artigo' }}
+                                            </span>
+                                        {% elseif doc.type == 'abstract' %}
+                                            <span class="inline-flex items-center rounded-md bg-purple-50 px-2 py-0.5 font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">
+                                                Abstract
+                                            </span>
+                                        {% elseif doc.type == 'anais' %}
+                                            <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700 ring-1 ring-inset ring-emerald-700/10">
+                                                {{ app.request.locale == 'en' ? 'Proceedings' : 'Anais' }}
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 font-medium text-amber-700 ring-1 ring-inset ring-amber-700/10">
+                                                {{ app.request.locale == 'en' ? 'Dissertation' : 'Dissertação' }}
+                                            </span>
+                                        {% endif %}
+
+                                        {% if doc.year %}
+                                            <span class="font-mono text-slate-500">{{ doc.year }}</span>
+                                        {% endif %}
+
+                                        {% if doc.researcher %}
+                                            <span class="text-slate-400">•</span>
+                                            <span>{{ doc.researcher }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2 sm:flex-shrink-0">
+                                {% if doc.fileName %}
+                                    <a href="{{ asset('uploads/documents/' ~ doc.fileName) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors">
+                                        <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                        {{ app.request.locale == 'en' ? 'View' : 'Visualizar' }}
+                                    </a>
+                                    <a href="{{ asset('uploads/documents/' ~ doc.fileName) }}" download class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold shadow-sm transition-colors">
+                                        <i class="fa-solid fa-download" aria-hidden="true"></i>
+                                        {{ app.request.locale == 'en' ? 'Download' : 'Baixar' }}
+                                    </a>
+                                {% endif %}
+                                {% if doc.doi %}
+                                    <a href="{{ doc.doi }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors">
+                                        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                        {{ app.request.locale == 'en' ? 'Access DOI' : 'Acessar DOI' }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 </div>
 {% endblock %}

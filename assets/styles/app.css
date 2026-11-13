@@ -895,6 +895,82 @@ html.dark {
 }
 .dt-buttons .dt-button:hover { background: rgba(79,142,247,.1); color: var(--bm-accent); border-color: rgba(79,142,247,.3); }
 
+html.dark .ts-wrapper .ts-control,
+html.dark .ts-wrapper.single.input-active .ts-control,
+html.dark .ts-wrapper.multi.has-items .ts-control {
+    background: var(--bm-input-bg);
+    border-color: var(--bm-input-border);
+    color: var(--bm-text);
+}
+html.dark .ts-wrapper.focus .ts-control {
+    border-color: var(--bm-accent);
+    box-shadow: 0 0 0 3px rgba(99, 158, 67, .25);
+}
+html.dark .ts-wrapper.disabled .ts-control {
+    background: var(--bm-card-bg);
+    opacity: .6;
+}
+html.dark .ts-wrapper .ts-control input,
+html.dark .ts-wrapper .ts-control > .item {
+    color: var(--bm-text);
+}
+html.dark .ts-wrapper .ts-control input::placeholder {
+    color: var(--bm-text-muted);
+}
+html.dark .ts-wrapper.single .ts-control:not(.rtl)::after {
+    border-top-color: var(--bm-text-muted);
+}
+html.dark .ts-wrapper.single.dropdown-active .ts-control:not(.rtl)::after {
+    border-bottom-color: var(--bm-text-muted);
+}
+html.dark .ts-wrapper.multi .ts-control > div {
+    background: #21262d;
+    border-color: var(--bm-input-border);
+    color: var(--bm-text);
+}
+html.dark .ts-wrapper.multi .ts-control > div.active {
+    background: #30363d;
+    border-color: #484f58;
+    color: var(--bm-text);
+}
+html.dark .ts-wrapper.plugin-remove_button .item .remove,
+html.dark .ts-wrapper.plugin-remove_button:not(.rtl) .item.active .remove {
+    border-left-color: var(--bm-input-border);
+}
+html.dark .ts-wrapper.plugin-remove_button .item .remove:hover {
+    background: rgba(255, 255, 255, .08);
+}
+html.dark .ts-dropdown {
+    background: var(--bm-card-bg);
+    border-color: var(--bm-input-border);
+    color: var(--bm-text);
+    box-shadow: var(--bm-shadow-lg);
+}
+html.dark .ts-dropdown .optgroup-header {
+    background: var(--bm-card-bg);
+    color: var(--bm-text-muted);
+}
+html.dark .ts-dropdown .optgroup:before {
+    border-top-color: var(--bm-border);
+}
+html.dark .ts-dropdown .active {
+    background: rgba(99, 158, 67, .18);
+    color: var(--bm-text);
+}
+html.dark .ts-dropdown .active.create {
+    color: var(--bm-text);
+}
+html.dark .ts-dropdown .create,
+html.dark .ts-dropdown .no-results {
+    color: var(--bm-text-muted);
+}
+html.dark .ts-dropdown [data-selectable] .highlight {
+    background: rgba(238, 164, 44, .3);
+}
+html.dark .ts-dropdown .spinner:after {
+    border-color: var(--bm-text-muted) transparent;
+}
+
 /* ════════════════════════════════════════════════════════════
    Utilities
    ════════════════════════════════════════════════════════════ */

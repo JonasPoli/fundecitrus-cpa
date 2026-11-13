@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\ProjectDocument;
 use App\Entity\Project;
+use App\Repository\ProjectRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,8 +19,21 @@ class ProjectDocumentType extends AbstractType
         $builder
             ->add('project', EntityType::class, [
                 'class' => Project::class,
-                'choice_label' => 'nomeText',
+                'query_builder' => fn (ProjectRepository $projectRepository) => $projectRepository->createQueryBuilder('p')
+                    ->leftJoin('p.pesquisador', 'r')
+                    ->addSelect('r')
+                    ->orderBy('p.nomePt', 'ASC'),
+                'choice_label' => static function (Project $project): string {
+                    $label = $project->getNomeText();
+                    $pesquisador = $project->getPesquisador();
+
+                    return $pesquisador ? sprintf('%s (%s)', $label, $pesquisador->getNome()) : $label;
+                },
+                'placeholder' => 'Pesquisar projeto...',
                 'label' => 'Projeto Científico Relacionado',
+                'attr' => [
+                    'data-project-select' => 'true',
+                ],
             ])
             ->add('title', null, [
                 'label' => 'Título do Documento',
@@ -30,6 +44,7 @@ class ProjectDocumentType extends AbstractType
                     'Artigo' => 'artigo',
                     'Abstract' => 'abstract',
                     'Dissertação' => 'dissertação',
+                    'Anais' => 'anais',
                 ],
             ])
             ->add('year', null, [

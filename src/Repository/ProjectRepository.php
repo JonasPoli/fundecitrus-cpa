@@ -17,7 +17,7 @@ class ProjectRepository extends ServiceEntityRepository
     }
 
     /**
-     * Projects with their responsible researcher, indexed by module id ('module') and,
+     * Projects with their researchers, indexed by module id ('module') and,
      * for projects without a module, by line id ('line').
      *
      * @return array{module: array<int, Project[]>, line: array<int, Project[]>}
@@ -27,6 +27,7 @@ class ProjectRepository extends ServiceEntityRepository
         $grouped = ['module' => [], 'line' => []];
         $projects = $this->createQueryBuilder('p')
             ->leftJoin('p.pesquisador', 'r')->addSelect('r')
+            ->leftJoin('p.pesquisadores', 'pr')->addSelect('pr')
             ->leftJoin('p.researchModule', 'm')->addSelect('m')
             ->orderBy('p.id', 'ASC')
             ->getQuery()

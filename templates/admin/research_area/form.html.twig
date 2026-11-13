@@ -30,7 +30,7 @@
 {{ form_end(form) }}
 
 {% if area.id %}
-    <form method="post" action="{{ path('app_admin_research_area_delete', {id: area.id}) }}" onsubmit="return confirm('Excluir esta grande área também exclui as linhas e módulos dela. Continuar?');" class="text-right mt-6">
+    <form method="post" action="{{ path('app_admin_research_area_delete', {id: area.id}) }}" onsubmit="return confirm('Excluir esta grande área também exclui os eixos e módulos dela. Continuar?');" class="text-right mt-6">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ area.id) }}">
         <button type="submit" class="btn-danger">
             <i class="fa-solid fa-trash" aria-hidden="true"></i>

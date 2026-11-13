@@ -1,7 +1,7 @@
 {% extends 'pub/base.html.twig' %}
 
 {% block title %}{{ app.request.locale == 'en' ? 'Research' : 'Pesquisa' }} | CPA Citros{% endblock %}
-{% block meta_description %}{{ app.request.locale == 'en' ? 'Research lines, projects and scientific documents of CPA Citros.' : 'Linhas de pesquisa, projetos e documentos científicos do CPA Citros.' }}{% endblock %}
+{% block meta_description %}{{ app.request.locale == 'en' ? 'Research lines, projects and scientific documents of CPA Citros.' : 'Eixos de pesquisa, projetos e documentos científicos do CPA Citros.' }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -48,6 +48,17 @@
                             <p class="mt-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">{{ en ? 'Lead researcher' : 'Pesquisador responsável' }}</p>
                             <a href="{{ path('app_sobre', {_locale: locale}) }}#equipe-{{ project.pesquisador.id }}" class="text-sm font-bold text-primary hover:underline">{{ project.pesquisador.nome }}</a>
                         {% endif %}
+                        {% set others = project.outrosPesquisadores %}
+                        {% if others is not empty %}
+                            <p class="mt-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                                {% if others|length == 1 %}{{ en ? 'Researcher' : 'Pesquisador' }}{% else %}{{ en ? 'Researchers' : 'Pesquisadores' }}{% endif %}
+                            </p>
+                            <p class="text-sm">
+                                {% for researcher in others %}
+                                    <a href="{{ path('app_sobre', {_locale: locale}) }}#equipe-{{ researcher.id }}" class="font-semibold text-slate-700 hover:text-primary hover:underline">{{ researcher.nome }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
                         {% if objective %}
                             <p class="mt-3 text-sm text-slate-600 leading-relaxed">{{ objective }}</p>
                         {% endif %}
@@ -70,27 +81,27 @@
                 {{ en ? 'Research and development for innovation and sustainability in citriculture' : 'Pesquisa e desenvolvimento para inovação e sustentabilidade da citricultura' }}
             </h1>
             <p class="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed font-light">
-                {{ en ? 'CPA Citros carries out multidisciplinary research focused primarily on controlling HLB and mitigating the damage associated with the disease. Building on this scientific foundation, the center organizes the research lines and projects that guide its actions.' : 'O CPA Citros desenvolve pesquisas multidisciplinares voltadas prioritariamente ao controle do HLB e à mitigação dos danos associados à doença. A partir dessa base científica, são organizadas as linhas de pesquisa e projetos que direcionam as ações do centro.' }}
+                {{ en ? 'CPA Citros carries out multidisciplinary research focused primarily on controlling HLB and mitigating the damage associated with the disease. Building on this scientific foundation, the center organizes the research lines and projects that guide its actions.' : 'O CPA Citros desenvolve pesquisas multidisciplinares voltadas prioritariamente ao controle do HLB e à mitigação dos danos associados à doença. A partir dessa base científica, são organizadas as eixos de pesquisa e projetos que direcionam as ações do centro.' }}
             </p>
         </div>
     </div>
 </section>
 
-<!-- Linhas de pesquisa > tópicos (módulos) > projetos -->
+<!-- Eixos de pesquisa > tópicos (módulos) > projetos -->
 {% set fallback_images = ['images/hlb.jpg', 'images/sobre.jpg', 'images/banner2.jpg', 'images/news2.jpg'] %}
-<section id="linhas" class="scroll-mt-20 py-16 sm:py-24 bg-white">
+<section id="eixos" class="scroll-mt-20 py-16 sm:py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl">
             <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                {{ en ? 'Research lines' : 'Linhas de pesquisa' }}
+                {{ en ? 'Research lines' : 'Eixos de pesquisa' }}
             </h2>
             <p class="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed">
-                {{ en ? 'Select a research line to see its topics and projects.' : 'Selecione uma linha de pesquisa para ver seus tópicos e projetos.' }}
+                {{ en ? 'Select a research line to see its topics and projects.' : 'Selecione uma eixo de pesquisa para ver seus tópicos e projetos.' }}
             </p>
         </div>
 
         {% if lines is empty %}
-            <p class="mt-10 text-slate-500">{{ en ? 'Research lines will be published soon.' : 'As linhas de pesquisa serão publicadas em breve.' }}</p>
+            <p class="mt-10 text-slate-500">{{ en ? 'Research lines will be published soon.' : 'Os Eixos de pesquisa serão publicadas em breve.' }}</p>
         {% else %}
             <div class="mt-8 grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
                 {% for line in lines %}
@@ -123,8 +134,8 @@
                 <div id="line-panel-{{ line.id }}" class="line-panel hidden mt-6 scroll-mt-28 rounded-3xl bg-slate-50 ring-1 ring-slate-200 p-5 sm:p-8" data-line-panel="{{ line.id }}">
                     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 pb-5 border-b border-slate-200">
                         <div>
-                            <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ en ? 'Research line' : 'Linha de pesquisa' }}</p>
-                            <h3 class="mt-1 text-2xl sm:text-3xl font-bold text-brand-900 leading-tight">{{ line.name(app.request.locale) }}</h3>
+                            <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ en ? 'Research line' : 'Eixo de pesquisa' }}</p>
+                            <h3 class="mt-1 text-2xl sm:text-3xl font-bold text-brand-900 leading-tight uppercase">{{ line.name(app.request.locale) }}</h3>
                         </div>
                         {% if line.modules is not empty %}
                             <p class="text-sm text-slate-500">{{ en ? 'Select a topic to see its projects' : 'Selecione um tópico para ver seus projetos' }}</p>
@@ -163,7 +174,7 @@
 
                         {% if loose_projects is not empty %}
                             <div class="mt-8">
-                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ en ? 'Other projects in this line' : 'Outros projetos da linha' }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{{ en ? 'Other projects in this line' : 'Outros projetos do eixo' }}</p>
                                 {{ macros.project_list(loose_projects, en, app.request.locale) }}
                             </div>
                         {% endif %}
@@ -189,7 +200,9 @@
         </div>
 
         <!-- Filtros de Documentos -->
-        <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-6 mt-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 mt-8">
+            <input type="text" id="filter-project" placeholder="{{ app.request.locale == 'en' ? 'Search by project...' : 'Buscar por projeto...' }}" class="px-4 py-2 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm bg-white">
+
             <input type="text" id="documents-search-input" placeholder="{{ app.request.locale == 'en' ? 'Search documents...' : 'Buscar documentos...' }}" class="px-4 py-2 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm bg-white">
             
             <select id="filter-type" class="px-4 py-2 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm bg-white">
@@ -197,6 +210,7 @@
                 <option value="artigo">Artigo</option>
                 <option value="abstract">Abstract</option>
                 <option value="dissertação">{{ app.request.locale == 'en' ? 'Dissertation' : 'Dissertação' }}</option>
+                <option value="anais">{{ app.request.locale == 'en' ? 'Proceedings' : 'Anais' }}</option>
             </select>
             
             <select id="filter-year" class="px-4 py-2 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm bg-white">
@@ -216,9 +230,11 @@
                 <option value="">{{ app.request.locale == 'en' ? 'All Researchers' : 'Todos os Pesquisadores' }}</option>
                 {% set researchers = [] %}
                 {% for doc in projectDocuments %}
-                    {% if doc.researcher not in researchers and doc.researcher is not empty %}
-                        {% set researchers = researchers|merge([doc.researcher]) %}
-                    {% endif %}
+                    {% for researcher in doc.project ? doc.project.todosPesquisadores : [] %}
+                        {% if researcher.nome not in researchers %}
+                            {% set researchers = researchers|merge([researcher.nome]) %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
                 {% for r in researchers|sort %}
                     <option value="{{ r }}">{{ r }}</option>
@@ -248,7 +264,7 @@
                             {{ app.request.locale == 'en' ? 'Year' : 'Ano' }}
                         </th>
                         <th scope="col" class="hidden md:table-cell px-3 py-4 text-left text-xs font-bold uppercase tracking-widest text-slate-500">
-                            {{ app.request.locale == 'en' ? 'Researcher' : 'Pesquisador' }}
+                            {{ app.request.locale == 'en' ? 'Researchers' : 'Pesquisadores' }}
                         </th>
                         <th scope="col" class="relative py-4 pl-3 pr-4 sm:pr-6">
                             <span class="sr-only">Download</span>
@@ -261,7 +277,7 @@
                         <td class="py-5 pl-4 pr-3 text-sm sm:pl-6 font-bold text-slate-900">
                             {{ item.title }}
                         </td>
-                        <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500">
+                        <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500 project-val">
                             {{ (app.request.locale == 'en' ? item.project.nomeEn : item.project.nomePt)|striptags('<em>')|raw }}
                         </td>
                         <td class="px-3 py-5 text-sm text-slate-500 font-medium">
@@ -270,6 +286,8 @@
                                 <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Artigo</span>
                             {% elseif item.type == 'abstract' %}
                                 <span class="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">Abstract</span>
+                            {% elseif item.type == 'anais' %}
+                                <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-700/10">{{ app.request.locale == 'en' ? 'Proceedings' : 'Anais' }}</span>
                             {% else %}
                                 <span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-700/10">Dissertação</span>
                             {% endif %}
@@ -277,8 +295,9 @@
                         <td class="px-3 py-5 text-sm text-slate-500 year-val font-mono">
                             {{ item.year }}
                         </td>
-                        <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500 researcher-val">
-                            {{ item.researcher }}
+                        {% set doc_researchers = item.project ? item.project.todosPesquisadores|map(r => r.nome) : [] %}
+                        <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500" data-researchers="{{ doc_researchers|json_encode }}">
+                            {{ doc_researchers|join(', ') }}
                         </td>
                         <td class="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             {% if item.fileName %}
@@ -365,21 +384,26 @@
                         return true;
                     }
                     
+                    const projectQuery = ($('#filter-project').val() || '').trim().toLowerCase();
                     const selectedType = $('#filter-type').val();
                     const selectedYear = $('#filter-year').val();
                     const selectedResearcher = $('#filter-researcher').val();
                     
+                    const rowProject = $(docTable.row(dataIndex).node()).find('.project-val').text().trim().toLowerCase();
                     const rowType = $(docTable.row(dataIndex).node()).find('.type-val').text().trim();
                     const rowYear = $(docTable.row(dataIndex).node()).find('.year-val').text().trim();
-                    const rowResearcher = $(docTable.row(dataIndex).node()).find('.researcher-val').text().trim();
+                    const rowResearchers = $(docTable.row(dataIndex).node()).find('[data-researchers]').data('researchers') || [];
                     
+                    if (projectQuery && !rowProject.includes(projectQuery)) {
+                        return false;
+                    }
                     if (selectedType && rowType !== selectedType) {
                         return false;
                     }
                     if (selectedYear && rowYear !== selectedYear) {
                         return false;
                     }
-                    if (selectedResearcher && rowResearcher !== selectedResearcher) {
+                    if (selectedResearcher && !rowResearchers.includes(selectedResearcher)) {
                         return false;
                     }
                     
@@ -391,12 +415,17 @@
                 docTable.draw();
             });
 
+            $('#filter-project').on('keyup input', function() {
+                docTable.draw();
+            });
+
             $('#documents-search-input').on('keyup input', function() {
                 docTable.search(this.value).draw();
             });
 
             $('#btn-clear-docs-filters').on('click', function() {
                 $('#documents-search-input').val('');
+                $('#filter-project').val('');
                 $('#filter-type').val('');
                 $('#filter-year').val('');
                 $('#filter-researcher').val('');

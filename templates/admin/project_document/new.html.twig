@@ -1,5 +1,9 @@
 {% extends 'admin/base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
+{% endblock %}
+
 {% block body %}
 
 <div class="page-header">
@@ -14,4 +18,8 @@
 
 {{ include('admin/project_document/_form.html.twig') }}
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ include('admin/project_document/_project_select_js.html.twig') }}
 {% endblock %}

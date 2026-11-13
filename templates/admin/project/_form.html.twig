@@ -22,6 +22,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.pesquisador) }}
+            {{ form_row(form.pesquisadores) }}
         </div>
     </div>
     
@@ -34,3 +35,19 @@
 {{ form_end(form) }}
 
 {{ include('admin/_quill_script.html.twig') }}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const select = document.querySelector('[data-researchers-select="true"]');
+    if (select && !select.tomselect) {
+        new TomSelect(select, {
+            placeholder: 'Adicionar pesquisadores...',
+            plugins: ['remove_button'],
+            maxItems: null,
+            create: false,
+        });
+    }
+});
+</script>

@@ -1,0 +1,25 @@
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+    (function () {
+        function initProjectSelect() {
+            const select = document.querySelector('[data-project-select="true"]');
+            if (!select || select.tomselect || typeof TomSelect === 'undefined') {
+                return;
+            }
+
+            new TomSelect(select, {
+                placeholder: 'Pesquisar projeto...',
+                maxItems: 1,
+                allowEmptyOption: false,
+                sortField: {
+                    field: 'text',
+                    direction: 'asc',
+                },
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initProjectSelect);
+        document.addEventListener('turbo:load', initProjectSelect);
+    })();
+</script>
+

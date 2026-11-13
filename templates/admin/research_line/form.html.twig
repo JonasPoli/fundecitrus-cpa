@@ -5,7 +5,7 @@
     <div>
         <h1 class="page-title">
             <i class="fa-solid fa-lemon admin-page-title-icon" aria-hidden="true"></i>
-            {{ line.id ? 'Editar' : 'Adicionar' }} Linha de Pesquisa
+            {{ line.id ? 'Editar' : 'Adicionar' }} Eixo de Pesquisa
         </h1>
     </div>
     <a href="{{ path('app_admin_research_line_index') }}" class="btn-secondary">
@@ -36,7 +36,7 @@
 
     <div class="admin-card mt-6">
         <h2 class="admin-card-title">Módulos</h2>
-        <p class="text-sm text-slate-500 mb-4">Aparecem como tópicos quando o visitante clica na caixa desta linha. Os projetos são ligados aos módulos no cadastro de cada projeto. Uma linha pode não ter módulos.</p>
+        <p class="text-sm text-slate-500 mb-4">Aparecem como tópicos quando o visitante clica na caixa deste eixo. Os projetos são ligados aos módulos no cadastro de cada projeto. Um eixo pode não ter módulos.</p>
         {% set module_item_template %}{{ include('admin/_collection_item.html.twig', {item_label: 'Módulo', fields: '__FIELDS__'}) }}{% endset %}
         <div data-collection
              data-prototype="{{ form_widget(form.modules.vars.prototype)|e('html_attr') }}"
@@ -63,7 +63,7 @@
 {{ form_end(form) }}
 
 {% if line.id %}
-    <form method="post" action="{{ path('app_admin_research_line_delete', {id: line.id}) }}" onsubmit="return confirm('Excluir esta linha e seus módulos? Os projetos ligados a ela ficarão sem linha.');" class="text-right mt-6">
+    <form method="post" action="{{ path('app_admin_research_line_delete', {id: line.id}) }}" onsubmit="return confirm('Excluir ese eixo e seus módulos? Os projetos ligados a ela ficarão sem eixo.');" class="text-right mt-6">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ line.id) }}">
         <button type="submit" class="btn-danger">
             <i class="fa-solid fa-trash" aria-hidden="true"></i>

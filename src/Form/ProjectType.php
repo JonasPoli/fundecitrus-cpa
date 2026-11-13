@@ -6,6 +6,7 @@ use App\Entity\Project;
 use App\Entity\Researcher;
 use App\Entity\ResearchLine;
 use App\Entity\ResearchModule;
+use App\Repository\ResearcherRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,15 +49,15 @@ class ProjectType extends AbstractType
                 'class' => ResearchLine::class,
                 'choice_label' => 'namePt',
                 'group_by' => fn (ResearchLine $line) => $line->getArea()?->getNamePt(),
-                'label' => 'Linha de Pesquisa',
-                'placeholder' => 'Selecione a linha...',
+                'label' => 'Eixo de Pesquisa',
+                'placeholder' => 'Selecione o eixo...',
                 'required' => false,
             ])
             ->add('researchModule', EntityType::class, [
                 'class' => ResearchModule::class,
                 'choice_label' => 'namePt',
                 'group_by' => fn (ResearchModule $module) => $module->getLine()?->getNamePt(),
-                'label' => 'Módulo (opcional — define a linha automaticamente)',
+                'label' => 'Módulo (opcional — define o eixo automaticamente)',
                 'placeholder' => 'Sem módulo específico',
                 'required' => false,
             ])
@@ -67,9 +68,19 @@ class ProjectType extends AbstractType
             ->add('pesquisador', EntityType::class, [
                 'class' => Researcher::class,
                 'choice_label' => 'nome',
+                'query_builder' => fn (ResearcherRepository $researcherRepository) => $researcherRepository->createQueryBuilder('r')->orderBy('r.nome', 'ASC'),
                 'label' => 'Pesquisador Responsável',
                 'placeholder' => 'Selecione o pesquisador...',
                 'required' => false,
+            ])
+            ->add('pesquisadores', EntityType::class, [
+                'class' => Researcher::class,
+                'choice_label' => 'nome',
+                'query_builder' => fn (ResearcherRepository $researcherRepository) => $researcherRepository->createQueryBuilder('r')->orderBy('r.nome', 'ASC'),
+                'multiple' => true,
+                'label' => 'Outros Pesquisadores — opcional',
+                'required' => false,
+                'attr' => ['data-researchers-select' => 'true'],
             ])
         ;
     }

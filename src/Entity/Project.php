@@ -20,9 +20,15 @@ class Project
     #[ORM\OneToMany(targetEntity: ProjectDocument::class, mappedBy: 'project', orphanRemoval: true)]
     private Collection $documents;
 
+    #[ORM\ManyToMany(targetEntity: Researcher::class)]
+    #[ORM\JoinTable(name: 'project_researcher')]
+    #[ORM\OrderBy(['nome' => 'ASC'])]
+    private Collection $pesquisadores;
+
     public function __construct()
     {
         $this->documents = new ArrayCollection();
+        $this->pesquisadores = new ArrayCollection();
     }
 
     #[ORM\Column(length: 255)]
@@ -208,6 +214,50 @@ class Project
     {
         $this->pesquisador = $pesquisador;
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Researcher>
+     */
+    public function getPesquisadores(): Collection
+    {
+        return $this->pesquisadores;
+    }
+
+    public function addPesquisador(Researcher $pesquisador): static
+    {
+        if (!$this->pesquisadores->contains($pesquisador)) {
+            $this->pesquisadores->add($pesquisador);
+        }
+
+        return $this;
+    }
+
+    public function removePesquisador(Researcher $pesquisador): static
+    {
+        $this->pesquisadores->removeElement($pesquisador);
+
+        return $this;
+    }
+
+    /**
+     * @return Researcher[]
+     */
+    public function getOutrosPesquisadores(): array
+    {
+        return $this->pesquisadores
+            ->filter(fn (Researcher $researcher) => $researcher !== $this->pesquisador)
+            ->getValues();
+    }
+
+    /**
+     * @return Researcher[]
+     */
+    public function getTodosPesquisadores(): array
+    {
+        $outros = $this->getOutrosPesquisadores();
+
+        return $this->pesquisador ? [$this->pesquisador, ...$outros] : $outros;
     }
 
     /**

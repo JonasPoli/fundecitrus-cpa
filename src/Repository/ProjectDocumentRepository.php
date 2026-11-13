@@ -15,4 +15,19 @@ class ProjectDocumentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ProjectDocument::class);
     }
+
+    /**
+     * @return ProjectDocument[]
+     */
+    public function findForPage(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->leftJoin('d.project', 'p')->addSelect('p')
+            ->leftJoin('p.pesquisador', 'r')->addSelect('r')
+            ->leftJoin('p.pesquisadores', 'pr')->addSelect('pr')
+            ->orderBy('d.year', 'DESC')
+            ->addOrderBy('d.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

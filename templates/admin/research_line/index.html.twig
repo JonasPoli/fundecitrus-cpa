@@ -5,9 +5,9 @@
     <div>
         <h1 class="page-title">
             <i class="fa-solid fa-lemon admin-page-title-icon" aria-hidden="true"></i>
-            Linhas de Pesquisa e Módulos
+            Eixos de Pesquisa e Módulos
         </h1>
-        <p class="page-subtitle">Cada linha é uma caixa com imagem na página “Pesquisa”; ao clicar nela aparecem os módulos e, em cada módulo, os projetos. Arraste para ordenar.</p>
+        <p class="page-subtitle">Cada eixo é uma caixa com imagem na página “Pesquisa”; ao clicar nela aparecem os módulos e, em cada módulo, os projetos. Arraste para ordenar.</p>
     </div>
     <a href="{{ path('app_admin_research_line_new') }}" class="btn-primary">
         <i class="fa-solid fa-plus" aria-hidden="true"></i>
@@ -21,7 +21,7 @@
             <tr>
                 <th></th>
                 <th>Imagem</th>
-                <th>Linha</th>
+                <th>Eixo</th>
                 <th>Módulos</th>
                 <th>Ações</th>
             </tr>
@@ -53,7 +53,7 @@
                     </td>
                 </tr>
             {% else %}
-                <tr><td colspan="5">Nenhuma linha cadastrada.</td></tr>
+                <tr><td colspan="5">Nenhum eixo cadastrado.</td></tr>
             {% endfor %}
         </tbody>
     </table>

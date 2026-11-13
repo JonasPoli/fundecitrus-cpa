@@ -14,8 +14,8 @@ class ResearchLineType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('namePt', null, ['label' => 'Linha de Pesquisa (Português)'])
-            ->add('nameEn', null, ['label' => 'Linha de Pesquisa (Inglês)'])
+            ->add('namePt', null, ['label' => 'Eixo de Pesquisa (Português)'])
+            ->add('nameEn', null, ['label' => 'Eixo de Pesquisa (Inglês)'])
             ->add('descriptionPt', TextareaType::class, [
                 'label' => 'Descrição curta (Português) — opcional',
                 'required' => false,
