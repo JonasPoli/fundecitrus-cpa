@@ -6,9 +6,11 @@ use App\Entity\Project;
 use App\Entity\Researcher;
 use App\Entity\ResearchLine;
 use App\Entity\ResearchModule;
+use App\Enum\ProjectStatus;
 use App\Repository\ResearcherRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -45,6 +47,26 @@ class ProjectType extends AbstractType
                 'attr' => ['class' => 'quill-textarea'],
                 'required' => false,
             ])
+            ->add('justificativaPt', TextareaType::class, [
+                'label' => 'Justificativa (Português) — opcional',
+                'attr' => ['class' => 'quill-textarea'],
+                'required' => false,
+            ])
+            ->add('justificativaEn', TextareaType::class, [
+                'label' => 'Justificativa (Inglês) — opcional',
+                'attr' => ['class' => 'quill-textarea'],
+                'required' => false,
+            ])
+            ->add('resultadosParciaisPt', TextareaType::class, [
+                'label' => 'Resultados Parciais (Português) — opcional',
+                'attr' => ['class' => 'quill-textarea'],
+                'required' => false,
+            ])
+            ->add('resultadosParciaisEn', TextareaType::class, [
+                'label' => 'Resultados Parciais (Inglês) — opcional',
+                'attr' => ['class' => 'quill-textarea'],
+                'required' => false,
+            ])
             ->add('researchLine', EntityType::class, [
                 'class' => ResearchLine::class,
                 'choice_label' => 'namePt',
@@ -60,6 +82,12 @@ class ProjectType extends AbstractType
                 'label' => 'Módulo (opcional — define o eixo automaticamente)',
                 'placeholder' => 'Sem módulo específico',
                 'required' => false,
+            ])
+            ->add('status', EnumType::class, [
+                'class' => ProjectStatus::class,
+                'choice_label' => fn (ProjectStatus $status) => $status->label(),
+                'label' => 'Status',
+                'required' => true,
             ])
             ->add('slugPt', null, [
                 'label' => 'Slug (Português)'])

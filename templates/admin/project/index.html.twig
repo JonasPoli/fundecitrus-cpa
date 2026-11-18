@@ -26,6 +26,7 @@
                 <th>Nome (EN)</th>
                 <th>Módulo / Pilar (PT)</th>
                 <th>Pesquisador</th>
+                <th>Status</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -37,6 +38,13 @@
                     <td><span class="badge badge-neutral">{{ project.moduleLabel('pt') ?: '—' }}</span></td>
                     <td>{{ project.pesquisador ? project.pesquisador.nome : '—' }}</td>
                     <td>
+                        {% if project.status %}
+                            <span class="badge {{ project.status.isOngoing ? 'badge-success' : 'badge-neutral' }}">{{ project.status.label }}</span>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>
                         <a href="{{ path('app_admin_project_edit', {'id': project.id}) }}" class="btn-secondary" aria-label="Editar" title="Editar">
                             <i class="fa-solid fa-pen" aria-hidden="true"></i>
                             Editar
@@ -45,7 +53,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5">Nenhum projeto cadastrado.</td>
+                    <td colspan="6">Nenhum projeto cadastrado.</td>
                 </tr>
             {% endfor %}
         </tbody>

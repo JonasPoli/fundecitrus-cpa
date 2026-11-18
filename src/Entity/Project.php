@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ProjectStatus;
 use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -70,6 +71,21 @@ class Project
     #[ORM\ManyToOne(inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Researcher $pesquisador = null;
+
+    #[ORM\Column(nullable: true, enumType: ProjectStatus::class)]
+    private ?ProjectStatus $status = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $justificativaPt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $justificativaEn = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $resultadosParciaisPt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $resultadosParciaisEn = null;
 
     public function getId(): ?int
     {
@@ -285,6 +301,66 @@ class Project
                 $document->setProject(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?ProjectStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?ProjectStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getJustificativaPt(): ?string
+    {
+        return $this->justificativaPt;
+    }
+
+    public function setJustificativaPt(?string $justificativaPt): static
+    {
+        $this->justificativaPt = $justificativaPt;
+
+        return $this;
+    }
+
+    public function getJustificativaEn(): ?string
+    {
+        return $this->justificativaEn;
+    }
+
+    public function setJustificativaEn(?string $justificativaEn): static
+    {
+        $this->justificativaEn = $justificativaEn;
+
+        return $this;
+    }
+
+    public function getResultadosParciaisPt(): ?string
+    {
+        return $this->resultadosParciaisPt;
+    }
+
+    public function setResultadosParciaisPt(?string $resultadosParciaisPt): static
+    {
+        $this->resultadosParciaisPt = $resultadosParciaisPt;
+
+        return $this;
+    }
+
+    public function getResultadosParciaisEn(): ?string
+    {
+        return $this->resultadosParciaisEn;
+    }
+
+    public function setResultadosParciaisEn(?string $resultadosParciaisEn): static
+    {
+        $this->resultadosParciaisEn = $resultadosParciaisEn;
 
         return $this;
     }

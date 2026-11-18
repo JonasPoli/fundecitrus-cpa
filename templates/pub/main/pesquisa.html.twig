@@ -96,7 +96,7 @@
                 {{ en ? 'Research lines' : 'Eixos de pesquisa' }}
             </h2>
             <p class="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed">
-                {{ en ? 'Select a research line to see its topics and projects.' : 'Selecione uma eixo de pesquisa para ver seus tópicos e projetos.' }}
+                {{ en ? 'Select a research line to see its projects and research lines.' : 'Selecione uma eixo de pesquisa para ver seus projetos e inhas de pesquisa.' }}
             </p>
         </div>
 
@@ -114,7 +114,7 @@
                             <span class="flex items-center justify-between gap-2 text-xs font-semibold text-white/80">
                                 <span>{{ '%02d'|format(loop.index) }}</span>
                                 {% if topics %}
-                                    <span>{{ topics }} {{ topics == 1 ? (en ? 'topic' : 'tópico') : (en ? 'topics' : 'tópicos') }}</span>
+                                    <span>{{ topics }} {{ topics == 1 ? (en ? 'topic' : 'Linha de pesquisa') : (en ? 'topics' : 'Linhas de pesquisa') }}</span>
                                 {% endif %}
                             </span>
                             <span class="flex items-end justify-between gap-2 sm:gap-3">
@@ -230,9 +230,10 @@
                 <option value="">{{ app.request.locale == 'en' ? 'All Researchers' : 'Todos os Pesquisadores' }}</option>
                 {% set researchers = [] %}
                 {% for doc in projectDocuments %}
-                    {% for researcher in doc.project ? doc.project.todosPesquisadores : [] %}
-                        {% if researcher.nome not in researchers %}
-                            {% set researchers = researchers|merge([researcher.nome]) %}
+                    {% set doc_researchers = doc.researcher ? [doc.researcher] : (doc.project ? doc.project.todosPesquisadores|map(r => r.nome) : []) %}
+                    {% for r in doc_researchers %}
+                        {% if r not in researchers %}
+                            {% set researchers = researchers|merge([r]) %}
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
@@ -295,7 +296,7 @@
                         <td class="px-3 py-5 text-sm text-slate-500 year-val font-mono">
                             {{ item.year }}
                         </td>
-                        {% set doc_researchers = item.project ? item.project.todosPesquisadores|map(r => r.nome) : [] %}
+                        {% set doc_researchers = item.researcher ? [item.researcher] : (item.project ? item.project.todosPesquisadores|map(r => r.nome) : []) %}
                         <td class="hidden md:table-cell px-3 py-5 text-sm text-slate-500" data-researchers="{{ doc_researchers|json_encode }}">
                             {{ doc_researchers|join(', ') }}
                         </td>

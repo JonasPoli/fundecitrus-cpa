@@ -1,8 +1,12 @@
 {% extends 'pub/base.html.twig' %}
 {% set nome = app.request.locale == 'en' ? item.nomeEn : item.nomePt %}
 {% set objetivo = app.request.locale == 'en' ? item.objetivoEn : item.objetivoPt %}
-{% set descricao = app.request.locale == 'en' ? item.descricaoEn : item.descricaoPt %}
-{% set tem_descricao = descricao|striptags('<img><iframe>')|trim is not empty %}
+{% set en = app.request.locale == 'en' %}
+{% set secoes = [
+    {titulo: en ? 'Executive Summary' : 'Resumo Executivo', conteudo: en ? item.descricaoEn : item.descricaoPt},
+    {titulo: en ? 'Justification' : 'Justificativa', conteudo: en ? item.justificativaEn : item.justificativaPt},
+    {titulo: en ? 'Partial Results' : 'Resultados Parciais', conteudo: en ? item.resultadosParciaisEn : item.resultadosParciaisPt},
+]|filter(secao => secao.conteudo|striptags('<img><iframe>')|trim is not empty) %}
 {% set modulo = item.moduleLabel(app.request.locale) %}
 
 {% block title %}{{ item.nomeText(app.request.locale) }} | CPA Citros{% endblock %}
@@ -87,21 +91,22 @@
             
             <!-- Descrição e Métricas -->
             <div class="p-12 lg:p-16 bg-white">
-                {% if tem_descricao %}
-                    <h3 class="text-2xl font-bold text-slate-900 mb-6">
-                        {{ app.request.locale == 'en' ? 'Executive Summary' : 'Resumo Executivo' }}
+                {% for secao in secoes %}
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6 {{ not loop.first ? 'mt-12' }}">
+                        {{ secao.titulo }}
                     </h3>
                     <div class="prose prose-slate prose-lg max-w-none">
-                        {{ descricao|raw }}
+                        {{ secao.conteudo|raw }}
                     </div>
-                {% endif %}
+                {% endfor %}
 
-                <div class="{{ tem_descricao ? 'mt-16 border-t border-slate-100 pt-10' }} grid grid-cols-2 md:grid-cols-4 gap-6">
+                {% set status = item.status ?? constant('App\\Enum\\ProjectStatus::IN_PROGRESS') %}
+                <div class="{{ secoes is not empty ? 'mt-16 border-t border-slate-100 pt-10' }} grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div>
                         <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Status</p>
                         <p class="font-bold text-slate-900 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                            {{ app.request.locale == 'en' ? 'Active / In progress' : 'Ativo / Em andamento' }}
+                            <span class="w-2 h-2 rounded-full {{ status.isOngoing ? 'bg-primary animate-pulse' : 'bg-slate-400' }}"></span>
+                            {{ status.label(app.request.locale) }}
                         </p>
                     </div>
 

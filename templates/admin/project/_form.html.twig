@@ -13,6 +13,14 @@
             {{ form_row(form.descricaoEn) }}
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.justificativaPt) }}
+            {{ form_row(form.justificativaEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.resultadosParciaisPt) }}
+            {{ form_row(form.resultadosParciaisEn) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.researchLine) }}
             {{ form_row(form.researchModule) }}
         </div>
@@ -23,6 +31,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ form_row(form.pesquisador) }}
             {{ form_row(form.pesquisadores) }}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{ form_row(form.status) }}
         </div>
     </div>
     
